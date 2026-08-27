@@ -14,8 +14,8 @@ import type { MaskConfig, MaskName } from "@shared/utils/mask";
  * Valeurs du formulaire. Volontairement `string` partout : les trois contrôles
  * du DS (`TextField`, `Textarea`, `Select`) travaillent sur du texte, y compris
  * pour un `type="number"` — un `<input>` ne rend jamais autre chose. Les
- * conversions (nombre, date, booléen) restent à la charge du parent, dans
- * `onSubmit`, où le domaine métier est connu.
+ * conversions (nombre, date, booléen) restent à la charge du service destinataire,
+ * où le domaine métier est connu.
  */
 export type MultiStepFormValues = Record<string, string>;
 
@@ -62,7 +62,7 @@ export interface ValidationRules {
 export type FieldErrorMessages = Partial<Record<ValidationRuleKey, string>>;
 
 interface BaseFieldConfig {
-	/** Clé de la valeur dans l'objet remis à `onSubmit`. Unique sur tout le formulaire. */
+	/** Clé de la valeur dans l'objet posté à l'API. Unique sur tout le formulaire. */
 	name: string;
 	label: ReactNode;
 	/** Masque le libellé sans le retirer de l'arbre d'accessibilité. */
@@ -74,7 +74,7 @@ interface BaseFieldConfig {
 	disabled?: boolean;
 	/**
 	 * Valeur du champ à l'ouverture — celle que Jahia a déjà, un Siret par exemple.
-	 * Prioritaire sur les `defaultValues` du formulaire.
+	 * Seule source d'amorçage du formulaire.
 	 *
 	 * ⚠️ Lue une seule fois, à l'initialisation : ce n'est PAS une valeur contrôlée.
 	 * La modifier ensuite ne remonte rien au champ, qui appartient dès lors à la
@@ -107,7 +107,7 @@ export interface TextFieldConfig extends BaseFieldConfig {
 	 * Masque de saisie — `"phone"`, `"siret"`, ou un gabarit sur mesure
 	 * (`{ mask: "__/__/____", replacement: { _: /\d/ } }`).
 	 *
-	 * La valeur remontée à `onSubmit` reste NUE : les séparateurs ne sortent jamais
+	 * La valeur postée reste NUE : les séparateurs ne sortent jamais
 	 * du champ. Les règles de `validation` continuent donc de porter sur des
 	 * chiffres seuls (`/^\d{14}$/`), et `maxLength` devient inutile — le gabarit
 	 * borne déjà la saisie. `type` doit rester `text`, `email` ou `tel`.
@@ -199,6 +199,8 @@ export interface MultiStepFormLabels {
 	submit?: string;
 	/** Nom accessible du bouton retour (icône seule). Défaut « Étape précédente ». */
 	previous?: string;
+	/** Message affiché quand l'appel à l'API échoue. Défaut en français, cf. le composant. */
+	error?: string;
 }
 
 export interface MultiStepFormStepperConfig {
@@ -210,9 +212,20 @@ export interface MultiStepFormStepperConfig {
 }
 
 export interface MultiStepFormSettings {
-	/** URL Salesforce Web-to-Lead recevant l'objet via un POST de formulaire HTML. */
+	/**
+	 * URL de l'API recevant l'objet complet, appelée en `POST` `fetch` avec un corps
+	 * `application/x-www-form-urlencoded` — le format exact que produisait le POST de
+	 * formulaire HTML, `retURL` compris. C'est le SEUL point de sortie du formulaire :
+	 * sans elle, la dernière étape valide n'envoie rien (signalé en console).
+	 *
+	 * ⚠️ L'endpoint doit autoriser l'origine du site en CORS. Salesforce Web-to-Lead
+	 * (`webto.salesforce.com`) ne le fait PAS : viser un service à soi, ou un relais.
+	 */
 	salesforceUrl?: string;
-	/** URL de la page vers laquelle Salesforce redirige après un POST réussi. */
+	/**
+	 * URL vers laquelle naviguer une fois l'appel réussi. Aucune navigation sans elle.
+	 * Un chemin relatif est absolutisé, et repart aussi dans le champ `retURL` du corps.
+	 */
 	successUrl?: string;
 }
 
@@ -222,13 +235,6 @@ export interface MultiStepFormProps {
 	 * il n'y a pas de `totalSteps` à tenir synchronisé à la main.
 	 */
 	steps: FormStepConfig[];
-	/**
-	 * Appelé une fois toutes les étapes valides et le formulaire soumis — c'est le
-	 * point de sortie vers le parent (composant Jahia). Reçoit l'intégralité des
-	 * valeurs, toutes étapes confondues. Une promesse rejetée laisse l'utilisateur
-	 * sur la dernière étape, ses saisies intactes.
-	 */
-	onSubmit: (values: MultiStepFormValues) => void | Promise<void>;
 	/** Notifié à chaque changement d'étape, après validation de l'étape quittée. */
 	onStepChange?: (step: { index: number; id: string }, values: MultiStepFormValues) => void;
 	/**
@@ -236,19 +242,9 @@ export interface MultiStepFormProps {
 	 * n'est pas rendu sur la première étape : il n'aurait nulle part où aller.
 	 */
 	onFirstStepBack?: () => void;
-	/** Valeurs initiales, complétées par la `value` de chaque champ. */
-	defaultValues?: MultiStepFormValues;
 	settings?: MultiStepFormSettings;
 	stepper?: MultiStepFormStepperConfig;
 	labels?: MultiStepFormLabels;
-	/**
-	 * Soumission en cours pilotée par le parent (appel réseau côté Jahia) : le
-	 * bouton passe en attente et le formulaire refuse une seconde soumission.
-	 * Inutile si `onSubmit` retourne une promesse — l'attente est alors gérée seule.
-	 */
-	isSubmitting?: boolean;
-	/** Erreur de soumission remontée par le parent, affichée sous les boutons. */
-	submitError?: ReactNode;
 	/** Nom accessible du formulaire. */
 	ariaLabel?: string;
 	className?: string;

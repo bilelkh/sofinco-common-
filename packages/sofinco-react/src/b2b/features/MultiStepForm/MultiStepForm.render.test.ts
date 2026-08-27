@@ -57,9 +57,7 @@ const STEPS: FormStepConfig[] = [
 ];
 
 const render = (props: Partial<MultiStepFormProps> = {}) =>
-	renderToStaticMarkup(
-		createElement(MultiStepForm, { steps: STEPS, onSubmit: () => {}, ...props }),
-	);
+	renderToStaticMarkup(createElement(MultiStepForm, { steps: STEPS, ...props }));
 
 const countClass = (html: string, name: string) =>
 	(html.match(new RegExp(`_${name}_[A-Za-z0-9]+`, "g")) ?? []).length;
@@ -170,13 +168,6 @@ describe("accessibilité", () => {
 			"Devenir partenaire",
 		);
 	});
-
-	it("rend l'erreur de soumission en role=alert", () => {
-		const html = render({ submitError: "Le service est indisponible." });
-
-		expect(html).toContain('role="alert"');
-		expect(html).toContain("Le service est indisponible.");
-	});
 });
 
 describe("champ autocomplete", () => {
@@ -223,16 +214,25 @@ describe("champ autocomplete", () => {
 		expect(onSearch).not.toHaveBeenCalled();
 	});
 
-	it("porte le code dans le miroir caché, et le libellé dans le champ visible", () => {
-		// Les champs d'une étape quittée sont démontés : au retour, seule la
-		// configuration sait refaire « LILLE (59800) » à partir des deux valeurs.
+	/*
+	 * `display` ne peut plus refaire « LILLE (59800) » au premier rendu : il lui
+	 * faut `ville`, qui n'a pas de champ à elle et que plus rien ne peut amorcer
+	 * depuis la configuration. Le code est bien porté, le libellé reste vide — et
+	 * `display` ne reprend son rôle qu'au retour sur une étape où l'utilisateur a
+	 * effectivement choisi une commune.
+	 */
+	it("porte le code amorcé dans le miroir caché, sans pouvoir en refaire le libellé", () => {
 		const html = render({
-			steps: AUTOCOMPLETE_STEPS,
-			defaultValues: { codePostal: "59800", ville: "LILLE" },
+			steps: [
+				{
+					...AUTOCOMPLETE_STEPS[0],
+					fields: [{ ...AUTOCOMPLETE_STEPS[0].fields![0], value: "59800" }],
+				},
+			],
 		});
 
-		expect(html).toContain('value="LILLE (59800)"');
 		expect(html).toContain('<input type="hidden" name="codePostal" value="59800"/>');
+		expect(html).not.toContain('value="LILLE (59800)"');
 	});
 
 	it("laisse le champ vide tant qu'aucune commune n'a été retenue", () => {
@@ -247,4 +247,3 @@ describe("configuration dégénérée", () => {
 		expect(render({ steps: [] })).toBe("");
 	});
 });
-

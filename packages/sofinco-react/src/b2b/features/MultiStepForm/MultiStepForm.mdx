@@ -8,8 +8,9 @@ import * as MultiStepFormStories from "./MultiStepForm.stories";
 
 Formulaire multi-étapes **entièrement piloté par configuration**. `steps` décrit les
 étapes, leurs champs et leurs règles ; le composant en déduit le rendu, l'indicateur de
-progression et la validation. Aucune connaissance métier n'y est codée : le parent — un
-composant Jahia — reçoit les valeurs complètes dans `onSubmit` et décide de la suite.
+progression et la validation. Aucune connaissance métier n'y est codée : c'est la
+configuration qui porte l'API destinataire (`settings.salesforceUrl`), que le formulaire
+appelle lui-même une fois toutes les étapes valides.
 
 Il s'appuie sur [`@tanstack/react-form`](https://tanstack.com/form) pour l'état et sur les
 contrôles du DS (`TextField`, `Select`, `Textarea`), la `Cta` et le `Stepper`.
@@ -22,7 +23,8 @@ contrôles du DS (`TextField`, `Select`, `Textarea`), la `Cta` et le `Stepper`.
 - **on ne franchit une étape que si *ses* champs sont valides**. Les champs des étapes
   suivantes ne sont pas montés : ils ne sont donc jamais évalués au passage
 - **les valeurs survivent au changement d'étape** : un retour arrière retrouve la saisie
-  intacte, et `onSubmit` reçoit toujours le même objet quel que soit le chemin parcouru
+  intacte, et l'objet posté porte toujours les mêmes clés quel que soit le chemin
+  parcouru
 - **le bouton principal est un `submit`** : la touche Entrée dans un champ passe donc par
   la même validation que le clic
 
@@ -34,8 +36,7 @@ import { MultiStepForm } from "sofinco-react";
 <MultiStepForm
 	ariaLabel="Devenir partenaire"
 	settings={{
-		salesforceUrl:
-			"https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00DJ9000000Qej3",
+		salesforceUrl: "https://mon-service/partenaires/candidatures",
 		successUrl: "/contact/confirmation",
 	}}
 	steps={[
@@ -74,15 +75,26 @@ import { MultiStepForm } from "sofinco-react";
 			],
 		},
 	]}
-	onSubmit={(values) => envoyerCandidature(values)}
 />;
 ```
 
-`settings.salesforceUrl` contient l'URL Salesforce Web-to-Lead configurée par le CMS. À la
-soumission, le composant poste l'objet complet avec un formulaire HTML `POST` encodé en
-`application/x-www-form-urlencoded`. `onSubmit` reste appelé avec le même objet pour le
-suivi côté parent et Storybook. `settings.successUrl` est envoyé comme `retURL` : Salesforce
-redirige la fenêtre principale vers cette URL après le traitement du lead.
+`settings.salesforceUrl` contient l'URL de l'API configurée par le CMS. À la soumission, le
+composant appelle `fetch` en `POST` avec l'objet complet encodé en
+`application/x-www-form-urlencoded` — **le format exact que produisait le POST de
+formulaire HTML**, `retURL` compris : le service en place le lit sans changement. Il n'y a
+pas de rappel `onSubmit`, le formulaire s'adresse directement à l'API sans repasser par un
+parent. En cas de succès, `settings.successUrl` est chargée ; en cas d'échec, un message
+s'affiche sous les boutons et la saisie reste intacte.
+
+⚠️ **CORS.** L'appel part du navigateur : l'endpoint doit autoriser l'origine du site.
+`application/x-www-form-urlencoded` fait partie de la liste sûre, la requête part donc sans
+pré-vol `OPTIONS` — mais la *réponse* reste illisible sans `Access-Control-Allow-Origin`.
+Salesforce Web-to-Lead (`webto.salesforce.com`) n'en renvoie pas : il faut viser un service
+à soi, ou un relais côté serveur.
+
+⚠️ Sans `settings.salesforceUrl`, la dernière étape validée **n'envoie rien** : c'est le
+seul point de sortie du formulaire. Le composant l'écrit en console plutôt que d'échouer
+en silence.
 
 ## Champs
 
@@ -91,8 +103,8 @@ Le `type` choisit le contrôle DS rendu : `select` → `Select`, `textarea` → 
 `email`, `tel`, `number`, `url`, `password`, `date`).
 
 Toutes les valeurs sont des **chaînes** — un `<input>` ne rend jamais autre chose, y
-compris en `type="number"`. Les conversions (nombre, date, booléen) restent au parent,
-dans `onSubmit`, là où le domaine métier est connu.
+compris en `type="number"`. Les conversions (nombre, date, booléen) restent au service
+destinataire, là où le domaine métier est connu.
 
 `width: "half"` place deux champs sur une ligne à partir du palier tablette ; en mobile la
 grille reste à une colonne.
@@ -107,7 +119,7 @@ le cas du code postal, qui désigne jusqu'à **quatorze communes** :
 
 - `fills` range les valeurs annexes à côté de la principale, au moment du choix. Ses clés
   n'ont pas à figurer dans `fields` (elles ne sont jamais saisies) mais sont amorcées à
-  vide dès le premier rendu, pour que `onSubmit` reçoive toujours le même objet ;
+  vide dès le premier rendu, pour que l'objet posté porte toujours les mêmes clés ;
 - `display` refait le libellé affiché à partir des valeurs. Les champs d'une étape quittée
   étant démontés, sans elle le champ se rouvrirait vide sur une valeur pourtant
   renseignée. Configurer `fills` sans `display` produit exactement ce trou.
@@ -126,7 +138,7 @@ le cas du code postal, qui désigne jusqu'à **quatorze communes** :
 ```
 
 Effacer le champ vide aussi les clés annexes : sans quoi la commune d'un code effacé
-survivrait seule jusqu'à `onSubmit`.
+survivrait seule jusqu'au POST.
 
 ## Validation
 
@@ -144,7 +156,7 @@ comprises.
 Un champ `disabled` n'est **jamais validé** — comme en HTML natif, où `disabled` exclut de
 la validation de contrainte. C'est aussi la seule règle qui ne mène pas à une impasse : un
 champ à la fois désactivé et obligatoire mais vide bloquerait l'étape pour toujours. Sa
-valeur reste remontée dans `onSubmit`, puisqu'elle vient du CMS.
+valeur reste postée, puisqu'elle vient du CMS.
 
 Un message n'apparaît **qu'une fois le champ quitté**, ou après un « Continuer » refusé —
 pas dès la première frappe. Il disparaît ensuite dès que la saisie redevient valide : les
@@ -162,16 +174,20 @@ seule façon qu'un message corrigé ne reste pas affiché.
 }
 ```
 
-## Remontée vers Jahia
+## Soumission
 
-`onSubmit` n'est appelé qu'une fois **toutes** les étapes valides. Un dernier contrôle
-rejoue les règles sur l'ensemble du parcours juste avant la sortie : si une étape franchie
+L'appel n'est déclenché qu'une fois **toutes** les étapes valides. Un dernier contrôle
+rejoue les règles sur l'ensemble du parcours juste avant l'envoi : si une étape franchie
 plus tôt a été invalidée depuis, l'utilisateur y est ramené plutôt que d'envoyer des
 données incomplètes.
 
-Si `onSubmit` retourne une promesse, l'attente est gérée seule (bouton en chargement).
-`isSubmitting` n'est utile que si le parent pilote lui-même l'appel réseau ; `submitError`
-affiche l'échec sous les boutons, saisie intacte.
+Le bouton passe en chargement pendant l'appel et le formulaire refuse une seconde
+soumission ; l'attente est relâchée **même en cas d'échec**, pour que l'utilisateur puisse
+réessayer. Un échec (statut HTTP hors plage 2xx, ou réseau coupé) affiche le message de
+`labels.error` sous les boutons, en `role="alert"`, la saisie intacte.
+
+Attente et message d'erreur appartiennent au composant : il n'y a pas de prop pour les
+piloter de l'extérieur, puisqu'il n'y a plus de parent qui fasse l'appel à sa place.
 
 `onStepChange` est notifié à chaque changement d'étape, après validation de l'étape
 quittée. `onFirstStepBack` rend le bouton retour dès la première étape — sans lui, il n'y

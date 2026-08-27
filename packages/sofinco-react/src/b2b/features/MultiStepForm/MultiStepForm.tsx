@@ -29,6 +29,7 @@ const DEFAULT_LABELS = {
 	next: "Continuer",
 	submit: "Envoyer",
 	previous: "Étape précédente",
+	error: "L'envoi a échoué. Réessayez dans quelques instants.",
 } as const;
 
 const resolveSuccessUrl = (url: string | undefined): string | undefined => {
@@ -40,8 +41,9 @@ const resolveSuccessUrl = (url: string | undefined): string | undefined => {
  * Formulaire multi-étapes générique — coquille DS pilotée *entièrement* par
  * configuration : `steps` décrit les étapes, leurs champs et leurs règles, et le
  * composant en déduit le rendu, l'indicateur de progression et la validation.
- * Aucune connaissance métier ici : le parent (composant Jahia) reçoit les valeurs
- * complètes dans `onSubmit` et décide de la suite.
+ * Aucune connaissance métier ici : c'est la configuration qui porte l'API
+ * destinataire (`settings.salesforceUrl`), que le formulaire appelle lui-même en
+ * `fetch` une fois toutes les étapes valides.
  *
  * **Validation par étape.** On ne franchit une étape que si *ses* champs sont
  * valides ; ceux des étapes suivantes ne sont pas montés et ne sont donc jamais
@@ -56,8 +58,8 @@ const resolveSuccessUrl = (url: string | undefined): string | undefined => {
  *
  * **Valeurs conservées.** Les champs d'une étape quittée sont démontés mais leurs
  * valeurs restent dans l'état du formulaire — un retour arrière retrouve la
- * saisie intacte, et `onSubmit` reçoit toujours le même objet, quel que soit le
- * chemin parcouru.
+ * saisie intacte, et l'objet posté porte toujours les mêmes clés, quel que soit
+ * le chemin parcouru.
  *
  * A11Y — à chaque changement d'étape le focus est reposé sur l'en-tête de la
  * nouvelle étape : sans ça il resterait sur un bouton démonté et repartirait du
@@ -66,15 +68,11 @@ const resolveSuccessUrl = (url: string | undefined): string | undefined => {
  */
 const MultiStepForm = ({
 	steps,
-	onSubmit,
 	onStepChange,
 	onFirstStepBack,
-	defaultValues,
 	settings,
 	stepper,
 	labels,
-	isSubmitting = false,
-	submitError,
 	ariaLabel,
 	className,
 }: MultiStepFormProps) => {
@@ -83,25 +81,71 @@ const MultiStepForm = ({
 	const titleId = `${baseId}-title`;
 
 	const [stepIndex, setStepIndex] = useState(0);
-	const [internalSubmitting, setInternalSubmitting] = useState(false);
+	const [busy, setBusy] = useState(false);
+	// Message d'échec de l'appel API. Le formulaire le produit lui-même : il n'y a
+	// plus de parent pour en imposer un.
+	const [submitError, setSubmitError] = useState<string>();
 	// Passe à `true` quand on ramène l'utilisateur sur une étape antérieure
 	// invalidée : les champs doivent d'abord être montés pour porter leur erreur.
 	const [pendingRevalidation, setPendingRevalidation] = useState(false);
 
 	const headingRef = useRef<HTMLDivElement>(null);
 	const renderedStepRef = useRef(0);
-	const salesforceFormRef = useRef<HTMLFormElement>(null);
 
 	const form = useForm({
-		defaultValues: buildDefaultValues(steps, defaultValues),
+		defaultValues: buildDefaultValues(steps),
 		onSubmit: async ({ value }) => {
-			// Reconstruit la forme complète attendue par le parent, y compris les
-			// champs des étapes démontées et les valeurs auxiliaires du CMS.
+			// Reconstruit l'objet complet attendu par l'API, y compris les champs des
+			// étapes démontées et les valeurs auxiliaires du CMS.
 			const completeValues = {
-				...buildDefaultValues(steps, defaultValues),
+				...buildDefaultValues(steps),
 				...value,
 			};
-			await onSubmit(completeValues);
+
+			const url = settings?.salesforceUrl;
+			// Sans destination il n'y a rien à appeler. Le cas est signalé plutôt que
+			// tu : un dernier pas valide qui n'envoie rien est indiscernable d'un bug.
+			if (!url) {
+				console.warn(
+					"[MultiStepForm] `settings.salesforceUrl` absent : les valeurs validées ne sont envoyées nulle part.",
+				);
+				return;
+			}
+
+			/*
+			 * L'échec est rattrapé ICI et pas laissé remonter : `handleSubmit` de
+			 * TanStack ne rend pas la main sur l'erreur, et c'est le composant — pas le
+			 * parent — qui porte désormais le message. La saisie reste intacte,
+			 * l'utilisateur peut réessayer depuis la même étape.
+			 */
+			/*
+			 * Corps `application/x-www-form-urlencoded` — le format exact que produisait
+			 * le POST de formulaire HTML : une paire par champ, à plat. Le service en
+			 * place le lit tel quel, aucun changement de contrat côté serveur.
+			 *
+			 * Accessoirement, c'est un type de contenu de la liste sûre CORS : la requête
+			 * part sans pré-vol `OPTIONS`, là où du JSON en aurait imposé un.
+			 */
+			const body = new URLSearchParams(completeValues);
+			// `retURL` faisait partie de l'objet posté : Salesforce s'en sert pour
+			// rediriger. La navigation est désormais faite ici (cf. plus bas), le champ
+			// n'est conservé que pour ne rien retrancher à ce que le service recevait.
+			const returnUrl = resolveSuccessUrl(settings.successUrl);
+			if (returnUrl) body.set("retURL", returnUrl);
+
+			try {
+				const response = await fetch(url, {
+					method: "POST",
+					headers: { "Content-Type": "application/x-www-form-urlencoded" },
+					body,
+				});
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+				setSubmitError(undefined);
+				if (settings.successUrl) window.location.assign(settings.successUrl);
+			} catch {
+				setSubmitError(labels?.error ?? DEFAULT_LABELS.error);
+			}
 		},
 	});
 
@@ -111,7 +155,6 @@ const MultiStepForm = ({
 	const safeIndex = Math.max(0, Math.min(stepIndex, Math.max(total - 1, 0)));
 	const currentStep = steps[safeIndex];
 	const isLastStep = safeIndex === total - 1;
-	const busy = isSubmitting || internalSubmitting;
 
 	const stepLabels = { ...DEFAULT_LABELS, ...labels };
 	const showStepper = stepper?.show ?? true;
@@ -182,8 +225,8 @@ const MultiStepForm = ({
 			return;
 		}
 
-		// Dernier verrou avant la sortie vers le parent : une étape franchie plus
-		// tôt a pu être invalidée depuis (valeur pilotée, règle croisée).
+		// Dernier verrou avant l'envoi : une étape franchie plus tôt a pu être
+		// invalidée depuis (valeur pilotée, règle croisée).
 		const invalid = findFirstInvalidField(steps, form.state.values as MultiStepFormValues);
 		if (invalid) {
 			goToStep(invalid.stepIndex);
@@ -191,15 +234,13 @@ const MultiStepForm = ({
 			return;
 		}
 
-		setInternalSubmitting(true);
+		setBusy(true);
 		try {
 			await form.handleSubmit();
-			if (settings?.salesforceUrl) {
-				const salesforceForm = salesforceFormRef.current;
-				if (salesforceForm) HTMLFormElement.prototype.submit.call(salesforceForm);
-			}
 		} finally {
-			setInternalSubmitting(false);
+			// Relâché même en cas d'échec : sinon le bouton resterait en chargement,
+			// sans rien à faire et sans moyen de réessayer.
+			setBusy(false);
 		}
 	};
 
@@ -252,9 +293,7 @@ const MultiStepForm = ({
 					const { isBlurred, errors } = fieldApi.state.meta;
 					// Affiché seulement une fois le champ quitté (ou l'étape validée, qui
 					// pose `isBlurred`) : sinon l'erreur s'afficherait dès la 1re frappe.
-					const errorMessage = isBlurred
-						? (errors.find(Boolean) as string | undefined)
-						: undefined;
+					const errorMessage = isBlurred ? (errors.find(Boolean) as string | undefined) : undefined;
 
 					const common = {
 						id: fieldDomId(field.name),
@@ -301,7 +340,7 @@ const MultiStepForm = ({
 								value={fieldApi.state.value}
 								onChange={(event) => fieldApi.handleChange(event.target.value)}
 								onBlur={fieldApi.handleBlur}
-							/>
+							/>,
 						);
 					}
 
@@ -346,7 +385,7 @@ const MultiStepForm = ({
 									 *
 									 * À l'effacement, `fills` est rappelée sur une option vide : elle
 									 * rend les mêmes clés, qui sont donc vidées avec la principale. Sans
-									 * ça la commune d'un code effacé survivrait seule jusqu'à `onSubmit`.
+									 * ça la commune d'un code effacé survivrait seule jusqu'au POST.
 									 */
 									if (field.fills) {
 										const filled = field.fills(option ?? { value: "", label: "" });
@@ -396,109 +435,86 @@ const MultiStepForm = ({
 				aria-label={ariaLabel}
 				noValidate
 			>
-			{showStepper && (
-				<div className={styles.form__stepper}>
-					<Stepper
-						variant={stepper?.variant ?? "line"}
-						counterVariant={stepper?.counterVariant ?? "badge"}
-						activeStep={safeIndex + 1}
-						totalSteps={total}
-						label={currentStep.label}
-						ariaLabel={stepper?.ariaLabel ?? "Progression du formulaire"}
-					/>
-				</div>
-			)}
-
-			<div className={styles.form__body}>
-				{(currentStep.title || currentStep.description) && (
-					// `tabIndex={-1}` : cible du focus au changement d'étape. Le conteneur
-					// plutôt que le seul titre, pour que la description soit annoncée aussi.
-					<div className={styles.form__heading} ref={headingRef} tabIndex={-1}>
-						{currentStep.title && (
-							<Title as="h2" visualStyle="h4" id={titleId} className={styles.form__title}>
-								{currentStep.title}
-							</Title>
-						)}
-						{currentStep.description && (
-							<p className={styles.form__description}>
-								<FootnoteText>{currentStep.description}</FootnoteText>
-							</p>
-						)}
+				{showStepper && (
+					<div className={styles.form__stepper}>
+						<Stepper
+							variant={stepper?.variant ?? "line"}
+							counterVariant={stepper?.counterVariant ?? "badge"}
+							activeStep={safeIndex + 1}
+							totalSteps={total}
+							label={currentStep.label}
+							ariaLabel={stepper?.ariaLabel ?? "Progression du formulaire"}
+						/>
 					</div>
 				)}
 
-				<div
-					className={styles.form__step}
-					role="group"
-					aria-labelledby={currentStep.title ? titleId : undefined}
-					aria-label={currentStep.title ? undefined : currentStep.label}
-				>
-					<div className={styles.form__fields}>{stepFields(currentStep).map(renderField)}</div>
-
-					{/* `content` est un emplacement JSX libre (`ReactNode`), pas une chaîne
-					    contribuée : le nom trompe l'heuristique de la règle. Ce que le parent y
-					    place enveloppe son propre texte. */}
-					{/* eslint-disable-next-line sofinco/require-footnote-text */}
-					{currentStep.content}
-				</div>
-
-				<div className={styles.form__actions}>
-					{showBack ? (
-						<Cta
-							className={styles.form__back}
-							variant="secondary"
-							iconOnly
-							iconLeft="arrow-left"
-							label={stepLabels.previous}
-							onClick={handleBack}
-							isDisabled={busy}
-						/>
-					) : (
-						// Réserve la gouttière : sans elle le bouton principal glisserait à
-						// gauche sur la première étape.
-						<span aria-hidden="true" />
+				<div className={styles.form__body}>
+					{(currentStep.title || currentStep.description) && (
+						// `tabIndex={-1}` : cible du focus au changement d'étape. Le conteneur
+						// plutôt que le seul titre, pour que la description soit annoncée aussi.
+						<div className={styles.form__heading} ref={headingRef} tabIndex={-1}>
+							{currentStep.title && (
+								<Title as="h2" visualStyle="h4" id={titleId} className={styles.form__title}>
+									{currentStep.title}
+								</Title>
+							)}
+							{currentStep.description && (
+								<p className={styles.form__description}>
+									<FootnoteText>{currentStep.description}</FootnoteText>
+								</p>
+							)}
+						</div>
 					)}
 
-					<Cta
-						className={styles.form__next}
-						type="submit"
-						variant="primary"
-						label={isLastStep ? stepLabels.submit : stepLabels.next}
-						iconRight="arrow-right"
-						isLoading={busy}
-					/>
-				</div>
-
-				{submitError && (
-					<p className={styles.form__submitError} role="alert">
-						{submitError}
-					</p>
-				)}
-			</div>
-			</form>
-
-			{settings?.salesforceUrl && (
-				<>
-					<form
-						ref={salesforceFormRef}
-						method="POST"
-						action={settings.salesforceUrl}
-						target="_top"
-						aria-hidden="true"
-						className={styles["salesforce-form"]}
+					<div
+						className={styles.form__step}
+						role="group"
+						aria-labelledby={currentStep.title ? titleId : undefined}
+						aria-label={currentStep.title ? undefined : currentStep.label}
 					>
-						{Object.entries({
-							...buildDefaultValues(steps, defaultValues),
-							...(form.state.values as MultiStepFormValues),
-							...(resolveSuccessUrl(settings.successUrl)
-								? { retURL: resolveSuccessUrl(settings.successUrl) }
-								: {}),
-						}).map(([name, value]) => (
-							<input key={name} type="hidden" name={name} value={value} readOnly />
-						))}
-					</form>
-				</>
-			)}
+						<div className={styles.form__fields}>{stepFields(currentStep).map(renderField)}</div>
+
+						{/* `content` est un emplacement JSX libre (`ReactNode`), pas une chaîne
+					    contribuée : le nom trompe l'heuristique de la règle. Ce que le parent y
+					    place enveloppe son propre texte. */}
+						{/* eslint-disable-next-line sofinco/require-footnote-text */}
+						{currentStep.content}
+					</div>
+
+					<div className={styles.form__actions}>
+						{showBack ? (
+							<Cta
+								className={styles.form__back}
+								variant="secondary"
+								iconOnly
+								iconLeft="arrow-left"
+								label={stepLabels.previous}
+								onClick={handleBack}
+								isDisabled={busy}
+							/>
+						) : (
+							// Réserve la gouttière : sans elle le bouton principal glisserait à
+							// gauche sur la première étape.
+							<span aria-hidden="true" />
+						)}
+
+						<Cta
+							className={styles.form__next}
+							type="submit"
+							variant="primary"
+							label={isLastStep ? stepLabels.submit : stepLabels.next}
+							iconRight="arrow-right"
+							isLoading={busy}
+						/>
+					</div>
+
+					{submitError && (
+						<p className={styles.form__submitError} role="alert">
+							{submitError}
+						</p>
+					)}
+				</div>
+			</form>
 		</>
 	);
 };

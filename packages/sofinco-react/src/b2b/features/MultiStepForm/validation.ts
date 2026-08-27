@@ -51,7 +51,7 @@ export const buildFieldValidator =
 		 * qui ne mène pas à une impasse : un champ à la fois `disabled` et
 		 * `required` mais vide bloquerait l'étape pour toujours, l'utilisateur
 		 * n'ayant aucun moyen de le corriger. Sa valeur reste remontée dans
-		 * `onSubmit` : elle vient de Jahia, elle fait partie de la candidature.
+		 * l'objet posté : elle vient du CMS, elle fait partie de la candidature.
 		 */
 		if (field.disabled) return undefined;
 
@@ -66,8 +66,7 @@ export const buildFieldValidator =
 		if (rules.email && !EMAIL_PATTERN.test(trimmed)) return message(field, "email");
 
 		if (rules.pattern) {
-			const pattern =
-				typeof rules.pattern === "string" ? new RegExp(rules.pattern) : rules.pattern;
+			const pattern = typeof rules.pattern === "string" ? new RegExp(rules.pattern) : rules.pattern;
 			// `lastIndex` d'une regex `/g` fournie par l'appelant survit d'un appel à
 			// l'autre : sans remise à zéro, une frappe sur deux passerait.
 			pattern.lastIndex = 0;
@@ -103,7 +102,7 @@ export const stepFields = (step: FormStepConfig): FormFieldConfig[] => step.fiel
 
 /**
  * Premier champ invalide du parcours, toutes étapes confondues. Sert de dernier
- * verrou avant `onSubmit` : une étape franchie puis modifiée par du code appelant
+ * verrou avant le POST : une étape franchie puis modifiée par du code appelant
  * (valeurs pilotées, champ conditionnel) ne doit pas passer inaperçue.
  */
 export const findFirstInvalidField = (
@@ -122,18 +121,19 @@ export const findFirstInvalidField = (
 /**
  * Valeurs initiales du formulaire. Chaque champ déclaré est présent dès le
  * départ, y compris ceux des étapes non encore rendues : TanStack ne connaît que
- * les champs montés, et un `onSubmit` dont l'objet change de forme selon le
+ * les champs montés, et un objet posté dont la forme change selon le
  * chemin parcouru serait impossible à typer côté Jahia.
+ *
+ * La seule source d'amorçage est l'attribut `value` du champ : le formulaire n'a
+ * pas de valeurs initiales globales. Une clé annexe de `fills` part donc toujours
+ * vide — aucun champ ne la déclare, rien ne peut la pré-remplir.
  */
-export const buildDefaultValues = (
-	steps: FormStepConfig[],
-	provided: MultiStepFormValues | undefined,
-): MultiStepFormValues => {
+export const buildDefaultValues = (steps: FormStepConfig[]): MultiStepFormValues => {
 	const values: MultiStepFormValues = {};
 
 	for (const step of steps) {
 		for (const field of stepFields(step)) {
-			values[field.name] = field.value ?? provided?.[field.name] ?? "";
+			values[field.name] = field.value ?? "";
 
 			/*
 			 * Les clés annexes d'un champ `autocomplete` sont amorcées elles aussi.
@@ -145,7 +145,7 @@ export const buildDefaultValues = (
 			 */
 			if (field.type === "autocomplete" && field.fills) {
 				for (const key of Object.keys(field.fills({ value: "", label: "" }))) {
-					values[key] = provided?.[key] ?? "";
+					values[key] = "";
 				}
 			}
 		}

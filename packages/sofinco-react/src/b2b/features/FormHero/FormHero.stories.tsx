@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { composeStories } from "@storybook/react-vite";
-import { action } from "storybook/actions";
 
 import * as MultiStepFormStories from "@b2b/features/MultiStepForm/MultiStepForm.stories";
 
@@ -12,8 +11,6 @@ import FormHero from "./FormHero";
  * la première évolution de la maquette.
  */
 const { Default: Form } = composeStories(MultiStepFormStories);
-const CONFIRMATION_STORY_URL =
-	"http://localhost:8080/?path=/story/pages-b2b-partnerconfirmationpage--default";
 
 const meta = {
 	title: "b2b/features/FormHero",
@@ -57,13 +54,8 @@ export const TitleOnly: Story = {
 export const WithForm: Story = {
 	args: {
 		children: (
-			<Form
-				settings={{}}
-				onSubmit={(values) => {
-					action("submit")(values);
-					window.top?.location.assign(CONFIRMATION_STORY_URL);
-				}}
-			/>
+			/* `settings` hérité de la story du formulaire, endpoint compris. */
+			<Form />
 		),
 	},
 };

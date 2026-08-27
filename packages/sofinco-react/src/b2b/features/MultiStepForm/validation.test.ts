@@ -9,11 +9,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import {
-	buildDefaultValues,
-	buildFieldValidator,
-	findFirstInvalidField,
-} from "./validation";
+import { buildDefaultValues, buildFieldValidator, findFirstInvalidField } from "./validation";
 import type { FormFieldConfig, FormStepConfig } from "./MultiStepForm.type";
 
 const field = (config: Partial<FormFieldConfig> = {}): FormFieldConfig =>
@@ -184,20 +180,13 @@ describe("buildDefaultValues", () => {
 	];
 
 	it("déclare une valeur pour tous les champs, étapes non rendues comprises", () => {
-		expect(buildDefaultValues(steps, undefined)).toEqual({ siret: "324", email: "" });
-	});
-
-	it("laisse la `value` du champ primer sur les valeurs du formulaire", () => {
-		expect(buildDefaultValues(steps, { siret: "999", email: "a@b.fr" })).toEqual({
-			siret: "324",
-			email: "a@b.fr",
-		});
+		expect(buildDefaultValues(steps)).toEqual({ siret: "324", email: "" });
 	});
 
 	/*
 	 * Les clés annexes d'un champ `autocomplete` ne sont écrites qu'au choix
 	 * d'une option. Sans amorçage, un parcours où l'utilisateur ne touche pas au
-	 * champ rendrait à `onSubmit` un objet amputé de ces clés — la forme variable
+	 * champ posterait un objet amputé de ces clés — la forme variable
 	 * que `buildDefaultValues` existe justement pour empêcher.
 	 */
 	const withFills: FormStepConfig[] = [
@@ -215,14 +204,31 @@ describe("buildDefaultValues", () => {
 	];
 
 	it("amorce aussi les clés annexes d'un champ autocomplete", () => {
-		expect(buildDefaultValues(withFills, undefined)).toEqual({ codePostal: "", ville: "" });
+		expect(buildDefaultValues(withFills)).toEqual({ codePostal: "", ville: "" });
 	});
 
-	it("reprend la valeur fournie pour une clé annexe — retour sur une étape franchie", () => {
-		expect(buildDefaultValues(withFills, { codePostal: "59800", ville: "LILLE" })).toEqual({
-			codePostal: "59800",
-			ville: "LILLE",
-		});
+	/*
+	 * Une clé annexe part TOUJOURS vide : elle n'a pas de champ à elle, donc pas
+	 * d'attribut `value`, et le formulaire n'accepte plus de valeurs initiales
+	 * globales. Elle ne se remplit qu'au choix d'une option, par `fills`.
+	 */
+	it("laisse la clé annexe vide même quand le champ porteur est amorcé", () => {
+		const amorce: FormStepConfig[] = [
+			{
+				fields: [
+					{
+						name: "codePostal",
+						type: "autocomplete",
+						label: "Code postal",
+						value: "59800",
+						onSearch: async () => [],
+						fills: (option) => ({ ville: option.meta?.city ?? "" }),
+					},
+				],
+			},
+		];
+
+		expect(buildDefaultValues(amorce)).toEqual({ codePostal: "59800", ville: "" });
 	});
 });
 

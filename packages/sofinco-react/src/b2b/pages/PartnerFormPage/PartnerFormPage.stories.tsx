@@ -1,10 +1,8 @@
 // PartnerFormPage link in dev mode : http://localhost:6006/iframe.html?id=pages-b2b-partnerformpage--default&viewMode=story
 
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { composeStories } from "@storybook/react-vite";
 
-import type { MultiStepFormValues } from "@b2b/features/MultiStepForm";
 import * as FormHeroStories from "@b2b/features/FormHero/FormHero.stories";
 import * as MultiStepFormStories from "@b2b/features/MultiStepForm/MultiStepForm.stories";
 import * as SocialProofStories from "@b2b/features/SocialProof/SocialProof.stories";
@@ -31,11 +29,11 @@ const { Default: Form } = composeStories(MultiStepFormStories);
 const { Default: SocialProof } = composeStories(SocialProofStories);
 
 /**
- * Page « Devenir partenaire » — assemblage des composants que Jahia pilote :
- * `FormHero` reçoit son titre et son accroche du CMS, `MultiStepForm` reçoit sa
- * configuration d'étapes et remonte les valeurs complètes via `onSubmit`, et
- * `SocialProof` ses témoignages. Ce composant de démonstration tient le rôle du
- * parent Jahia.
+ * Page « Devenir partenaire » — assemblage des composants que Jahia configure :
+ * `FormHero` reçoit son titre et son accroche du CMS, `MultiStepForm` sa
+ * configuration d'étapes et l'URL de l'API à laquelle il poste lui-même les valeurs,
+ * et `SocialProof` ses témoignages. Ce composant de démonstration ne tient plus que
+ * l'assemblage : la soumission ne repasse pas par lui.
  *
  * `SocialProof` est posé APRÈS le bandeau, pas dans son emplacement chevauchant : ce
  * dernier impose un gabarit de 660px à ce qu'il reçoit (`.form-hero__slot > *`), qui
@@ -43,8 +41,6 @@ const { Default: SocialProof } = composeStories(SocialProofStories);
  * `--color-primary-surface`, la couture est donc invisible.
  */
 const PartnerFormPage = () => {
-	const [submitted, setSubmitted] = useState<MultiStepFormValues>();
-
 	return (
 		<>
 			{/*
@@ -53,23 +49,8 @@ const PartnerFormPage = () => {
 			 * équivalente, la barre reste donc dans le flux.
 			 */}
 			<Hero>
-				{/* Côté Jahia : appel du service de dépôt de candidature partenaire. */}
-				<Form onSubmit={(values) => setSubmitted(values)} />
-
-				{submitted && (
-					<pre
-						style={{
-							maxWidth: 660,
-							margin: "calc(var(--spacing) * 6) auto 0",
-							padding: "calc(var(--spacing) * 6)",
-							background: "var(--color-white)",
-							borderRadius: "var(--radius-lg)",
-							overflowX: "auto",
-						}}
-					>
-						{JSON.stringify(submitted, null, 2)}
-					</pre>
-				)}
+				{/* Le dépôt de candidature part du navigateur vers `settings.salesforceUrl`. */}
+				<Form />
 			</Hero>
 
 			<SocialProof />
@@ -89,8 +70,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Parcours complet. Les valeurs remises à `onSubmit` sont affichées sous la carte
- * une fois la dernière étape validée — c'est le point de sortie vers Jahia.
+ * Parcours complet. La dernière étape validée poste l'objet complet vers
+ * `settings.salesforceUrl` — le point de sortie du formulaire.
  */
 export const Default: Story = {
 	render: () => <PartnerFormPage />,

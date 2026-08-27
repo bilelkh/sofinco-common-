@@ -53,7 +53,7 @@ import { FormHero, MultiStepForm } from "sofinco-react";
 	title="Devenez Partenaire Sofinco"
 	subtitle="Proposez le financement Sofinco à vos clients. Plus de 15 000 entreprises l'ont déjà choisi."
 >
-	<MultiStepForm steps={steps} onSubmit={envoyerCandidature} />
+	<MultiStepForm steps={steps} settings={{ salesforceUrl }} />
 </FormHero>;
 ```
 

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { action } from "storybook/actions";
 
 import { searchCityOptions } from "@shared/utils/searchCities";
 
@@ -14,7 +13,6 @@ import { searchCityOptions } from "@shared/utils/searchCities";
  * nouveau échouer l'appel en 403, comme pour toute autre origine non listée.
  */
 const CITIES_ENDPOINT_DEV = "https://rct-api-ref.sofinco.fr/nomenclatures/v1/cities";
-
 
 import MultiStepForm from "./MultiStepForm";
 import type { FormStepConfig } from "./MultiStepForm.type";
@@ -36,8 +34,7 @@ const STEPS: FormStepConfig[] = [
 		id: "entreprise",
 		label: "Votre entreprise",
 		title: "Votre entreprise",
-		description:
-			"Remplissez l’information",
+		description: "Remplissez l’information",
 		fields: [
 			{
 				name: "siret",
@@ -52,7 +49,13 @@ const STEPS: FormStepConfig[] = [
 				validation: { pattern: /^\d{14}$/ },
 				errorMessages: { pattern: "Le Siret comporte 14 chiffres." },
 			},
-			{ name: "raisonSociale", label: "Raison sociale", value: "Leroy Merlin", clearable: true, required: true },
+			{
+				name: "raisonSociale",
+				label: "Raison sociale",
+				value: "Leroy Merlin",
+				clearable: true,
+				required: true,
+			},
 			{
 				name: "codePostal",
 				type: "autocomplete",
@@ -63,7 +66,8 @@ const STEPS: FormStepConfig[] = [
 				// Deux caractères : à un seul, le référentiel rend vingt communes prises
 				// dans toute la France, ce qui n'aide personne.
 				minLength: 2,
-				onSearch: (query, signal) => searchCityOptions(query, { signal, endpoint: CITIES_ENDPOINT_DEV }),
+				onSearch: (query, signal) =>
+					searchCityOptions(query, { signal, endpoint: CITIES_ENDPOINT_DEV }),
 				/*
 				 * Un code postal désigne jusqu'à quatorze communes : la commune retenue est
 				 * rangée à côté du code, sans quoi le choix serait perdu à la soumission.
@@ -95,7 +99,7 @@ const STEPS: FormStepConfig[] = [
 		description: "Nous revenons vers vous sous 48 heures ouvrées.",
 		fields: [
 			{ name: "prenom", label: "Prénom", required: true },
-			{ name: "nom", label: "Nom",  required: true },
+			{ name: "nom", label: "Nom", required: true },
 			{
 				name: "email",
 				type: "email",
@@ -162,27 +166,26 @@ const meta = {
 	},
 	args: {
 		steps: STEPS,
-		// `ville` accompagne le code postal pré-rempli : `display` en refait le
-		// libellé affiché, « LILLE (59800) ».
-		defaultValues: { ville: "LILLE" },
+		/*
+		 * Hôte en `.invalid` — un TLD réservé qui ne résout JAMAIS : Storybook n'a pas
+		 * de backend, et une URL d'apparence réelle finirait par être prise pour telle.
+		 * La dernière étape montre donc l'état d'échec du formulaire, qui fait partie de
+		 * ce qu'il y a à voir. Mettre l'URL du service pour un essai de bout en bout.
+		 */
 		settings: {
 			salesforceUrl:
 				"https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00DJ9000000Qej3",
 			successUrl: "/contact/confirmation",
 		},
 		ariaLabel: "Devenir partenaire Sofinco",
-		onSubmit: action("submit"),
 	},
 	argTypes: {
 		steps: { control: "object" },
 		labels: { control: "object" },
 		settings: { control: "object" },
 		stepper: { control: "object" },
-		isSubmitting: { control: "boolean" },
-		submitError: { control: "text" },
 		ariaLabel: { control: "text" },
 		className: { control: "text" },
-		onSubmit: { action: "submit" },
 		onStepChange: { action: "stepChange" },
 		onFirstStepBack: { action: "firstStepBack" },
 	},
@@ -233,23 +236,13 @@ export const WithoutStepper: Story = {
 	},
 };
 
-/** Attente pilotée par le parent pendant l'appel réseau côté Jahia. */
-export const Submitting: Story = {
-	args: {
-		isSubmitting: true,
-	},
-};
-
-/** Échec côté serveur : le parent remonte le message, la saisie reste intacte. */
-export const WithSubmitError: Story = {
-	args: {
-		submitError: "Le service est momentanément indisponible. Réessayez dans quelques instants.",
-	},
-};
-
 /** Libellés de boutons redéfinis — parcours de rappel téléphonique, par exemple. */
 export const CustomLabels: Story = {
 	args: {
-		labels: { next: "Étape suivante", submit: "Envoyer ma demande", previous: "Revenir en arrière" },
+		labels: {
+			next: "Étape suivante",
+			submit: "Envoyer ma demande",
+			previous: "Revenir en arrière",
+		},
 	},
 };
