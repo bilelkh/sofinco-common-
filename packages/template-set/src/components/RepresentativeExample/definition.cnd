@@ -1,0 +1,58 @@
+[sofnt:representativeExampleConfig] > jnt:content, mix:title, jmix:droppableContent
+ - defaultAmount       (long) = 5000
+ - defaultDuration     (long) = 48
+ - insurancePB         (string, richtext[ckeditor.toolbar='InsuranceMention']) i18n
+ - insuranceCR         (string, richtext[ckeditor.toolbar='InsuranceMention']) i18n
+ - insuranceRAC        (string, richtext[ckeditor.toolbar='InsuranceMention']) i18n
+ - simulatorLoanUrl    (string) = '/parcours-simulateur'
+ - simulatorRacUrl     (string) = '/parcours-simulateur-rac'
+
+// Les paramètres de simulation ont migré vers la PAGE, via `sofmix:simulationParams` (onglet
+// Options, cf. settings/definitions.cnd). Une offre se décrit à l'échelle d'une page, pas d'un
+// bloc : cela rend structurelle la règle « un seul exemple par page » et rend les valeurs
+// consommables par tous les composants, pas seulement celui qui les portait.
+//
+// `amount`, `dueNumber` et `scaleCode` sont EN SURSIS. Ils restent DÉCLARÉS le temps que
+// `settings/groovyScripts/migrate-simulation-params-to-page.groovy` ait été rejoué et vérifié
+// sur TOUS les environnements. Les retirer avant laisserait les nœuds existants porteurs de
+// propriétés non déclarées : Jahia tolère la lecture, mais lève une ConstraintViolationException
+// à la première sauvegarde ou publication — le contributeur découvrirait la panne en publiant.
+// Le bridge les lit donc encore, en priorité sur celles de la page (cascade). Retrait prévu en
+// SECONDE LIVRAISON, avec la cascade et les clés i18n correspondantes.
+//
+// Plus de valeur par défaut sur `amount` / `dueNumber` : un défaut matérialisé à la création
+// masquerait `simAmount` / `simDuration` de la page, la cascade lisant le composant d'abord. Un
+// exemple neuf afficherait alors 3 000 € / 36 mois quels que soient les paramètres de la page.
+//
+// `sofmix:simulatorCta` reste : il porte le BOUTON « Je fais une simulation » (ctaLabel, product,
+// sourceId, simProject…), contrat partagé par six types. Ses `product` / `sourceId` servent à
+// construire le lien du simulateur et retombent eux aussi sur la page (cf. lib/simulatorCta.ts) ;
+// ils sont masqués dans le formulaire pour éviter toute divergence avec les Options de la page.
+[sofnt:representativeExample] > jnt:content, mix:title, sofmix:component, sofmix:simulatorCta orderable
+ - subtitle    (string, textarea) i18n
+ - amount      (long)
+ - dueNumber   (long)
+ - scaleCode   (string)
+ - mention     (string, richtext[ckeditor.toolbar='InsuranceMention']) i18n
+
+// ============================================================================
+// Variables de simulation proposées au contributeur dans CKEditor.
+// Emplacement : contents/site-settings/simulator-vars (cf. getGlobalSettingsNode).
+// ============================================================================
+[sofnt:simulatorVarsSettings] > jnt:content, mix:title, sofmix:configs orderable
+ + * (sofnt:simulatorVar)
+
+// `family` distingue les DEUX origines de donnees, qui n'ont pas les memes preconditions :
+//   - simulation : exige le type de credit ET la provenance, calcule UN exemple ;
+//   - campagne    : n'exige que la provenance, decrit les BORNES de l'offre.
+// Le menu de l'editeur les presente en deux groupes, pour qu'un contributeur cherchant
+// « montant maximum » ne le cherche pas parmi les mensualites d'un exemple.
+// `autocreated` a 'simulation' ne vaut QU'A LA CREATION du noeud : les 15 sofnt:simulatorVar
+// deja livres n'obtiennent donc jamais de propriete `family`, et le script d'amorcage les
+// saute deliberement (init-simulator-vars.groovy). Ils restent utilisables parce que le plugin
+// CKEditor fait retomber une famille absente sur 'simulation' — ce qui etait bien la leur.
+// C'est ce repli, et non `autocreated`, qui evite une reprise de contenu.
+[sofnt:simulatorVar] > jnt:content, mix:title
+ - token   (string) mandatory indexed=no
+ - family  (string, choicelist[resourceBundle]) = 'simulation' autocreated indexed=no < 'simulation', 'campagne'
+ - enabled (boolean) = true autocreated indexed=no

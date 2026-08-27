@@ -1,0 +1,2 @@
+[sofnt:faqItem] > jnt:content, mix:title
+ - answer (string, richtext[ckeditor.toolbar='Simple']) i18n

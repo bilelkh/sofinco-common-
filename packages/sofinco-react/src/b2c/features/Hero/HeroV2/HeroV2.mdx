@@ -1,0 +1,73 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as HeroV2Stories from "./HeroV2.stories";
+
+<Meta of={HeroV2Stories} />
+
+# HeroV2
+
+Banner variant with a side offer card (rate, amount, legal mention, CTA).
+
+## How It Works
+
+- `imgBeforeAnim` / `imgDesktop` / `imgMobile`: progressive responsive background image set
+- `title` / `subtitle`: main headline copy
+- `offerTitleBadge`, `offerBadge`, `offerRate`, `offerRateLabel`, `offerAmount`, `offerLegalText`: offer card fields
+- `cta`: offer-card CTA (forwarded to the shared `Cta` component)
+- `simulator`: optional sticky simulator CTA
+- `tracking`: optional GA promotion identifiers — emits a `view_promotion` event on impression (see below)
+
+## GA tracking — `view_promotion`
+
+When `tracking` is provided, the wrapping `<div>` carries a `data-tracking-view` attribute. The global IntersectionObserver installed by `Layout.tsx` fires a single `view_promotion` event the first time the Hero crosses 25 % of the viewport. Base context is auto-merged by `__SOFINCO_TRACK__`.
+
+```ts
+type PromotionTracking = {
+  promotionId: string;
+  promotionName: string;
+  creativeName: string;
+  creativeSlot: string;
+  locationId: string;
+};
+```
+
+Tracking is skipped if `promotionId` is empty.
+
+## Usage
+
+```tsx
+import { HeroV2 } from "sofinco-react";
+
+<HeroV2
+  variant="v2"
+  title="Crédit auto"
+  subtitle="Financez votre véhicule"
+  imgBeforeAnim="/images/auto-lq.jpg"
+  imgDesktop="/images/auto-d.jpg"
+  imgMobile="/images/auto-m.jpg"
+  offerBadge="Offre en cours"
+  offerRate="0,9 %"
+  offerRateLabel="TAEG fixe"
+  offerAmount="jusqu'à 30 000 €"
+  cta={{ type: "button", variant: "accent", label: "Je simule", href: "/simulateur", ctaSection: "hero-offer" }}
+  tracking={{
+    promotionId: "banner_auto_v1",
+    promotionName: "Crédit auto - offre rentrée",
+    creativeName: "banner_auto_v1",
+    creativeSlot: "homepage_top",
+    locationId: "home_page",
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={HeroV2Stories.Default} />
+
+## Props
+
+<ArgTypes of={HeroV2Stories} />
+
+## All Stories
+
+<Stories />

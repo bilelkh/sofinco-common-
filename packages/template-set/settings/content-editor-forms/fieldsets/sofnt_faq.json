@@ -1,0 +1,22 @@
+{
+	"name": "sofnt:faq",
+	"priority": 1.0,
+	"fields": [
+		{
+			"name": "useExternalSource",
+			"label": "Source des questions",
+			"valueConstraints": [
+				{
+					"value": { "type": "String", "value": "smartTribune" },
+					"displayValue": "Source externe (Smart Tribune)",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:faqIntegration" }]
+				},
+				{
+					"value": { "type": "String", "value": "manual" },
+					"displayValue": "Questions / réponses manuelles",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:faqItems" }]
+				}
+			]
+		}
+	]
+}

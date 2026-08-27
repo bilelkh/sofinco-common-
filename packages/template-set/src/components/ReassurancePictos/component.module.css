@@ -1,0 +1,50 @@
+@import "sofinco-react/styles/breakpoints.css";
+
+.editPreview {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 6);
+	border: 1px dashed #cbd5e1;
+	border-radius: 8px;
+	background: #f8fafc;
+}
+
+.editTitle {
+	margin: 0;
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary-base);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	text-align: center;
+}
+
+.editList {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: calc(var(--spacing) * 4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+@media (--small-up) {
+	.editList {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.editItem {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 4);
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	background: #ffffff;
+	text-align: center;
+}

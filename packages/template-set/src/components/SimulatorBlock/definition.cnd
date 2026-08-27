@@ -1,0 +1,2 @@
+[sofnt:simulatorBlock] > jnt:content, mix:title, sofmix:component, sofmix:simulatorCta, sofmix:simulatorAmount
+ - titleLevel        (string, choicelist) = 'h2' autocreated < 'h1','h2','h3','h4'

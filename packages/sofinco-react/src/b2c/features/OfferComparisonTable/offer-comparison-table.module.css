@@ -1,0 +1,299 @@
+@import "@styles/base.css";
+
+/* SEO/LLMEO-friendly comparison section built on a real <table>. The table
+   display types are overridden (block / flex / grid + display:contents on
+   rows) purely for layout; the semantics live in the markup (thead/th/td +
+   explicit ARIA roles set in the TSX, since display overrides can strip the
+   implicit table roles from the accessibility tree). */
+
+.offer-comparison-table {
+	width: 100%;
+	box-sizing: border-box;
+	background-color: var(--offer-comparison-table-bg, var(--color-primary-subtle));
+	transition: background-color 0.3s ease;
+}
+
+.offer-comparison-table__container {
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	padding-block: calc(var(--spacing) * 20);
+	padding-inline: calc(var(--spacing) * 6);
+
+	@media (--small-up) {
+		padding-block: calc(var(--spacing) * 26);
+		padding-inline: calc(var(--spacing) * 26);
+	}
+}
+
+.offer-comparison-table__table {
+	display: block;
+	width: 100%;
+	border-collapse: collapse;
+	view-transition-name: offer-comparison-table;
+}
+
+/* --- Offer selector (thead) --- */
+/* Bare sticky "sensor", pinned at the viewport top: it must never carry a
+   transform (useStuckAttribute measures it) and its `top` is never animated
+   (that re-evaluates the sticky constraint every frame and unpins the row).
+   All the visuals — background, shadow, header-follow shift — live on the
+   inner row. */
+.offer-comparison-table__head {
+	display: block;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	margin-block: calc(var(--spacing) * 6) calc(var(--spacing) * 8);
+	margin-inline: calc(calc(var(--spacing) * 6) * -1);
+
+	@media (--small-up) {
+		position: static;
+		margin-inline: 0;
+	}
+}
+
+.offer-comparison-table__head-row {
+	display: flex;
+	gap: calc(var(--spacing) * 2);
+	overflow-x: auto;
+	scrollbar-width: none;
+	background-color: var(--offer-comparison-table-bg, var(--color-primary-subtle));
+	transition:
+		background-color 0.3s ease,
+		box-shadow 0.3s ease,
+		transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+	padding-inline: calc(var(--spacing) * 6);
+	padding-block: calc(var(--spacing) * 2);
+
+	/* Pinned → white bar lifted off the content scrolling underneath. Shadow
+       from the Figma mockup: no --sof-shadow-* token matches (all tinted). */
+	.offer-comparison-table__head[data-stuck] & {
+		background-color: var(--color-white);
+		box-shadow: 0 4px 20px var(--color-alpha-neutral-100-20);
+	}
+
+	@media (--small-up) {
+		justify-content: center;
+		flex-wrap: wrap;
+		overflow-x: visible;
+		background-color: transparent;
+		padding: 0;
+
+		.offer-comparison-table__head[data-stuck] & {
+			background-color: transparent;
+			box-shadow: none;
+		}
+	}
+}
+
+/* Headroom header visible → the PINNED row shifts below it, in step with the
+   header's own 1s slide. Gated on [data-stuck] so a row still in normal flow
+   never moves from its natural position. */
+@media (--small-down) {
+	:global(header[data-sof-sticky-header]:not([data-header-hidden]))
+		~ *
+		.offer-comparison-table__head[data-stuck]
+		.offer-comparison-table__head-row {
+		transform: translateY(calc(var(--header-height, 0px) - 1px));
+	}
+}
+
+.offer-comparison-table__head-row::-webkit-scrollbar {
+	display: none;
+}
+
+.offer-comparison-table__offer-header {
+	display: block;
+	flex-shrink: 0;
+	padding: 0;
+	font-weight: inherit;
+	text-align: inherit;
+}
+
+.offer-comparison-table__offer-button {
+	border: 1px solid var(--color-primary-base);
+	cursor: pointer;
+	white-space: nowrap;
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary-base);
+	background-color: transparent;
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 6);
+	border-radius: var(--radius-full);
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease;
+}
+
+.offer-comparison-table__offer-button:hover {
+	background-color: var(--color-primary-light);
+}
+
+.offer-comparison-table__offer-button:focus-visible {
+	outline: 2px solid var(--color-accent-base);
+	outline-offset: 2px;
+}
+
+.offer-comparison-table__offer-button--active {
+	color: var(--color-white);
+	background-color: var(--color-primary-base);
+	border-color: var(--color-primary-base);
+	font-weight: var(--font-weight-semibold);
+}
+
+.offer-comparison-table__offer-button--active:hover {
+	background-color: var(--color-primary-strong);
+}
+
+/* --- Comparison body (tbody as the panel grid) --- */
+.offer-comparison-table__body {
+	display: grid;
+	/* minmax(0, …) keeps the intrinsic image width from blowing the track out. */
+	grid-template-columns: minmax(0, 1fr);
+	gap: calc(var(--spacing) * 8);
+	align-items: center;
+	margin-block: calc(var(--spacing) * 14) calc(var(--spacing) * 10);
+
+	@media (--medium-up) {
+		grid-template-columns: 1fr minmax(0, 1.2fr) 1fr;
+		grid-auto-flow: row dense;
+		gap: calc(var(--spacing) * 8) calc(var(--spacing) * 14);
+		margin-block: calc(var(--spacing) * 20);
+	}
+}
+
+.offer-comparison-table__row {
+	display: contents;
+}
+
+/* Offer switch: the entering cell slides in from `--offer-comparison-table-offset`
+   (-1/0/1, set per-cell in the TSX) while fading in; a cell that becomes
+   inactive slides out the same way in reverse. `@starting-style` supplies the
+   "from" state for the display:none → visible flip (a plain transition can't
+   interpolate from a display:none computed style), and
+   `transition-behavior: allow-discrete` defers `display: none` until the
+   opacity/transform transition finishes on the way out. Only `opacity` and
+   `transform` are animated — both compositor-only, no layout/paint cost. */
+.offer-comparison-table__cell {
+	display: block;
+	padding: 0;
+	opacity: 1;
+	transform: translateX(0);
+	transition:
+		opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+		transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+		display 0.4s allow-discrete;
+}
+
+/* Inactive offer columns and empty feature slots stay in the DOM (crawlable)
+   but out of the layout and the accessibility tree. */
+.offer-comparison-table__cell--hidden {
+	display: none;
+	opacity: 0;
+	transform: translateX(calc(var(--offer-comparison-table-offset, 1) * calc(var(--spacing) * 10)));
+
+	@starting-style {
+		opacity: 0;
+		transform: translateX(
+			calc(var(--offer-comparison-table-offset, 1) * calc(var(--spacing) * 10))
+		);
+	}
+}
+
+/* Where the browser supports native View Transitions, the JS wraps offer
+   switches in `document.startViewTransition` (see OfferComparisonTable.tsx),
+   which cross-fades its own before/after snapshot of `--container`. Disabling
+   the manual transition there avoids animating both at once. */
+@supports (view-transition-name: none) {
+	.offer-comparison-table__cell {
+		transition: none;
+	}
+}
+
+@media (--medium-up) {
+	.offer-comparison-table__cell--left {
+		grid-column: 1;
+	}
+
+	.offer-comparison-table__cell--image {
+		grid-column: 2;
+		grid-row: 1 / span var(--offer-comparison-table-rows, 1);
+		align-self: center;
+	}
+
+	.offer-comparison-table__cell--right {
+		grid-column: 3;
+	}
+}
+
+.offer-comparison-table__cell--image {
+	display: flex;
+	justify-content: center;
+}
+
+.offer-comparison-table__cell--image.offer-comparison-table__cell--hidden {
+	display: none;
+}
+
+.offer-comparison-table__image {
+	max-width: 100%;
+	max-height: 130px;
+	height: auto;
+	animation: offer-comparison-table-float 4.5s ease-in-out infinite;
+
+	@media (--small-up) {
+		max-height: none;
+	}
+}
+
+.offer-comparison-table__feature-label {
+	margin-bottom: calc(var(--spacing) * 2);
+}
+
+.offer-comparison-table__feature-text {
+	margin: 0;
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	color: var(--color-primary-base);
+	text-wrap: auto;
+}
+
+/* --- CTA --- */
+.offer-comparison-table__cta {
+	display: flex;
+	justify-content: center;
+	margin-top: calc(var(--spacing) * 10);
+	/* Own transition group so the per-offer CTA cross-fades alongside the
+       table instead of popping instantly. */
+	view-transition-name: offer-comparison-table-cta;
+}
+
+@keyframes offer-comparison-table-float {
+	0%,
+	100% {
+		transform: translateY(0);
+		filter: drop-shadow(0 14px 16px rgba(0, 36, 55, 0.32));
+	}
+
+	50% {
+		transform: translateY(-14px);
+		filter: drop-shadow(0 32px 28px rgba(0, 36, 55, 0.14));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.offer-comparison-table,
+	.offer-comparison-table__head-row,
+	.offer-comparison-table__offer-button,
+	.offer-comparison-table__cell {
+		transition: none;
+	}
+
+	.offer-comparison-table__image {
+		animation: none;
+		filter: drop-shadow(var(--shadow-md));
+	}
+}

@@ -1,0 +1,12 @@
+[sofnt:productFocusItemList] > sofnt:listBase
+ + * (sofnt:productFocusItem) = sofnt:productFocusItem
+
+[sofnt:productFocus] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle
+ - subtitle (string, textarea) i18n
+ - image (weakreference, picker[type='image']) mandatory < jmix:image
+ - backgroundColor (string) = '#f5f9fc' autocreated indexed=no
+ + leftFeatures (sofnt:productFocusItemList) = sofnt:productFocusItemList autocreated mandatory
+ + rightFeatures (sofnt:productFocusItemList) = sofnt:productFocusItemList autocreated mandatory
+
+[sofnt:productFocusItem] > jnt:content, jmix:editorialContent, mix:title
+ - description (string, textarea) mandatory i18n

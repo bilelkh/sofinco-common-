@@ -1,0 +1,16 @@
+{
+	"name": "sofnt:mentionLegal",
+	"priority": 1.0,
+	"fields": [
+		{
+			"name": "jcr:title",
+			"rank": "1.0",
+			"defaultValues": [{ "value": "Voir les conditions de l'offre" }]
+		},
+		{
+			"name": "initiallyOpen",
+			"rank": "2.0",
+			"defaultValues": [{ "value": "false" }]
+		}
+	]
+}

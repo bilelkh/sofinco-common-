@@ -1,0 +1,73 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as LinkStories from "./Link.stories";
+
+<Meta of={LinkStories} />
+
+# Link
+
+A styled anchor component supporting optional icons and external link behavior.
+
+## How It Works
+
+The component always renders an `<a>` element.
+
+- `id`: optional DOM id
+- `href`: destination URL (required)
+- `label`: visible link text
+- `isExternal`: toggles `target="_blank"` + `rel="noopener noreferrer"`
+- `iconLeft` / `iconRight`: optional icon slots (`IconKey` from `@features/shared/ui/svg`)
+- `iconVariant`: `"primary" | "accent" | "danger"` — controls colour scheme
+- `className`: extra class for one-off styling
+- `tracking`: optional GA event payload (see below)
+
+## GA tracking
+
+When `tracking?.event` is set, its JSON-stringified value is rendered as a `data-tracking` attribute on the `<a>` tag. The global click delegator installed by `Layout.tsx` parses the JSON and pushes it to `window.dataLayer` via `__SOFINCO_TRACK__`, which auto-merges base context (env, page, session, timestamp). No JS handler is registered on the element itself, so the link still works with SSR-only rendering / no React hydration.
+
+```ts
+type LinkTracking = {
+  event?: string;          // omit ⇒ no data-tracking attribute, no event
+  [key: string]: unknown;  // any other GA fields (cta_label, link_section, …)
+};
+```
+
+`tracking` accepts a single event object today. (The click delegator also accepts an array — same convention as `Cta` — should the need arise.)
+
+## Basic Usage
+
+```tsx
+import { Link } from "sofinco-react";
+
+<Link href="/aide" label="Aide et contact" />
+<Link href="https://example.com" label="Site externe" isExternal />
+
+<Link
+  href="/aide/contact"
+  label="Aide et contact"
+  tracking={{
+    event: "click_link",
+    link_label: "Aide et contact",
+    link_section: "footer-utility",
+    link_url: "/aide/contact",
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={LinkStories.Default} />
+<Canvas of={LinkStories.Accent} />
+<Canvas of={LinkStories.Danger} />
+<Canvas of={LinkStories.WithIconLeft} />
+<Canvas of={LinkStories.WithIconRight} />
+<Canvas of={LinkStories.WithBothIcons} />
+<Canvas of={LinkStories.External} />
+
+## Props
+
+<ArgTypes of={LinkStories} />
+
+## All Stories
+
+<Stories />

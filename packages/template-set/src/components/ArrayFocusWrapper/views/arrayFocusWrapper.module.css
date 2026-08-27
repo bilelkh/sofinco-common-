@@ -1,0 +1,45 @@
+/*
+ * Edit-mode preview only. Live rendering uses the DS <ArrayFocusWrapper>
+ * component (packages/sofinco-react) which composes the 3 children directly
+ * and renders the section header via <SectionHeading>.
+ *
+ * Edit-mode intentionally uses `<RenderChild>` for each named child so the
+ * contributor can add / remove / reorder inline via jContent. The background
+ * color and the section header (title + subtitle from `sofmix:sectionHeader`)
+ * are rendered here (same visual result as live) to preserve WYSIWYG.
+ */
+.editPreview {
+	display: flex;
+	flex-direction: column;
+	font-family: var(--font-sans, sans-serif);
+}
+
+.editPreviewHeader {
+	max-width: 1232px;
+	margin: 0 auto;
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 4);
+	text-align: center;
+}
+
+.editPreviewTitle {
+	color: var(--color-primary-base, #03334d);
+	font-size: 2rem;
+	font-weight: 700;
+	line-height: 1.2;
+	margin: 0 0 calc(var(--spacing) * 3);
+}
+
+.editPreviewSubtitle {
+	color: var(--color-primary-base, #03334d);
+	font-size: 1.125rem;
+	line-height: 1.5;
+	margin: 0;
+	opacity: 0.85;
+}
+
+.editPreview > *,
+.editPreview :global(.product-focus),
+.editPreview :global(.seoblock),
+.editPreview :global(.insurance-focus-block) {
+	background: transparent !important;
+}

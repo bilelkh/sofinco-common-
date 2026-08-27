@@ -1,0 +1,95 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SeoMeshStories from "./SeoMesh.stories";
+
+<Meta of={SeoMeshStories} />
+
+# SeoMesh
+
+A full-width SEO section that renders a vertical stack of `Block` components, each exposing internal navigation links in a crawlable layout.
+
+> **Note**
+> `SeoMesh` is the parent container for `SeoMesh/Block`. It handles the overall background, padding, and spacing between blocks. Do not use `Block` directly at page level — compose it through `SeoMesh`.
+
+## How It Works
+
+- `blocks`: array of `BlockProps` objects — each rendered as a `Block` component stacked vertically
+- The wrapper applies a full-width gradient background (`rgba(178,243,255)` → `rgba(204,255,231)`), `40px` vertical padding and `16px` gap on mobile, scaling to `96px` vertical padding and `24px` gap at the `--medium-up` breakpoint
+
+### BlockProps shape
+
+Each item in `blocks` accepts:
+
+```ts
+type BlockProps = {
+  title: string;
+  ctaProps: CtaProps;
+  linkSectionLeft?: {
+    title: string;
+    links: LinkProps[];
+  };
+  linkSectionRight?: {
+    title: string;
+    links: LinkProps[];
+  };
+  className?: string;
+};
+```
+
+See the [Block documentation](?path=/docs/features-seomesh-block--docs) for the full `LinkProps` reference.
+
+## Basic Usage
+
+```tsx
+import { SeoMesh } from "sofinco-react";
+import { ArrowRight } from "sofinco-react";
+
+<SeoMesh
+  blocks={[
+    {
+      title: "Besoins d'un Crédit ?",
+      ctaProps: {
+        href: "/credit-conso",
+        label: "Je fais un crédit conso",
+        type: "button",
+        variant: "accent",
+        size: "small",
+        iconRight: <ArrowRight size="small" color="secondary" />,
+      },
+      linkSectionLeft: {
+        title: "Types de crédit",
+        links: [
+          {
+            href: "/credit-personnel",
+            label: "Crédit personnel",
+            iconLeft: <ArrowRight size="small" color="secondary" />,
+          },
+        ],
+      },
+      linkSectionRight: {
+        title: "Guides pratiques",
+        links: [
+          {
+            href: "/guide/simuler-credit",
+            label: "Simuler un crédit",
+            iconLeft: <ArrowRight size="small" color="secondary" />,
+          },
+        ],
+      },
+    },
+  ]}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={SeoMeshStories.Default} />
+<Canvas of={SeoMeshStories.TwoBlocks} />
+
+## Props
+
+<ArgTypes of={SeoMeshStories} />
+
+## All Stories
+
+<Stories />

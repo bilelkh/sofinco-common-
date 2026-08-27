@@ -1,0 +1,224 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+
+<sofnt = 'http://www.sofinco.fr/jahia/nt/1.0'>
+<sofmix = 'http://www.sofinco.fr/jahia/mix/1.0'>
+
+[sofmix:component] > jmix:droppableContent mixin
+
+[sofmix:configs] > jmix:droppableContent mixin
+
+[sofmix:footerElements] mixin
+
+[sofmix:argument] mixin
+
+[sofmix:hasBackgroundColor] mixin
+ - backgroundColor (string, choicelist[resourceBundle])= 'sky' autocreated indexed=no  < 'neutral-100', 'sky', 'mint', 'rose', 'sand', 'lavender'
+
+// Shared section-header contract — inherits jcr:title (mix:title) + heading
+// style choicelist (sofmix:headingStyle) + adds a `subtitle`. Any content type
+// mixing this in gets a consistent "section header" surface (title, level,
+// visual style, subtitle) with zero duplication.
+[sofmix:sectionHeader] > mix:title, sofmix:headingStyle mixin
+ - subtitle (string, textarea) i18n
+
+[sofmix:breadcrumbOptions] mixin
+extends = jnt:page
+itemtype = options
+ - hideFromBreadcrumb        (boolean) = 'false' autocreated
+ - breadcrumbCustomLabel     (string) i18n
+ - breadcrumbStyle           (string, choicelist[resourceBundle]) = 'onLight' autocreated < 'onLight','onDark'
+
+// ============================================================================
+// Paramètres de simulation portés par la PAGE.
+//
+// POURQUOI SUR LA PAGE ET NON SUR LE COMPOSANT
+// --------------------------------------------
+// Un exemple représentatif décrit UNE OFFRE SUR UNE PAGE, pas un bloc. Porter
+// les paramètres par la page rend la règle « un seul exemple représentatif par
+// page » STRUCTURELLE — garantie par le modèle — au lieu d'être une convention
+// que du code devrait surveiller. Les valeurs deviennent en prime consommables
+// par TOUS les composants de la page (CTA simulateur, variables richtext), et
+// non par le seul bloc qui les portait.
+//
+// ACTIVATION = PRÉSENCE DU MIXIN
+// -------------------------------
+// `itemtype = options` place ce fieldset dans l'onglet Options de la page
+// (même emplacement que sofmix:breadcrumbOptions) : le contributeur l'active ou
+// le retire d'une case à cocher. Aucun booléen `enabled` dédié — il créerait un
+// second état pour la même intention (mixin présent + false vs mixin absent),
+// donc deux chemins à tester et la question insoluble « lequel gagne ».
+//
+// PRÉFIXE `sim*`
+// --------------
+// jnt:page accumule les mixins de plusieurs modules (spmix:seoPageOptions,
+// spmix:openGraphTags, spmix:eaPageOptions, sofmix:breadcrumbOptions…). Un nom
+// court comme `product` ou `amount` y entrerait en collision tôt ou tard.
+//
+// AUCUNE PROPRIÉTÉ i18n
+// ---------------------
+// Une simulation ne dépend pas de la langue, et le nœud page est partagé entre
+// traductions. Les marquer i18n obligerait à ressaisir les mêmes chiffres dans
+// chaque langue, avec le risque de les voir diverger.
+//
+// `simProduct` N'A VOLONTAIREMENT PAS DE DÉFAUT
+// ---------------------------------------------
+// Contrairement au montant et à la durée — dont un écart est sans conséquence —
+// le type de crédit détermine des chiffres RÉGLEMENTÉS (TAEG, mensualités,
+// TAEA). Un défaut `PB` serait faux deux fois sur trois, produirait des valeurs
+// plausibles donc invisibles en relecture, et surtout `autocreated` écraserait
+// l'information : plus rien ne distinguerait « le contributeur a choisi Prêt
+// personnel » de « le défaut s'est déclenché ». Vide = non renseigné = la
+// simulation ne s'active pas, et le panneau d'audit le signale en édition.
+// La chaîne vide en tête de choicelist reprend la convention de
+// sofmix:simulatorCta (cf. components/Shared/CTA/definition.cnd).
+//
+// `simAmount` / `simDuration` N'ONT PLUS DE DÉFAUT NI D'`autocreated`
+// ---------------------------------------------------------------
+// AUCUNE valeur unique ne peut convenir aux trois produits : le montant est
+// borné par la campagne, et les planchers divergent — 150 € en Crédit
+// Renouvelable, 3 001 € en Prêt Perso comme en Rachat de crédits, avec un
+// plafond CR à 10 000 €. Un défaut valide pour l'un est refusé par l'autre, et
+// le produit se choisit dans ce même formulaire : le CND ne peut pas deviner.
+//
+// Pire, `autocreated` posait TOUJOURS la propriété, ce qui court-circuitait la
+// cascade prévue par `RepresentativeExampleServiceImpl#resolveAmount` :
+// page → `sofnt:representativeExampleConfig` → repli codé. L'étage intermédiaire
+// — le seul réglable par le métier sans livraison — n'était jamais atteint.
+//
+// Sans défaut, une propriété absente laisse la cascade descendre, et le
+// formulaire (settings/content-editor-forms) rend les deux champs obligatoires :
+// le chiffre de tête d'un exemple RÉGLEMENTÉ devient un choix éditorial explicite
+// plutôt qu'une valeur devinée, et le contrôle de campagne porte enfin sur un
+// champ que le contributeur a réellement rempli.
+// ============================================================================
+[sofmix:simulationParams] mixin
+extends = jnt:page
+itemtype = options
+ - simProduct     (string, choicelist[resourceBundle]) indexed=no < '', 'PB', 'CR', 'RAC'
+ - simAmount      (long) indexed=no < '[150,999999]'
+ - simDuration    (long) indexed=no < '[1,120]'
+ - simScaleCode   (string) indexed=no
+ - simSourceId    (string) indexed=no
+
+// Champ montant du simulateur : bornes + messages d'erreur, tels que rendus par
+// <SimulatorForm> (sofinco-react). Pendant de sofmix:simulatorCta (qui, lui,
+// porte le CTA) — à mixer sur tout type rendant un simulateur :
+// sofnt:simulatorBlock, sofnt:simulatorCredit, sofnt:chatBotSimulatorLeaf.
+// Les noms de propriétés reprennent exactement ceux des props React, pour un
+// mapping 1:1 dans les *.mapping.ts.
+//
+// Volontairement SANS `autocreated` ni valeur par défaut — laissée vide, chaque
+// propriété retombe sur sa cascade :
+//   - amountMin / amountMax → settings node sofnt:simulatorConfig, puis 150/999999
+//     (cf. resolveAmountBounds) ;
+//   - amountPlaceholder     → défaut porté par <SimulatorForm> (« J'ai besoin de ») ;
+//   - les trois messages    → défauts portés par `validateAmount` (sofinco-react).
+// Dupliquer ces défauts ici créerait une seconde source de vérité qui divergerait.
+//
+// Jetons remplacés à l'affichage : {min} / {max} = bornes effectives du champ.
+//
+// La contrainte [150,999999] reprend celle de sofnt:simulatorConfig ci-dessous :
+// <SimulatorForm> plafonne la saisie à 6 chiffres, une valeur au-delà serait
+// silencieusement ramenée à 999999 côté rendu — autant la refuser à la saisie.
+[sofmix:simulatorAmount] mixin
+ - amountPlaceholder     (string) i18n
+ - amountMin             (long) < '[150,999999]'
+ - amountMax             (long) < '[150,999999]'
+ - requiredErrorMessage  (string) i18n
+ - minErrorMessage       (string) i18n
+ - maxErrorMessage       (string) i18n
+
+[sofnt:simulatorConfig] > jnt:content, sofmix:configs
+ - simulatorBasePage     (weakreference, picker[type='page']) < jnt:page
+ - simulatorRacBasePage  (weakreference, picker[type='page']) < jnt:page
+ - amountMin             (long) = 150    autocreated < '[150,999999]'
+ - amountMax             (long) = 999999 autocreated < '[150,999999]'
+
+// ─── Données structurées (JSON-LD) ────────────────────────────────────────────
+// Émises dans un unique `<script type="application/ld+json">` du `<head>`, sous
+// forme de `@graph` assemblé par `src/lib/structuredData/`. Ces définitions ne
+// portent QUE ce que le contenu de la page ne sait pas déjà dire.
+
+// Entité de marque du site — alimente le nœud `Organization`, auquel se rattachent
+// `publisher` (Article, VideoObject) et `provider` (LoanOrCredit) par `@id`.
+// Instancié sous `contents/site-settings/structured-data-settings` par
+// settings/groovyScripts/init-structured-data-settings.groovy.
+//
+// `ratingMin*` — seuils de publication de la note Avis Vérifiés. En dessous, aucun
+// `AggregateRating` n'est émis, même sur une page qui l'a activé : une note faible ou
+// assise sur trop peu d'avis dessert la marque autant qu'elle l'expose. Ils vivent ici
+// et non dans le code pour que le référencement les règle sans livraison. Les bornes
+// `< '[1,5]'` / `< '[1,]'` interdisent le seuil à zéro, c'est-à-dire le réglage qui
+// reviendrait à « publier n'importe quoi ».
+[sofnt:structuredDataSettings] > jnt:content, mix:title, sofmix:configs
+ - legalName            (string) = 'Sofinco'
+ - organizationUrl      (string)
+ - logo                 (weakreference, picker[type='image']) < jmix:image
+ - description          (string, textarea) i18n
+ - founder              (string) = 'Crédit Agricole Consumer Finance'
+ - telephone            (string)
+ - contactType          (string) = 'customer service'
+ - streetAddress        (string) i18n
+ - postalCode           (string)
+ - addressLocality      (string) i18n
+ - addressCountry       (string) = 'FR'
+ - sameAs               (string) multiple
+ - articleAuthorName    (string) = 'La Rédaction Sofinco' i18n
+ - ratingMinValue       (double) = 4.0 autocreated < '[1,5]'
+ - ratingMinReviewCount (long)   = 50  autocreated < '[1,]'
+
+// Réglages de balisage par page. Deux polarités, et c'est délibéré :
+//
+// - `disable*Schema` — les schemas de CONTENU (FAQ, Article, Vidéo) décrivent ce que
+//   la page contient déjà. Ils sont actifs par défaut et ces drapeaux ne servent qu'à
+//   les couper au cas par cas (p. ex. un bloc FAQ servant de retranscription vidéo,
+//   cf. aussi `excludeFromStructuredData` sur sofnt:faq et sofnt:videoBlock).
+//
+// - `enableAggregateRating` — la note client est une ASSERTION SUPPLÉMENTAIRE que le
+//   contenu de la page ne porte pas. Elle est donc inactive par défaut et s'ajoute au
+//   cas par cas. Voir le libellé dans sofinco-template.properties : la note est
+//   globale au site, pas propre à la page, et Google ne produit d'extrait d'avis pour
+//   AUCUN des types que ce site émet — ni FAQPage / Article / VideoObject, ni
+//   LoanOrCredit ou WebPage. Le balisage est valide et lisible par les IA
+//   génératives ; il n'affichera pas d'étoiles.
+//
+//   Aucune contrainte sur le contenu de la page : ce qui satisfait l'exigence Google
+//   de VISIBILITÉ, c'est le sticker d'avis du pied de page (`avisClients`, mandatory
+//   autocreated sous sofnt:footer), présent sur toutes les pages. Son interrupteur
+//   global est donc le seul état où le drapeau reste sans effet.
+//
+// L'absence du mixin et un drapeau à faux donnent le même résultat dans les deux
+// sens — `readPageFlag` (src/lib/structuredData/graph.ts) les écrase sur un seul
+// chemin, donc aucun état ambigu à arbitrer.
+[sofmix:structuredDataOptions] mixin
+extends = jnt:page
+itemtype = metadata
+ - disableFaqSchema          (boolean) = 'false' autocreated
+ - disableArticleSchema      (boolean) = 'false' autocreated
+ - disableVideoSchema        (boolean) = 'false' autocreated
+ - enableAggregateRating     (boolean) = 'false' autocreated
+
+// Offre de financement décrite par la page — alimente le nœud `LoanOrCredit`.
+// Porté uniquement par les pages produit : l'absence du mixin suffit à ne rien
+// émettre, ce qui rend le schema opt-in sans drapeau supplémentaire.
+//
+// Les valeurs décrivent l'offre ENTIÈRE (plages de montant, de durée et de TAEG),
+// là où le bloc « exemple représentatif » n'en illustre qu'un point — d'où leur
+// place sur la page et non sur sofnt:representativeExample. Elles DOIVENT
+// correspondre aux mentions légales affichées.
+[sofmix:loanProductSchema] mixin
+extends = jnt:page
+itemtype = metadata
+ - loanType          (string) i18n mandatory
+ - loanAmountMin     (long)
+ - loanAmountMax     (long)
+ - loanTermMinMonths (long)
+ - loanTermMaxMonths (long)
+ - loanAprMin        (double)
+ - loanAprMax        (double)

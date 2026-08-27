@@ -1,0 +1,80 @@
+@import "@styles/breakpoints.css";
+
+.avis-card {
+	border-radius: 20px;
+	padding: calc(var(--spacing) * 8);
+	display: flex;
+	width: 340px;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.avis-card--lilac {
+	background-color: var(--color-support-3-light);
+	color: var(--color-support-3-strong);
+}
+
+.avis-card--peach {
+	background-color: var(--color-support-4-light);
+	color: var(--color-support-4-strong);
+}
+
+.avis-card--pink {
+	background-color: var(--color-support-1-light);
+	color: var(--color-support-1-strong);
+}
+
+.avis-card--yellow {
+	background-color: var(--color-support-2-light);
+	color: var(--color-warning-strong);
+}
+
+.avis-card__stars {
+	/* Drives StarRating: 20px stars in the card's currentColor, left-aligned (no leading margin) */
+	--sof-star-size: 20px;
+	--sof-star-track-margin: 0;
+	gap: calc(var(--spacing) * 1);
+	color: currentColor;
+}
+
+.avis-card__text {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	color: currentColor;
+	margin: 0;
+	flex-grow: 1;
+}
+
+.avis-card__footer {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 2);
+}
+
+.avis-card__author {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	color: currentColor;
+	margin: 0;
+}
+
+.avis-card__dates {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-normal);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	color: currentColor;
+	margin: 0;
+}
+
+@media (--medium-up) {
+	.avis-card {
+		width: 540px;
+	}
+}

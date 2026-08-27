@@ -1,0 +1,61 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as CardAdvantagesStories from "./CardAdvantages.stories";
+
+<Meta of={CardAdvantagesStories} />
+
+# CardAdvantages
+
+> ⚠️ **Heads up — this story does not show the real rendering.** The component relies on a pinned GSAP scroll context that requires a full-page layout to behave correctly. To see the actual visual result, open the **`Pages/HomePage`** story instead.
+
+Two-section storytelling block built around a pinned visual card. Section 1 sequentially reveals three product arguments while the page is pinned with GSAP; section 2 introduces a darker "moments of life" panel. The card and its CTA stay visually anchored across both sections thanks to the GSAP pin, then settle into place when section 2 enters the viewport.
+
+## How It Works
+
+- `title` / `subtitle`: main heading of section 1 (pinned)
+- `momentsTitle` / `momentsSubtitle`: headings of section 2 ("moments of life")
+- `cardImage`: central card visual (sticky across both sections)
+- `cta`: optional floating CTA rendered below the card (its `label` is displayed)
+- `arguments`: up to 3 argument cards revealed in a zigzag pattern during the desktop pin (optional — provided client-side by Jahia)
+- `imageDesktop` / `imageMobile`: background image of section 2 (mobile falls back to desktop)
+
+## Accessibility & responsive
+
+- Two `<h2>` (one per section) with `aria-labelledby` on the root `<section>` wrapper.
+- `prefers-reduced-motion` disables GSAP animations; on desktop the arguments still use the zigzag layout (a CSS grid, so cards can never overlap each other), while the static vertical list applies on stacked layouts.
+- The desktop zigzag is height-aware: the grid compacts itself and the card image scales with `vh`, so it holds down to ~650px-tall viewports (dock visible, browser zoom, snapped windows).
+- On tall viewports the arguments track is capped (`--encart-argument-track-max-height`, 620px by default) and vertically centered below the header, and the card rises along with it (`--encart-track-void`), so the whole group stays cohesive instead of spreading over the viewport.
+- The stacked layout triggers on narrow **or** very short viewports (`max-width: 900px` or `max-height: 640px`). The sticky card then switches to a floating mode via ScrollTrigger so it remains thumb-reachable.
+
+## Usage
+
+```tsx
+import { CardAdvantages } from "sofinco-react";
+
+<CardAdvantages
+  title="With the Sofinco card, I manage my spending…"
+  subtitle="Pick the payment pace that fits you best."
+  momentsTitle="… across all my life moments"
+  momentsSubtitle="The power to pay whenever you want."
+  cardImage="/images/card.png"
+  cta={{ label: "Discover the card", href: "#", ctaSection: "card-advantages-cta" }}
+  imageDesktop="/images/bg-moment.png"
+  arguments={[
+    { id: "1", title: "Everyday available credit", description: "when I need it" },
+    { id: "2", title: "Flexible payment options", description: "in three clicks" },
+    { id: "3", title: "Cash reserve within reach", description: "from my customer area" },
+  ]}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={CardAdvantagesStories.Default} />
+
+## Props
+
+<ArgTypes of={CardAdvantagesStories} />
+
+## All Stories
+
+<Stories />

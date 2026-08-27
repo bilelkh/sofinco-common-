@@ -1,0 +1,117 @@
+@import "@styles/base.css";
+
+.section-carte {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	padding: calc(var(--spacing) * 26) calc(var(--spacing) * 6);
+	background-color: var(--color-primary-subtle);
+	font-family: var(--font-sans);
+}
+
+.section-carte__container {
+	max-width: 1232px;
+	margin: 0 auto;
+}
+
+.section-carte__heading {
+	margin: 0 0 calc(var(--spacing) * 20);
+}
+
+.section-carte__grid {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 14);
+	align-items: stretch;
+}
+
+.section-carte__media {
+	width: 100%;
+}
+
+.section-carte__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: var(--radius-4xl);
+	aspect-ratio: 1 / 1;
+}
+
+.section-carte__content {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+.section-carte__content-title {
+	margin: 0;
+}
+
+.section-carte__content-text {
+	margin: 0;
+	color: var(--color-primary-base);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+}
+
+.section-carte__list {
+	list-style: none;
+	padding: 0;
+	margin: calc(var(--spacing) * 1) 0;
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+}
+
+.section-carte__list-icon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: var(--color-secondary-base);
+}
+
+.section-carte__list-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
+.section-carte__list-label {
+	color: var(--color-primary-base);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	font-weight: var(--font-weight-medium);
+}
+
+.section-carte__cta {
+	display: inline-flex;
+	width: 100%;
+	margin-top: calc(var(--spacing) * 3);
+}
+
+.section-carte__cta-button {
+	width: 100%;
+}
+
+@media (--medium-up) {
+	.section-carte {
+		padding: calc(var(--spacing) * 30) calc(var(--spacing) * 26);
+	}
+
+	.section-carte__grid {
+		flex-direction: row;
+		align-items: center;
+		gap: calc(var(--spacing) * 26);
+	}
+
+	.section-carte__media,
+	.section-carte__content {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	.section-carte__cta {
+		width: fit-content;
+	}
+
+	.section-carte__cta-button {
+		width: auto;
+	}
+}

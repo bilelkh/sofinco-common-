@@ -1,0 +1,91 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as SectionCarteStories from "./SectionCarte.stories";
+
+<Meta of={SectionCarteStories} />
+
+# SectionCarte
+
+The `SectionCarte` component presents the **Carte Sofinco** offer: a centered section heading, a large square photo on the left, and on the right a text block with a checklist of benefits rendered as capsule pills, closed by an accent CTA.
+
+It sits on the ice background (`--color-primary-subtle`) and is designed to be dropped between other full-width sections of a product page.
+
+## Composition
+
+- A centered **section heading** (shared `SectionHeading`): optional eyebrow, title, optional subtitle.
+- A **photo** — square ratio, 40&nbsp;px corners (`--radius-4xl`), lazy-loaded.
+- A **content block**:
+  - a **content title** (`<h3>`),
+  - a **descriptive paragraph**,
+  - a **checklist** of benefit pills (bordeaux check icon + short label),
+  - an **accent capsule CTA** (shared `Cta`, `variant="accent"`, `size="large"`).
+
+## Jahia contribution rules
+
+- **Title**: required — main heading of the section.
+- **Subtitle**: optional intro paragraph under the title.
+- **Eyebrow**: optional uptitle above the title.
+- **Image**: required. Provide a roughly square visual; it is cropped with `object-fit: cover` to a 1:1 ratio. Alt text is optional (decorative image → empty alt).
+- **Content title / content text**: both required.
+- **Items**: the benefit checklist. Each item needs a stable `id` and a short `label` — keep labels to one line; the pill hugs its content.
+- **CTA label / CTA URL**: both required.
+
+## Heading configuration
+
+The section heading forwards a subset of `SectionHeading` props:
+
+- `titleAs` — semantic heading level, defaults to `"h2"`.
+- `visualStyle` — visual typography style, independent from `titleAs`.
+- `align` — heading alignment, defaults to `"center"`.
+
+## Responsive behavior
+
+- **Mobile**: single column — heading, photo, then content stacked.
+- **Desktop (≥ 1024&nbsp;px, `--medium-up`)**: photo and content sit side by side, equal widths, vertically centered.
+- The whole section is constrained to the standard 1232&nbsp;px container.
+
+## Tracking analytics
+
+The CTA is a shared `Cta` with `ctaSection="section-carte"`, so a `click_cta` event (`cta_label`, `cta_section`, `cta_url`) is **always** emitted through the `data-tracking` attribute — no prop needed. `ctaTracking` is an optional **additional** event stacked before `click_cta` (e.g. a campaign-specific `banner_cta`); do not pass `event: "click_cta"` yourself, it would duplicate the automatic one. Events are pushed to `window.dataLayer` by the project-wide tracking bootstrap (`#lib/tracking-bootstrap` in `template-set`), which auto-merges the page context (`env_work`, `page_title`, `page_url`, …).
+
+## Accessibility
+
+- Heading hierarchy: section title (`h2` by default, configurable via `titleAs`) then content title (`h3`).
+- The checklist is a native `<ul>` / `<li>` list.
+- Check icons are decorative and hidden from assistive technologies with `aria-hidden="true"`.
+- The image ships an `alt` attribute; pass an empty string when it is purely decorative.
+- The CTA is a real link (`<a href>`), keyboard-focusable with visible focus states.
+
+## Usage
+
+```tsx
+import { SectionCarte } from "sofinco-react";
+
+export function MyPage() {
+  return (
+    <SectionCarte
+      title="Avec la Carte Sofinco associée à mon crédit renouvelable, je gagne en liberté de paiement"
+      subtitle="Une carte de crédit associée à un crédit renouvelable pour gérer vos achats à votre rythme."
+      imageUrl="/images/carte-sofinco.webp"
+      imageAlt=""
+      contentTitle="Avec votre Crédit Renouvelable, demandez gratuitement votre Carte Sofinco"
+      contentText="C'est simple, à chaque paiement par carte, vous choisissez comment rembourser votre achat."
+      items={[
+        { id: "1", label: "Je règle en magasin, en ligne sans faire de virement préalable" },
+        { id: "2", label: "Je choisis de payer au comptant différé ou en plusieurs fois" },
+        { id: "3", label: "Je retire mon argent au distributeur automatique" },
+      ]}
+      ctaLabel="En savoir plus sur la carte Sofinco"
+      ctaUrl="/carte-sofinco"
+      ctaTracking={{ event: "banner_cta", banner_name: "carte-sofinco" }}
+    />
+  );
+}
+```
+
+## Props
+
+<ArgTypes of={SectionCarteStories} />
+
+## All Stories
+
+<Stories />

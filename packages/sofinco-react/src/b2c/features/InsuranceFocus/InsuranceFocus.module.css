@@ -1,0 +1,85 @@
+@import "@styles/base.css";
+
+/*
+ * `.insurance-focus` — outer wrapper. The `--color-primary-subtle` background (soft
+ * blue page wash, resolved to `--color-blue-50` = #f0f3f4) spans the full
+ * viewport width. The navy card is kept off the edges by the outer padding
+ * (lateral breathing room). The global max-width is applied to the card itself.
+ */
+.insurance-focus {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background: var(--color-primary-subtle);
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+}
+
+/*
+ * Navy card: the actual content container. Mobile-first: vertical stack.
+ * On desktop, 55/45 two-column split (text / image), vertically centered.
+ * Design tokens are always resolved (loaded by the DS wrapper) — no literal
+ * fallbacks used, as they would drift silently from the token source of truth.
+ */
+.insurance-focus__card {
+	max-width: 1232px;
+	margin: 0 auto;
+	background: var(--color-primary-base);
+	border-radius: var(--radius-4xl);
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6) calc(var(--spacing) * 6)
+		calc(var(--spacing) * 6);
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 10);
+	color: var(--color-neutral-00);
+}
+
+.insurance-focus__content {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+.insurance-focus__description {
+	margin: 0;
+	composes: text from "@styles/utilities/typography.module.css";
+}
+
+.insurance-focus__cta {
+	margin-top: calc(var(--spacing) * 2);
+}
+
+/*
+ * The media is a flex container that centers the image; the image itself is
+ * locked to its aspect ratio via `.insurance-focus__image` (see Figma mockup).
+ */
+.insurance-focus__media {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.insurance-focus__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: var(--radius-3xl);
+	display: block;
+	aspect-ratio: 279 / 293;
+}
+
+@media (--medium-up) {
+	/* Desktop: horizontal split, large gap, vertical centering. */
+	.insurance-focus__card {
+		display: grid;
+		grid-template-columns: 5.5fr 4.5fr;
+		align-items: center;
+		gap: calc(var(--spacing) * 14);
+		padding: calc(var(--spacing) * 14);
+	}
+
+	.insurance-focus__image {
+		aspect-ratio: 494 / 282;
+	}
+
+	.insurance-focus__cta {
+		width: fit-content;
+	}
+}

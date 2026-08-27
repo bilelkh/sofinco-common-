@@ -1,0 +1,82 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as HeroV1Stories from "./HeroV1.stories";
+
+<Meta of={HeroV1Stories} />
+
+# HeroV1
+
+Top-of-page banner with hero image, title, subtitle and animated argument pills.
+
+## How It Works
+
+- `imgBeforeAnim` / `imgDesktop` / `imgMobile`: progressive responsive background image set
+- `title` and `subtitle`: main headline copy
+- `args`: up to three short labels rendered as pills
+- `simulator`: optional sticky simulator CTA shown on scroll
+- `tracking`: optional GA promotion identifiers (see below) — when set, a `view_promotion` event is emitted on impression
+
+## GA tracking — `view_promotion`
+
+When the `tracking` prop is provided, the root `<section>` carries a `data-tracking-view` attribute. The global IntersectionObserver installed by `Layout.tsx` fires a single `view_promotion` event the first time the Hero crosses 25 % of the viewport. Base context (env, page, session, timestamp) is auto-merged by `__SOFINCO_TRACK__`.
+
+```ts
+type PromotionTracking = {
+  promotionId: string;    // e.g. "banner_home_rac"
+  promotionName: string;  // e.g. "Rachat de crédit - bannière home"
+  creativeName: string;   // e.g. "banner_rac_v1"
+  creativeSlot: string;   // e.g. "homepage_top"
+  locationId: string;     // e.g. "home_page"
+};
+```
+
+Resulting `dataLayer` payload:
+
+```js
+{
+  event: "view_promotion",
+  ecommerce: { promotions: [{ promotion_id, promotion_name, creative_name, creative_slot, location_id }] },
+  // + auto-merged base context (env_template, page_url, context_id, timestamp, …)
+}
+```
+
+Tracking is skipped entirely if `promotionId` is empty.
+
+## Usage
+
+```tsx
+import { HeroV1 } from "sofinco-react";
+
+<HeroV1
+  variant="v1"
+  title="Réalisez vos projets"
+  subtitle="Crédit conso simple et rapide"
+  imgBeforeAnim="/images/hero-lq.jpg"
+  imgDesktop="/images/hero-d.jpg"
+  imgMobile="/images/hero-m.jpg"
+  args={[
+    { id: "1", label: "Réponse immédiate" },
+    { id: "2", label: "100 % en ligne" },
+    { id: "3", label: "Sans engagement" },
+  ]}
+  tracking={{
+    promotionId: "banner_home_rac",
+    promotionName: "Rachat de crédit - bannière home",
+    creativeName: "banner_rac_v1",
+    creativeSlot: "homepage_top",
+    locationId: "home_page",
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={HeroV1Stories.Default} />
+
+## Props
+
+<ArgTypes of={HeroV1Stories} />
+
+## All Stories
+
+<Stories />

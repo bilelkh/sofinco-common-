@@ -1,0 +1,115 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as CtaStories from "./Cta.stories";
+
+<Meta of={CtaStories} />
+
+# Cta
+
+A versatile call-to-action component that renders as a `<button>` or an `<a>` tag depending on the `href` prop.
+
+## How It Works
+
+The component switches rendering mode based on props:
+
+- without `href`: renders a `<button>` (uses `type`, `onClick`)
+- with `href`: renders an `<a>` (uses `target`)
+- `variant` and `size` drive visual style — variants: `primary`, `secondary`, `accent`, `ghost`, `danger`, `outlined`, `app-badge`, `campaign`
+- `isLoading` shows a spinner and forces `disabled`
+- `isDisabled` disables interactions and removes the `data-tracking` attribute
+- `iconLeft` / `iconRight` render optional icon slots (`IconKey` from `@features/shared/ui/svg`)
+- `ariaLabel`: optional accessible name when the visible label is missing
+- `ctaSection`: **required** logical-region identifier emitted in the default `click_cta` event (e.g. `"hero-v3-cta"`, `"footer-newsletter"`)
+- `props`: passthrough for extra HTML attributes (button or anchor) — merged after `data-tracking`, so callers may override
+
+## GA tracking
+
+Every interactive `Cta` always emits a default `click_cta` event with `cta_label`, `cta_section`, and `cta_url`. Pass a custom `tracking` event to emit **additional** GA events on the same click — the click delegator (installed inline in `Layout.tsx`) accepts arrays and pushes each item separately, with base context (env, page, session, timestamp) auto-merged.
+
+```ts
+type CtaTracking = {
+  event?: string;          // when set, this event is merged with the default click_cta
+  [key: string]: unknown;  // any GA fields (ecommerce, promotion, …)
+};
+```
+
+Behaviour:
+
+- `tracking` absent or `tracking.event` falsy → only the default `click_cta` is pushed
+- `tracking.event` set → both `tracking` and `click_cta` are serialised as a JSON array on `data-tracking`; the delegator pushes both
+- `isDisabled` → no `data-tracking` attribute, no events
+
+Example: a `select_promotion` event alongside the default `click_cta`:
+
+```tsx
+<Cta
+  label="Je simule mon rachat"
+  href="/parcours-simulateur"
+  variant="accent"
+  ctaSection="hero-v3-cta"
+  tracking={{
+    event: "select_promotion",
+    ecommerce: {
+      promotions: [
+        {
+          promotion_id: "banner_home_rac",
+          promotion_name: "Rachat de crédit - bannière home",
+          creative_name: "banner_rac_v1",
+          creative_slot: "homepage_top",
+          location_id: "home_page",
+        },
+      ],
+    },
+  }}
+/>;
+```
+
+## Usage
+
+```tsx
+import { Cta } from "sofinco-react";
+
+<Cta label="Click me" variant="primary" ctaSection="form-submit" />
+<Cta label="Visit" variant="accent" href="https://example.com" ctaSection="footer-cta" />
+<Cta label="Open in new tab" href="/aide" target="_blank" ctaSection="hero-help" />
+```
+
+## Variants
+
+<Canvas of={CtaStories.Primary} />
+<Canvas of={CtaStories.Secondary} />
+<Canvas of={CtaStories.Accent} />
+<Canvas of={CtaStories.Ghost} />
+<Canvas of={CtaStories.Danger} />
+
+### Campaign (glass overlay)
+
+A translucent-navy "glass" pill with a self-contained turquoise play-circle icon, designed to sit
+on top of a dark or video background (used by `HeroV4`'s "Voir la campagne" CTA). Combine with
+`iconLeft="play"`; the icon colour and `backdrop-filter` blur are baked into the variant.
+
+<Canvas of={CtaStories.Campaign} />
+
+## States
+
+<Canvas of={CtaStories.Loading} />
+<Canvas of={CtaStories.Disabled} />
+
+## With Icons
+
+<Canvas of={CtaStories.WithIconLeft} />
+<Canvas of={CtaStories.WithIconRight} />
+
+## As Link
+
+When `href` is provided, the component renders an `<a>` tag instead of a `<button>`.
+
+<Canvas of={CtaStories.AsLink} />
+
+## Props
+
+<ArgTypes of={CtaStories} />
+
+## All Stories
+
+<Stories />

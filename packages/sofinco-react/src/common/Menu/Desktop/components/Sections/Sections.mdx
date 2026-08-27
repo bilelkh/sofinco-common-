@@ -1,0 +1,62 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SectionsStories from "./Sections.stories";
+
+<Meta of={SectionsStories} />
+
+# Sections
+
+The desktop mega-menu: the navigation content rendered by [`Menu`](?path=/docs/features-menu-menu--docs)
+at `1092px` and above. It is built on Radix Navigation Menu primitives.
+
+## How It Works
+
+`Sections` renders each top-level entry as a trigger; opening one reveals a
+content panel.
+
+- Each `section.title` becomes a Radix **trigger** button in the menu bar.
+- The open panel renders the section's `subsections` as columns of titled link
+  lists (`SubSection`). Every link shows a trailing arrow icon and carries an
+  optional `data-tracking` attribute (consumed by the delegated-click analytics
+  layer when `link.tracking.event` is set).
+- An optional promo **`Card`** (`section.card`) can sit alongside the columns.
+  When a section has **4 or more subsections** the card is given a responsive
+  modifier that hides it at narrower large widths so the extra link columns have
+  room; with fewer subsections the card stays visible across desktop widths.
+- **No Radix `Viewport`.** A Viewport routes `<Content>` through a layout effect
+  that renders nothing on the server, so the submenu links would be absent from
+  the SSR HTML. Panels are instead `forceMount`ed and rendered in place — every
+  link ships in the server markup (SEO) while the closed ones stay out of the tab
+  order via `visibility: hidden`. A dedicated `.menu__sections__scrim` div
+  replaces the Viewport's former role as page backdrop.
+
+Only `sections` and `className` are consumed. The prop type is derived from
+`MenuProps` (`Omit<MenuProps, "links" | "logo">`), so the extra CTA/link fields
+are accepted but ignored here — they are wired by the parent `Menu`.
+
+## Basic Usage
+
+```tsx
+import Sections from "@common/Menu/Desktop/components/Sections/Sections";
+
+<Sections sections={sections} />;
+```
+
+## Props
+
+- `sections` — required array of section definitions (`title`, `subsections`,
+  optional `card`).
+- `className` — optional extra class on the navigation root.
+
+<ArgTypes of={SectionsStories} />
+
+## Story Variants
+
+<Canvas of={SectionsStories.Default} />
+<Canvas of={SectionsStories.WithPromoCard} />
+<Canvas of={SectionsStories.WithoutCard} />
+<Canvas of={SectionsStories.SingleSection} />
+
+## All Stories
+
+<Stories />

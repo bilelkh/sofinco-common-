@@ -1,0 +1,61 @@
+@import "@styles/base.css";
+
+.scrollSteps {
+	width: 100%;
+	box-sizing: border-box;
+	position: relative;
+	padding-inline: calc(var(--spacing) * 6);
+}
+
+.scrollSteps__inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 6);
+	box-sizing: border-box;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.scrollSteps__imageColumn {
+	align-self: center;
+	width: 85%;
+	max-width: 250px;
+}
+
+.scrollSteps__items {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 8);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+@media (--small-up) {
+	.scrollSteps__inner {
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+		gap: calc(var(--spacing) * 20);
+	}
+
+	.scrollSteps__items {
+		flex: 1;
+		width: auto;
+		min-width: 0;
+	}
+
+	.scrollSteps__imageColumn {
+		flex: 0 0 450px;
+		width: 450px;
+		max-width: none;
+	}
+
+	/* Position de l'image en desktop : "right" => image a droite via order.
+	   On garde l'ordre DOM (image 1ere, decorative) pour l'a11y ; mobile inchange. */
+	.scrollSteps__inner[data-image-position="right"] .scrollSteps__imageColumn {
+		order: 2;
+	}
+}

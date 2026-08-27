@@ -1,0 +1,17 @@
+@import "@styles/base.css";
+
+.textarea {
+	/* Le contrôle porte sa propre hauteur via `rows` : on ne fixe donc pas de
+	   `height`, seulement le comportement de redimensionnement. */
+	resize: vertical;
+	/* `rows` donne la hauteur de repos, mais un `resize` vers le bas ne doit pas
+	   pouvoir réduire le champ sous une ligne lisible. */
+	min-height: calc(var(--text-base) * var(--text-base--line-height) * 2);
+	/* Un `<textarea>` est `inline-block` : sans ça il traîne l'espace de la ligne
+	   de base sous la boîte, et le padding bas paraît plus épais que le haut. */
+	display: block;
+}
+
+.textarea--fixed {
+	resize: none;
+}

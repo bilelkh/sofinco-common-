@@ -1,0 +1,3 @@
+[sofnt:mySpace] > jnt:content, sofmix:component, sofmix:cta orderable
+ - showSmartPush (boolean) = true
+ + * (sofnt:link)

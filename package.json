@@ -1,0 +1,43 @@
+{
+	"name": "@sofinco/root",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"build": "yarn workspaces foreach -Atvv run build",
+		"deploy": "yarn workspace sofinco-template deploy",
+		"dev": "yarn workspace sofinco-template dev",
+		"format": "prettier --write --list-different .",
+		"lint": "eslint .",
+		"lint:sofinco-react": "eslint packages/sofinco-react",
+		"storybook": "yarn workspace sofinco-react storybook",
+		"make:component": "yarn workspace sofinco-template make:component",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@eslint-react/eslint-plugin": "^3.0.0",
+		"@eslint/compat": "^2.0.3",
+		"@eslint/js": "^10.0.1",
+		"@jahia/cypress": "^7.4.0",
+		"@types/eslint-plugin-jsx-a11y": "^6.10.1",
+		"@types/node": "^24.12.0",
+		"autoprefixer": "^10.4.27",
+		"eslint": "^10.0.3",
+		"eslint-plugin-jsx-a11y": "^6.10.2",
+		"globals": "^17.4.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.0.2",
+		"postcss": "^8.5.8",
+		"prettier": "^3.8.1",
+		"rollup": "^4.60.1",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.57.0"
+	},
+	"packageManager": "yarn@4.12.0",
+	"lint-staged": {
+		"*.{ts,tsx,js,jsx,mjs,cjs,json,css,md,yml,yaml}": "prettier --write"
+	}
+}

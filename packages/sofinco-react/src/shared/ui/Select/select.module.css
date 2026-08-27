@@ -1,0 +1,182 @@
+@import "@styles/base.css";
+
+/* Ancre du panneau, qui est positionné en absolu juste dessous. */
+.select {
+	position: relative;
+	width: 100%;
+}
+
+/* La boîte ne contient que le bouton : le padding lui est rendu, sinon la zone
+   cliquable s'arrêterait avant les bords du champ. */
+.select__box {
+	padding-inline: 0;
+}
+
+.select__trigger {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+	min-width: 0;
+	/* Le padding vient du bouton, pas de la boîte : toute la surface du champ
+	   ouvre ainsi le panneau. */
+	padding-inline: calc(var(--spacing) * 3);
+	align-self: stretch;
+
+	background: transparent;
+	border: none;
+	/* Un <button> n'hérite ni de la police ni de l'alignement du texte. */
+	font: inherit;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+	/* L'anneau de focus est porté par la boîte via `:focus-within`. */
+	outline: none;
+
+	&:disabled {
+		cursor: not-allowed;
+	}
+}
+
+.select__value {
+	composes: text from "@styles/utilities/typography.module.css";
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.select__value--placeholder {
+	color: var(--color-neutral-60);
+}
+
+.select__chevron {
+	transition: transform 0.15s ease;
+
+	&[data-open] {
+		transform: rotate(180deg);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Panneau
+   --------------------------------------------------------------------------- */
+
+.select__panel {
+	position: absolute;
+	z-index: 60;
+	top: calc(100% + calc(var(--spacing) * 1));
+	left: 0;
+	right: 0;
+
+	/* Plafonnée plutôt que libre : une liste longue déborderait de l'écran, et
+	   c'est ici que le défilement doit se produire. */
+	max-height: 16rem;
+	overflow-y: auto;
+	padding: calc(var(--spacing) * 1);
+
+	background: var(--color-white);
+	border: 1px solid var(--color-neutral-30);
+	border-radius: var(--radius-sm);
+	box-shadow: var(--shadow-md);
+	outline: none;
+}
+
+.select__group {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3) calc(var(--spacing) * 1);
+	color: var(--color-text-muted);
+	font-weight: var(--font-weight-semibold);
+}
+
+.select__option {
+	composes: text from "@styles/utilities/typography.module.css";
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	border-radius: var(--radius-xs);
+	color: var(--color-primary-base);
+	cursor: pointer;
+	user-select: none;
+
+	/* Survol et navigation clavier partagent `data-active` : une seule règle, là
+	   où un `:hover` et un état de focus auraient fini par diverger. */
+	&[data-active] {
+		background: var(--color-primary-subtle);
+	}
+
+	&[data-selected] {
+		background: var(--color-accent-subtle);
+		font-weight: var(--font-weight-semibold);
+	}
+
+	&[data-disabled] {
+		color: var(--color-neutral-40);
+		cursor: not-allowed;
+		background: transparent;
+	}
+}
+
+.select__option__body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.select__option__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.select__option__description {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	color: var(--color-text-muted);
+	font-weight: var(--font-weight-normal);
+}
+
+.select__option__icon,
+.select__option__check {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+}
+
+.select__option__icon svg {
+	width: 1.125rem;
+	height: 1.125rem;
+}
+
+.select__option__check {
+	margin-left: auto;
+	color: var(--color-accent-strong);
+}
+
+.select__option__check svg {
+	width: 1rem;
+	height: 1rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Miroir natif — porte la valeur dans les soumissions de formulaire.
+   --------------------------------------------------------------------------- */
+
+.select__native {
+	/* Ni `display: none` ni `visibility: hidden` : un champ `required` invalide
+	   doit rester focalisable, sinon le navigateur refuse de valider le
+	   formulaire (« not focusable »). Réduit à zéro et calé sur le champ pour
+	   que la bulle de validation s'ancre au bon endroit. */
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 0;
+	padding: 0;
+	border: 0;
+	opacity: 0;
+	pointer-events: none;
+}

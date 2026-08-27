@@ -1,0 +1,41 @@
+services:
+  jahia:
+    image: jahia/jahia-ee:8.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+      - 9229:9229
+    environment:
+      DB_VENDOR: postgresql
+      DB_URL: jdbc:postgresql://postgres:5432/jahia
+      DB_USER: jahia
+      DB_PASS: dbpassword
+      JPDA: true
+      JPDA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:9229,suspend=n,server=y"
+      EXECUTE_PROVISIONING_SCRIPT: "file:/mnt/jahia/provisioning.yml"
+      # Return 401 (authorization error) instead of the default redirect/403 when an
+      # unauthenticated request hits a protected resource. jahia.properties override
+      # via the jahia/jahia-ee image's jahia_cfg_ mechanism.
+      jahia_cfg_protectedResourceAccessStrategy: authorizationError
+    volumes:
+      - type: bind
+        source: ./packages/template-set/docker
+        target: /mnt/jahia
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8080/start"]
+      interval: 5s
+      timeout: 1s
+      retries: 30
+
+  postgres:
+    image: docker-remote.registry.saas.cagip.group.gca/library/postgres:16
+    environment:
+      POSTGRES_USER: jahia
+      POSTGRES_PASSWORD: dbpassword
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "jahia"]
+      interval: 5s
+      timeout: 1s
+      retries: 30

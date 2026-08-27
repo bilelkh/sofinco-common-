@@ -1,0 +1,2 @@
+[sofnt:menuNodeLink] > jnt:content, mix:title, jmix:nodeReference, jmix:link
+ - j:linknode (weakreference, picker[type='editoriallink']) internationalized < 'jmix:droppableContent', 'jnt:page', jmix:mainResource

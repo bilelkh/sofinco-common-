@@ -1,0 +1,200 @@
+@import "@styles/base.css";
+
+/* ========================================
+   ROOT
+======================================== */
+
+.comparativeTable {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	width: 100%;
+	max-width: fit-content;
+	margin: 0 auto;
+	padding: calc(var(--spacing) * 14) calc(var(--spacing) * 6);
+}
+
+/* ========================================
+   SHARED
+======================================== */
+
+.comparativeTable__valueIcon {
+	position: relative;
+	top: 1px;
+	margin-right: calc(var(--spacing) * 2);
+}
+
+.comparativeTable__mobileValueCellLeft,
+.comparativeTable__desktopValueCellLeft {
+	font-weight: var(--font-weight-bold);
+}
+
+/* ========================================
+   MOBILE TABLE
+======================================== */
+
+.comparativeTable__mobileTable {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--color-primary-light);
+	border-radius: var(--radius-3xl);
+	background: var(--color-white);
+	overflow: hidden;
+	table-layout: fixed;
+}
+
+.comparativeTable__mobileHeadCell {
+	padding: calc(var(--spacing) * 6);
+	background: var(--color-primary-base);
+	color: var(--color-accent-base);
+	font-weight: var(--font-weight-bold);
+	text-align: center;
+}
+
+.comparativeTable__mobileLabelCell {
+	padding: calc(var(--spacing) * 4);
+	border-top: 1px solid var(--color-primary-light);
+	background: var(--color-primary-subtle);
+	color: var(--color-primary-base);
+	font-weight: var(--font-weight-bold);
+	text-align: center;
+}
+
+.comparativeTable__mobileValueCell {
+	width: 50%;
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 2);
+	border-top: 1px solid var(--color-primary-light);
+	text-align: center;
+	vertical-align: top;
+	word-break: break-word;
+}
+
+/* ========================================
+   MOBILE ACTIONS
+======================================== */
+
+.comparativeTable__actions {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 2);
+	margin-top: calc(var(--spacing) * 14);
+}
+
+.comparativeTable__button {
+	width: 100%;
+	max-width: 350px;
+	margin: 0 auto;
+}
+
+/* ========================================
+   ACCESSIBILITY
+======================================== */
+
+.comparativeTable__srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+.comparativeTable__desktopTable {
+	display: none;
+}
+
+/* ========================================
+   DESKTOP RESPONSIVE
+======================================== */
+
+@media (--medium-up) {
+	.comparativeTable__mobileTable,
+	.comparativeTable__actions {
+		display: none;
+	}
+
+	.comparativeTable__desktopTable {
+		display: table;
+		overflow: hidden;
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0;
+		border: 1px solid var(--color-primary-light);
+		border-radius: var(--radius-3xl);
+		background: var(--color-white);
+	}
+
+	/* Columns */
+
+	.comparativeTable__desktopColumnLabel {
+		min-width: 230px;
+	}
+
+	.comparativeTable__desktopColumnValue {
+		min-width: 315px;
+	}
+
+	/* Header */
+
+	.comparativeTable__desktopHeadCell {
+		padding: calc(var(--spacing) * 6) calc(var(--spacing) * 8);
+		background: var(--color-primary-base);
+		color: var(--color-accent-base);
+		font-size: var(--text-lg);
+		font-weight: var(--font-weight-bold);
+		text-align: left;
+	}
+
+	.comparativeTable__desktopHeadCellEmpty {
+		color: transparent;
+	}
+
+	.comparativeTable__desktopHeadCell:first-child {
+		border-top-left-radius: var(--radius-3xl);
+	}
+
+	.comparativeTable__desktopHeadCell:last-child {
+		border-top-right-radius: var(--radius-3xl);
+	}
+
+	/* Body */
+
+	.comparativeTable__desktopLabelCell {
+		padding: calc(var(--spacing) * 8);
+		border-top: 1px solid var(--color-primary-light);
+		background: var(--color-primary-subtle);
+		font-weight: var(--font-weight-bold);
+		text-align: left;
+		vertical-align: middle;
+	}
+
+	.comparativeTable__desktopValueCell {
+		padding: calc(var(--spacing) * 6) calc(var(--spacing) * 8);
+		border-top: 1px solid var(--color-primary-light);
+		text-align: left;
+		vertical-align: middle;
+		word-break: break-word;
+	}
+
+	/* CTA */
+
+	.comparativeTable__desktopCtaCell {
+		padding: calc(var(--spacing) * 6) calc(var(--spacing) * 8);
+		border-top: 1px solid var(--color-primary-light);
+		text-align: center;
+	}
+
+	.comparativeTable__desktopButton {
+		width: 100%;
+		max-width: 100%;
+		font-size: var(--text-sm);
+	}
+
+	.comparativeTable__desktopButton span {
+		font-size: var(--text-sm);
+	}
+}

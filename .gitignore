@@ -1,0 +1,48 @@
+# Intellij
+.idea
+*.iml
+*.ipr
+
+# Node
+dist
+node_modules
+sofinco_project
+
+#Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+yarn-error.log
+.pnp.*
+
+# Maven
+target
+
+packages/template-set/.env
+packages/prepackaged-site/bin
+.env.local
+luxe-jahia-demo-v*
+
+assets/css
+css/*.jpg
+css/main.*
+
+javascript/main.js
+javascript/client/*
+/.settings/
+/.project
+
+.DS_Store
+/javascript/client/
+/javascript/server/
+
+*storybook.log
+storybook-static
+
+# https://gql-tada.0no.co/get-started/installation#step-3-%E2%80%94-configuring-typings
+graphql-env.d.ts
+node_modules

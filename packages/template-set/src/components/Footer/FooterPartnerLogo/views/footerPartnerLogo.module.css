@@ -1,0 +1,38 @@
+.wrapperEditMode {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.partnerLink,
+.partnerWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-decoration: none;
+	transition: opacity 0.3s ease;
+	gap: calc(var(--spacing) * 3);
+	width: 100%;
+}
+
+.partnerLink:hover {
+	opacity: 0.8;
+}
+
+.logo {
+	max-width: 120px;
+	height: auto;
+	display: block;
+	background-color: var(--color-neutral-00);
+	padding: calc(var(--spacing) * 2);
+	border-radius: var(--radius-sm);
+}
+
+.partnerTitle {
+	color: var(--color-neutral-00);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-semibold);
+	text-align: center;
+	text-transform: uppercase;
+}

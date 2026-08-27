@@ -1,0 +1,98 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as AppMobileStories from "./AppMobile.stories";
+
+<Meta of={AppMobileStories} />
+
+# App Mobile
+
+Section that promotes the mobile app with a phone mockup, floating benefit cards,
+a QR code and an OS-aware download CTA.
+
+## Composition
+
+- A centered header with `picto`, `title` and `subtitle`.
+- A QR code image (`imgQrCode`) displayed above the download CTA.
+- A `MobileDownloadCta` button that resolves iOS/Android destination.
+- A central phone image (`img`) surrounded by 4 floating cards (`cards`).
+- Configurable section background color (`backgroundColor`).
+
+## Jahia contribution rules
+
+- All content is contributor-driven (texts, media and links).
+- Optional elements are supported: top `picto`, QR code image, and card pictos.
+- `cards` expects exactly 4 argument blocks.
+- Each card renders an argument in `h3` (clamped to 2 lines) and a complementary text in `p` (clamped to 1 line).
+- Cards stack vertically on `--large-down` (`max-width: 1439px`).
+
+## Usage
+
+```tsx
+import { AppMobile } from "sofinco-react";
+
+<AppMobile
+  picto="/images/samples/sf-logo.png"
+  backgroundColor="#03334D"
+  title="L'application mobile, une gestion simple et centralisée de mes paiements et crédits"
+  subtitle="Suivez vos remboursements et gérez vos paiements en temps réel"
+  img="/images/samples/mobile.png"
+  imgQrCode="/images/samples/QrCode/qr-code.svg"
+  mobileCtaHrefIos="https://apps.apple.com/fr/app/sofinco/id1496197496"
+  mobileCtaHrefAndroid="https://play.google.com/store/apps/details?id=com.ca.consumerfinance.sofinco"
+  cards={[
+    { id: 0, label: "Je suis tous mes prêts", labelComplement: "en temps réel" },
+    {
+      id: 1,
+      label: "Paiement différé",
+      labelComplement: "C'est à la carte",
+      picto: "/images/samples/x3.png",
+    },
+    {
+      id: 2,
+      label: "Pilotage de ma réserve",
+      labelComplement: "J'analyse mes habitudes",
+      picto: "/images/samples/card.png",
+    },
+    {
+      id: 3,
+      label: "Sécurité et alerting",
+      labelComplement: "Notifications en temps réel",
+      picto: "/images/samples/lock.png",
+    },
+  ]}
+/>;
+```
+
+## Mobile Download CTA
+
+`MobileDownloadCta` uses **Bowser** to detect platform:
+
+- On Android: uses `mobileCtaHrefAndroid`.
+- On iOS/iPadOS: uses `mobileCtaHrefIos`.
+- If no matching URL is available: CTA is not rendered.
+
+The CTA uses the shared `Cta` component with an inline download icon on the left.
+
+## Accessibility
+
+- Decorative images (`picto`, phone image, card pictos, QR image) are rendered with `alt=""`.
+- The section heading is linked through `aria-labelledby`.
+- The mobile CTA remains a semantic link (`href`) with external-link security attrs.
+
+## Layout
+
+- Desktop: floating cards are absolutely positioned around the phone mockup.
+- On `--large-down` (`max-width: 1439px`): cards stack vertically and keep icon overlap spacing.
+- CTA rendering is OS-driven: it is shown when a matching iOS/Android URL is available.
+
+## Default
+
+<Canvas of={AppMobileStories.Default} />
+
+## Props
+
+<ArgTypes of={AppMobileStories} />
+
+## All Stories
+
+<Stories />

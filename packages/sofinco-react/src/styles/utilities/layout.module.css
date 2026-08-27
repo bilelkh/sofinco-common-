@@ -1,0 +1,28 @@
+/* Classes utilitaires layout / perf — CSS statique, composable via
+   `composes`. */
+
+.cv-auto {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 500px;
+}
+
+/*
+ * Neutralisation temporaire pendant un saut d'ancre.
+ *
+ * `content-visibility: auto` fait ignorer la mise en page des sections hors écran ; leur
+ * hauteur n'est alors qu'une ESTIMATION (`contain-intrinsic-size`, 500 px ici). Un saut
+ * vers une cible située plus bas est donc calculé sur des hauteurs fausses : en
+ * descendant, les sections se rendent à leur taille réelle, le document s'allonge, et le
+ * défilement s'arrête avant la cible.
+ *
+ * C'est pour cette raison qu'un premier parcours complet de la page « répare » le
+ * problème : le mot-clé `auto` de `contain-intrinsic-size` fait mémoriser au navigateur la
+ * dernière taille rendue.
+ *
+ * `footnote-bootstrap.ts` pose donc cette classe sur `<html>` le temps du saut, ce qui
+ * force la mise en page réelle de toute la page, puis la retire — l'optimisation de
+ * performance est restaurée dès que le défilement est terminé.
+ */
+:global(html.sof-anchor-jump) .cv-auto {
+	content-visibility: visible;
+}

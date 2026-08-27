@@ -1,0 +1,78 @@
+{
+	"simulator": {
+		"defaultAmountPlaceholder": "J'ai besoin de"
+	},
+	"cta": {
+		"defaultLabel": "En savoir plus"
+	},
+	"qrSticker": {
+		"defaultLabel": "Télécharger l'app.",
+		"active": "Activé",
+		"disable": "Désactivé"
+	},
+	"footer": {
+		"partnersTitle": "Partenaires",
+		"categoryLinkTitle": "Liens utiles",
+		"moreInfosTitle": "Plus d’infos",
+		"followUs": "SUIVEZ-NOUS",
+		"mainLogoAlt": "Sofinco"
+	},
+	"simulatorCta": {
+		"defaultLabel": "Je simule"
+	},
+	"videoBlock": {
+		"transcriptionLabel": "Retranscription vidéo"
+	},
+	"representativeExample": {
+		"amountLabel": "Montant emprunté",
+		"legend": "*Hors assurance facultative   **Taux Annuel Effectif Global",
+		"cta": {
+			"defaultLabel": "Je fais une simulation"
+		},
+		"row": {
+			"monthlyPayment": "Mensualités *",
+			"lastPaymentAdjusted": "{{mois}}e mensualité ajustée*",
+			"duration": "Durée",
+			"taegFixed": "TAEG fixe **",
+			"taegRevisable": "TAEG révisable **",
+			"debitRateFixed": "Taux débiteur fixe",
+			"debitRateRevisable": "Taux débiteur révisable",
+			"fileFees": "Frais de dossier",
+			"totalDue": "Montant total dû"
+		},
+		"insurance": {
+			"pb": "Nous vous proposons de souscrire <a href=\"#\">l'assurance emprunteur facultative</a><sup>(5)</sup> pour {{monthlyAmount}} supplémentaires par mois. Le Taux Annuel Effectif de l'Assurance (TAEA) est de {{taea}}. Le montant total dû au titre de l'assurance est de {{totalInsuranceCost}}. Le coût de l'assurance peut varier en fonction de votre situation personnelle.",
+			"cr": "Pour un découvert utilisé de {{exampleAmount}}, remboursé en {{dueNumber}} mensualités. Avec l'assurance facultative, vos mensualités seront de {{dueNumberMinusOne}} x {{monthlyWithInsurance}} et la {{dueNumber}}e ajustée de {{lastWithInsurance}}. Le Taux Annuel Effectif de l'Assurance (TAEA) est de {{taea}}. Le coût mensuel additionnel est de {{monthlyAmount}}, soit un coût total assurance de {{totalInsuranceCost}}. Le coût de l'assurance peut varier en fonction de votre situation personnelle.",
+			"rac": "Nous vous proposons de souscrire <a href=\"#\">l'assurance emprunteur facultative</a><sup>(5)</sup> pour {{monthlyAmount}} supplémentaires par mois. Le Taux Annuel Effectif de l'Assurance (TAEA) est de {{taea}}. Le montant total dû au titre de l'assurance est de {{totalInsuranceCost}}. Le coût de l'assurance peut varier en fonction de votre situation personnelle."
+		},
+		"simulatorPreview": {
+			"heading": "Simulateur — données saisies",
+			"inherited": "hérité de la page",
+			"noParams": "Aucun paramètre de simulation sur cette page. Ouvrez les Options de la page et activez « Simulation (exemple représentatif) ».",
+			"noProduct": "Type de crédit non renseigné dans les Options de la page — la simulation reste inactive.",
+			"fields": {
+				"product": "Produit",
+				"sourceId": "Source ID",
+				"amount": "Montant",
+				"duration": "Durée",
+				"scaleCode": "Code barème"
+			},
+			"product": {
+				"PB": "Prêt personnel",
+				"CR": "Crédit renouvelable",
+				"RAC": "Rachat de crédits"
+			}
+		}
+	},
+	"reassurancePictos": {
+		"maxItems": "Réassurance Pictos — cap : {{cap}}",
+		"sectionLabel": "Nos engagements"
+	},
+	"links": {
+		"emptyLink": "Aucun lien"
+	},
+	"a11y": {
+		"noteBasDePage": "Note de bas de page",
+		"retourRef": "Retour à la référence"
+	}
+}

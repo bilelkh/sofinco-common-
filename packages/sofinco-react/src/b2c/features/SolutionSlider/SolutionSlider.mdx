@@ -1,0 +1,99 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SolutionSliderStories from "./SolutionSlider.stories";
+
+<Meta of={SolutionSliderStories} />
+
+# Solution / Slider
+
+Section that presents Sofinco's credit products as a horizontal carousel of cards.
+Built on [Swiper](https://swiperjs.com) with a fixed card width (350 px) and free-flowing
+`slidesPerView="auto"` layout.
+
+## Composition
+
+- A centered heading (`title`) and an optional `subtitle` paragraph.
+- A horizontal Swiper carousel of `SolutionCard` components.
+- Custom prev / next pagination buttons rendered below the track.
+- Built-in accessibility via Swiper's `A11y` module — all messages overridable through the `a11y` prop.
+
+## Usage
+
+```tsx
+import { Solution } from "sofinco-react";
+
+<Solution
+  title="Une solution pour chacun de vos besoins"
+  subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  items={[
+    {
+      id: "pret-personnel",
+      image: "/images/pret-personnel.jpg",
+      title: "Prêt personnel",
+      description: "Empruntez avec Sofinco et concrétisez vos projets.",
+      features: ["Des prêts jusqu'à 80K€", "Des taux compétitifs", "Des remboursements flexibles"],
+      ctaLabel: "Découvrir le prêt personnel",
+      href: "/pret-personnel",
+    },
+    // …
+  ]}
+/>;
+```
+
+## Card
+
+Each carousel slide renders a `SolutionCard`. Cards are pure presentational — image, heading, description,
+3 feature pill bullets and a primary `Cta`. CSS Module: `SolutionCard.module.css`.
+
+```tsx
+import { SolutionCard } from "sofinco-react";
+
+<SolutionCard
+  image="/img/card.jpg"
+  title="Prêt personnel"
+  description="Empruntez avec Sofinco…"
+  features={["Des prêts jusqu'à 80K€", "Des taux compétitifs", "Des remboursements flexibles"]}
+  cta={{ label: "Découvrir", href: "#" }}
+/>;
+```
+
+## Accessibility
+
+The Swiper `A11y` module is enabled out of the box. Override any message through the `a11y` prop:
+
+```tsx
+<Solution
+  {...props}
+  a11y={{
+    containerLabel: "Nos solutions de financement",
+    prevSlideLabel: "Solution précédente",
+    nextSlideLabel: "Solution suivante",
+    firstSlideLabel: "Première solution",
+    lastSlideLabel: "Dernière solution",
+    slideLabel: "Solution {{index}} sur {{slidesLength}}",
+  }}
+/>
+```
+
+`slideLabel` supports the `{{index}}` and `{{slidesLength}}` placeholders.
+
+## Layout
+
+- Card width is fixed at **350 px** so navigation is predictable across breakpoints.
+- Slide gap is **56 px** (Swiper `spaceBetween`).
+- Section background is white (`--color-white`); section padding uses `--sof-sp-9`.
+- Title is Figtree 600 / 52 px (`--text-5xl`); subtitle is Figtree 500 / 18 px (`--text-lg`).
+
+All styling consumes tokens from `@styles/tokens.css` — no hard-coded colors or sizes.
+
+## Default
+
+<Canvas of={SolutionSliderStories.Default} />
+
+## Props
+
+<ArgTypes of={SolutionSliderStories} />
+
+## All Stories
+
+<Stories />

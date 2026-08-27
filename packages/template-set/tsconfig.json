@@ -1,0 +1,30 @@
+{
+	// Les alias `@shared/*`, `@b2c/*`, `@common/*`… sont ceux des sources internes du design
+	// system, hérités de `sofinco-react` — leur maintenance lui revient. Les specifiers
+	// internes de ce module (`#lib/*`, `#cms/*`, …) sont résolus nativement via le champ
+	// `imports` de son `package.json` ; ne pas redéclarer de bloc `paths` ici, il
+	// remplacerait l'héritage au lieu de le compléter.
+	"extends": "sofinco-react/tsconfig.paths.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"jsx": "preserve",
+		"lib": ["esnext", "dom"],
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"plugins": [{ "name": "typescript-plugin-css-modules" }],
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "esnext",
+		"verbatimModuleSyntax": true
+	},
+	// `javascript/` porte le plugin CKEditor et son harnais. `loadPlugin.ts` déclare
+	// `PageAnchorsApi`, miroir manuel de la surface publiée par `plugin.js` : hors de
+	// `include`, un helper renommé n'aurait rien cassé à la compilation. Le `@ts-nocheck`
+	// en tête de `plugin.js` (ES5, IIFE, CKEDITOR global) reste en place.
+	"include": ["src", "javascript/**/*.ts"]
+}

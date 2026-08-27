@@ -1,0 +1,24 @@
+# Intellij
+.idea
+!.idea/jsLinters/**
+!.idea/prettier.xml
+*.iml
+*.ipr
+
+# Node
+dist
+node_modules
+
+# Test coverage
+coverage
+.scannerwork
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.env

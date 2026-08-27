@@ -1,0 +1,2 @@
+[sofnt:heroArgument] > jnt:content, mix:title, sofmix:argument
+ - jcr:title (string) mandatory i18n < '^.{1,36}$'

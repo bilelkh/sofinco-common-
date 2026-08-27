@@ -1,0 +1,45 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SearchBlockStories from "./SearchBlock.stories";
+
+<Meta of={SearchBlockStories} />
+
+# SearchBlock
+
+Site-wide search block: a search input, a summary line, two tabs (offers / Q&A) and a paginated result list.
+
+The component is fully controlled by props — pagination links are plain `<a>` tags pointing back at `action` so it works with server-driven search (Jahia, etc.).
+
+## Usage
+
+```tsx
+import { SearchBlock } from "sofinco-react";
+
+<SearchBlock
+  title="Que recherchez-vous ?"
+  action="/search"
+  initialQuery="prêt"
+  results={hits}
+  smartResults={smart}
+  nbResults={12}
+  smartNbResults={4}
+  currentPage={1}
+  totalPages={3}
+/>;
+```
+
+## States
+
+<Canvas of={SearchBlockStories.Default} />
+<Canvas of={SearchBlockStories.NoResults} />
+<Canvas of={SearchBlockStories.SinglePage} />
+<Canvas of={SearchBlockStories.Paginated} />
+<Canvas of={SearchBlockStories.EmptyQuery} />
+
+## Props
+
+<ArgTypes of={SearchBlockStories} />
+
+## All Stories
+
+<Stories />

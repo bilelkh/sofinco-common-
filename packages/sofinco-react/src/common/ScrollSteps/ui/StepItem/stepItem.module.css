@@ -1,0 +1,145 @@
+@import "@styles/base.css";
+
+.stepItem__heading {
+	margin: 0;
+}
+
+.stepItem:not(.stepItem--active) {
+	display: none;
+}
+
+.stepItem__trigger {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: start;
+	font: inherit;
+	color: inherit;
+	cursor: default;
+	pointer-events: none;
+}
+
+.stepItem__trigger:focus-visible {
+	outline: 2px solid var(--color-accent-strong);
+	outline-offset: 4px;
+	border-radius: var(--radius-lg);
+}
+
+.stepItem__badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background: var(--color-primary-base);
+	font-family: var(--font-display);
+	font-size: var(--text-3xl);
+	font-weight: var(--font-weight-bold);
+	color: var(--color-accent-base);
+	line-height: 1;
+}
+
+.stepItem__title {
+	display: block;
+	composes: h3 from "@styles/utilities/typography.module.css";
+	color: var(--color-text-muted);
+	transition: color 260ms ease;
+	text-align: center;
+	text-wrap: auto;
+}
+
+@keyframes stepItemEnter {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.stepItem--active {
+	animation: stepItemEnter 0.3s ease-out both;
+}
+
+.stepItem--active .stepItem__title {
+	color: var(--color-primary-base);
+}
+
+.stepItem__panel {
+	display: grid;
+	grid-template-rows: 1fr;
+}
+
+.stepItem__panelInner {
+	overflow: hidden;
+}
+
+.stepItem__description {
+	margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 4);
+	composes: text from "@styles/utilities/typography.module.css";
+	color: var(--color-text-muted);
+	text-align: center;
+}
+
+@media (--small-up) {
+	.stepItem:not(.stepItem--active) {
+		display: list-item;
+	}
+
+	.stepItem--active {
+		animation: none;
+	}
+
+	.stepItem__trigger {
+		flex-direction: row;
+		cursor: pointer;
+		pointer-events: auto;
+	}
+
+	.stepItem__title {
+		text-align: start;
+	}
+
+	.stepItem__panel {
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.35s ease;
+	}
+
+	.stepItem:has(.stepItem__badge) .stepItem__panel {
+		padding-left: calc(50px + calc(var(--spacing) * 4));
+	}
+
+	.stepItem__panel--open {
+		grid-template-rows: 1fr;
+	}
+
+	.stepItem__description {
+		text-align: start;
+		text-wrap: pretty;
+
+		@supports not (text-wrap: pretty) {
+			text-wrap: auto;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.stepItem--active {
+		animation: none;
+	}
+
+	.stepItem__title,
+	.stepItem__panel {
+		transition: none;
+	}
+}

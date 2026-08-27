@@ -1,0 +1,109 @@
+/* Styles du mode édition uniquement — le rendu live utilise le composant
+   SectionCarte du design system (packages/sofinco-react). */
+
+.section-carte-edit {
+	padding: calc(var(--spacing) * 6);
+	border: 1px dashed #c0c0c0;
+	border-radius: 8px;
+	background-color: #fafafa;
+	font-family: var(--font-sans, sans-serif);
+}
+
+.section-carte-edit__header {
+	margin-bottom: 16px;
+	text-align: center;
+}
+
+.section-carte-edit__eyebrow {
+	margin: 0 0 4px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #911534;
+}
+
+.section-carte-edit__title {
+	margin: 0;
+	font-weight: 700;
+	font-size: 20px;
+}
+
+.section-carte-edit__subtitle {
+	margin: 4px 0 0;
+	color: #555;
+}
+
+.section-carte-edit__grid {
+	display: flex;
+	gap: 16px;
+	align-items: flex-start;
+}
+
+.section-carte-edit__media {
+	flex: 0 0 160px;
+}
+
+.section-carte-edit__image {
+	width: 160px;
+	height: 160px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.section-carte-edit__image-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 160px;
+	height: 160px;
+	margin: 0;
+	border: 1px dashed #c0c0c0;
+	border-radius: 8px;
+	background: #fff;
+	color: #757575;
+	text-align: center;
+}
+
+.section-carte-edit__content {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.section-carte-edit__content-title {
+	margin: 0 0 4px;
+	font-weight: 700;
+}
+
+.section-carte-edit__content-text {
+	margin: 0 0 8px;
+	color: #555;
+}
+
+.section-carte-edit__list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0 0 12px;
+	padding: 0;
+}
+
+.section-carte-edit__list-item {
+	width: fit-content;
+	padding: 4px 12px;
+	border: 1px solid #e0e0e0;
+	border-radius: 100px;
+	background: #fff;
+	font-size: 14px;
+}
+
+.section-carte-edit__cta {
+	display: inline-block;
+	margin: 0;
+	padding: 6px 16px;
+	border-radius: 100px;
+	background: #0ae6dc;
+	color: #03334d;
+	font-weight: 700;
+	font-size: 14px;
+}

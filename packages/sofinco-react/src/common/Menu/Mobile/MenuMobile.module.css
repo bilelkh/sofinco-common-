@@ -1,0 +1,30 @@
+.menuMobile {
+	display: flex;
+	flex-direction: column;
+	overflow-y: scroll;
+}
+
+.menuMobile__scrollViewport {
+	width: 100%;
+	height: 100%;
+}
+
+.menuMobile__links {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	flex: 1 1 0;
+	padding: 0 calc(var(--spacing) * 6);
+}
+
+.menuMobile__cta {
+	padding: 0 calc(var(--spacing) * 6);
+	width: 100%;
+	place-self: end;
+	justify-self: end;
+	margin-top: calc(var(--spacing) * 14);
+	button,
+	a {
+		width: 100%;
+	}
+}

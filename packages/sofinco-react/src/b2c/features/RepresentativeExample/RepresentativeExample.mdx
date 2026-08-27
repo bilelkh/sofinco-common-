@@ -1,0 +1,79 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as RepresentativeExampleStories from "./RepresentativeExample.stories";
+
+<Meta of={RepresentativeExampleStories} />
+
+# RepresentativeExample
+
+Legally-required "exemple représentatif" block for a credit product. It renders the
+mandatory financing breakdown (borrowed amount, term, rate, total due…) inside a
+semantic `<table>`, plus the insurance legal text and a CTA.
+
+The component emits no structured data of its own. The `LoanOrCredit` markup for the
+offer lives in the page's single JSON-LD `@graph`, built server-side by the Jahia
+module from the page's own properties.
+
+## How It Works
+
+- `variant`: product family (`pretPerso` | `creditRenouvelable` | `rachatCredit`) — drives the insurance legal text.
+- `title`: section heading (`<h2>`).
+- `subtitle`: intro — **richtext HTML** (rendered via `dangerouslySetInnerHTML`).
+- `amountLabel` / `exampleAmount`: the highlighted "Montant emprunté" card.
+- `rows`: table columns. Each `{ label, value, highlighted? }` is already translated and formatted server-side; mark the "Montant total dû" column with `highlighted: true`.
+- `insuranceLegalText`: insurance mention — **richtext HTML**.
+- `cta`: call-to-action (`label` + `href` are used).
+
+> ℹ️ **Pre-resolved content.** `rows`, labels and legal texts are expected to arrive
+> already translated and formatted (French number/currency formatting) from the Jahia
+> server mapping — the component does no i18n or formatting itself.
+
+> ⚠️ **Richtext fields are injected as raw HTML.** `subtitle` and `insuranceLegalText`
+> use `dangerouslySetInnerHTML`. Only pass trusted/sanitised CMS content.
+
+## Accessibility & SEO
+
+- Semantic `<table>` with `scope="col"` headers and a visually-hidden `<caption>` (`.srOnly`) describing the example amount.
+- On mobile (`max-width: 768px`) the table reflows into stacked cards, each cell labelled via `data-label`.
+- No inline `<script>`: the offer (amount range, term, TAEG, provider) is exposed to search
+  engines and LLMs through the page-level JSON-LD `@graph` in the `<head>`, whose nodes
+  reference a single brand entity by `@id` instead of redeclaring it per block.
+
+## Usage
+
+```tsx
+import { RepresentativeExample } from "sofinco-react";
+
+<RepresentativeExample
+  variant="pretPerso"
+  title="Parce que tout est plus clair avec un exemple..."
+  subtitle="<p>Exemple représentatif hors assurance facultative pour un prêt personnel, sous réserve d'acceptation de votre dossier par Sofinco.</p>"
+  amountLabel="Montant emprunté"
+  exampleAmount="10 000 €"
+  rows={[
+    { label: "Mensualités", value: "344,03€" },
+    { label: "Durée", value: "48 mois" },
+    { label: "TAEG Fixe", value: "4,900%" },
+    { label: "Taux débiteur fixe", value: "4,793 %" },
+    { label: "Montant total dû", value: "16513,44 €", highlighted: true },
+  ]}
+  insuranceLegalText="<p>Assurance facultative Décès, Perte Totale et Irréversible d'Autonomie : pour 10 000 € empruntés, le coût mensuel de l'assurance est de 5,00 € en complément de la mensualité.</p>"
+  cta={{
+    label: "Simuler mon crédit renouvelable",
+    href: "#",
+    ctaSection: "representative-example-cta",
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={RepresentativeExampleStories.Default} />
+
+## Props
+
+<ArgTypes of={RepresentativeExampleStories} />
+
+## All Stories
+
+<Stories />

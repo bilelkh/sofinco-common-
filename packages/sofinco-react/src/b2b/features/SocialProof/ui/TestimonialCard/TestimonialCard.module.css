@@ -1,0 +1,109 @@
+@import "@styles/base.css";
+
+.testimonial-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: calc(var(--spacing) * 10);
+	border-radius: var(--radius-2xl);
+	overflow: hidden;
+	background-color: var(--testimonial-card-bg);
+	color: var(--testimonial-card-fg);
+	/* Les guillemets typographiques et les mots longs ne doivent pas déborder du
+	   rayon : la carte a une largeur fixe dans la maquette. */
+	overflow-wrap: break-word;
+}
+
+.testimonial-card--light {
+	--testimonial-card-bg: var(--color-white);
+	--testimonial-card-fg: var(--color-primary-base);
+	--testimonial-card-link: var(--color-primary-base);
+	--testimonial-card-link-hover: var(--color-primary-contrast);
+}
+
+.testimonial-card--dark {
+	--testimonial-card-bg: var(--color-primary-base);
+	--testimonial-card-fg: var(--color-white);
+	/* Figma `link/text` #f0f3f4 sur fond navy. */
+	--testimonial-card-link: var(--color-blue-50);
+	--testimonial-card-link-hover: var(--color-accent-base);
+}
+
+.testimonial-card__avatar {
+	width: 72px;
+	height: 72px;
+	flex-shrink: 0;
+	border-radius: var(--radius-full);
+	object-fit: cover;
+	/* Fond blanc sous le portrait : un PNG détouré reste lisible sur la carte navy. */
+	background-color: var(--color-white);
+}
+
+.testimonial-card__quote {
+	margin: 0;
+	padding-top: calc(var(--spacing) * 10);
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	/* Figma `Body/Lg/Medium` — 20 / 24. */
+	font-size: var(--text-xl);
+	line-height: 1.2;
+}
+
+.testimonial-card__signature {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding-top: calc(var(--spacing) * 6);
+}
+
+.testimonial-card__author {
+	font-family: var(--font-display);
+	font-weight: var(--font-weight-bold);
+	/* Cutta Bold 20 / 28. */
+	font-size: var(--text-xl);
+	line-height: 1.4;
+}
+
+.testimonial-card__role {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-normal);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+}
+
+.testimonial-card__link-wrapper {
+	/* `margin-top: auto` colle le lien au bas de la carte : les témoignages n'ont pas
+	   tous la même longueur, mais les cartes d'un même écran, si (slides étirées). */
+	margin-top: auto;
+	padding-top: calc(var(--spacing) * 14);
+}
+
+/* Sélecteurs à deux classes : `Link.module.css` pose `.link { color }` et
+   `.link--primary svg { color }` avec la même spécificité. L'ordre des modules CSS
+   n'étant pas garanti, on remonte d'un cran plutôt que de parier dessus. */
+.testimonial-card .testimonial-card__link {
+	color: var(--testimonial-card-link);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1.25;
+	/* Souligné en permanence dans la maquette, pas seulement au survol. */
+	text-decoration: underline;
+	text-underline-position: from-font;
+}
+
+.testimonial-card .testimonial-card__link:hover,
+.testimonial-card .testimonial-card__link:focus-visible {
+	color: var(--testimonial-card-link-hover);
+}
+
+.testimonial-card .testimonial-card__link svg {
+	color: currentColor;
+}
+
+.testimonial-card .testimonial-card__link:focus-visible {
+	outline: 2px solid var(--color-accent-base);
+	outline-offset: 2px;
+	border-radius: var(--radius-sm);
+}

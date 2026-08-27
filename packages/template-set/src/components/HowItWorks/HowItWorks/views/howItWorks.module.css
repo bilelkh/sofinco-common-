@@ -1,0 +1,84 @@
+@import "sofinco-react/styles/tokens.css";
+
+/* =====================================================================
+   Styles édition Jahia uniquement.
+   Le rendu visuel "live" est entièrement piloté par sofinco-react.
+   Tokens du DS Sofinco (tokens.css) utilisés partout — aucun hex hardcodé
+   pour éviter les dérives (cf. review Journiac : #0a1f44 ≠ vraie navy).
+   ===================================================================== */
+
+.howItWorksEdit {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	padding: calc(var(--spacing) * 6);
+	border: 1px dashed rgb(3 51 77 / 15%); /* navy #03334d à 15% */
+	border-radius: 12px;
+	background: var(--color-primary-subtle, #fbfcfe);
+}
+
+.header {
+	text-align: center;
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.title {
+	font-size: var(--text-xl, 1.25rem);
+	font-weight: var(--font-weight-bold, 700);
+	color: var(--color-primary-base);
+	margin: 0 0 calc(var(--spacing) * 2);
+}
+
+.subtitle {
+	font-size: var(--text-base, 1rem);
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+/* Pile verticale des cartes d'édition rendues par <RenderChildren>.
+   Chaque enfant est wrappé par Jahia avec ses propres markers d'édition.
+
+   Les deux variables ci-dessous pilotent l'ordre image / texte à l'intérieur
+   de chaque carte d'étape. On passe par des custom properties héritées plutôt
+   que par un sélecteur descendant : la carte vit dans un autre CSS module
+   (howItWorksStep.module.css), dont les classes sont hashées et donc
+   inatteignables d'ici. L'héritage traverse les wrappers d'édition Jahia. */
+.steps {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 2);
+
+	/* imagePosition = "left" (défaut) : image en 1er, titre + description en 2e. */
+	--sof-hiw-step-image-order: 1;
+	--sof-hiw-step-body-order: 2;
+}
+
+/* imagePosition = "right" : l'inverse. Le modifier est qualifié par `.steps`
+   (spécificité 0,2,0) pour l'emporter par spécificité et non par ordre de
+   déclaration — un réordonnancement des règles ne peut pas le neutraliser. */
+.steps.stepsImageRight {
+	--sof-hiw-step-image-order: 2;
+	--sof-hiw-step-body-order: 1;
+}
+
+/* CTA optionnel (mixin sofmix:ctaOptional), rendu entre le parcours d'étapes
+   et la zone vidéo — miroir du placement "live" côté sofinco-react. */
+.ctaWrapper {
+	display: flex;
+	justify-content: center;
+}
+
+/* Zone vidéo en édition — séparée visuellement de la pile d'étapes pour que
+   l'auteur identifie clairement où vit le sofnt:videoBlock optionnel. */
+.videoZone {
+	margin-top: calc(var(--spacing) * 6);
+	padding-top: calc(var(--spacing) * 4);
+	border-top: 1px dashed rgb(3 51 77 / 12%); /* navy à 12% */
+}
+
+.videoZone:empty {
+	/* Quand aucune vidéo n'est contribuée, on cache la séparation pour rester
+	   visuellement neutre. */
+	display: none;
+}

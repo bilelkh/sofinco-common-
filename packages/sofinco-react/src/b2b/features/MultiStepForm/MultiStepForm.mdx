@@ -1,0 +1,197 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as MultiStepFormStories from "./MultiStepForm.stories";
+
+<Meta of={MultiStepFormStories} />
+
+# MultiStepForm
+
+Formulaire multi-étapes **entièrement piloté par configuration**. `steps` décrit les
+étapes, leurs champs et leurs règles ; le composant en déduit le rendu, l'indicateur de
+progression et la validation. Aucune connaissance métier n'y est codée : le parent — un
+composant Jahia — reçoit les valeurs complètes dans `onSubmit` et décide de la suite.
+
+Il s'appuie sur [`@tanstack/react-form`](https://tanstack.com/form) pour l'état et sur les
+contrôles du DS (`TextField`, `Select`, `Textarea`), la `Cta` et le `Stepper`.
+
+## How It Works
+
+- **une étape = un objet `steps[]`** : titre, description, champs, et un `content` libre
+  pour ce que la configuration de champs ne sait pas décrire (encart légal, récapitulatif)
+- **le Stepper est dérivé de `steps`** — pas de `totalSteps` à tenir synchronisé à la main
+- **on ne franchit une étape que si *ses* champs sont valides**. Les champs des étapes
+  suivantes ne sont pas montés : ils ne sont donc jamais évalués au passage
+- **les valeurs survivent au changement d'étape** : un retour arrière retrouve la saisie
+  intacte, et `onSubmit` reçoit toujours le même objet quel que soit le chemin parcouru
+- **le bouton principal est un `submit`** : la touche Entrée dans un champ passe donc par
+  la même validation que le clic
+
+## Usage
+
+```tsx
+import { MultiStepForm } from "sofinco-react";
+
+<MultiStepForm
+	ariaLabel="Devenir partenaire"
+	settings={{
+		salesforceUrl:
+			"https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00DJ9000000Qej3",
+		successUrl: "/contact/confirmation",
+	}}
+	steps={[
+		{
+			id: "entreprise",
+			label: "Votre entreprise",
+			title: "Votre entreprise",
+			description: "Vérifiez que les informations pré-remplies sont correctes.",
+			fields: [
+				{
+					name: "siret",
+					label: "Siret",
+					required: true,
+					clearable: true,
+					validation: { pattern: /^\d{14}$/ },
+					errorMessages: { pattern: "Le Siret comporte 14 chiffres." },
+				},
+				{
+					name: "secteur",
+					type: "select",
+					label: "Secteur d'activité",
+					placeholder: "Choisissez un secteur",
+					required: true,
+					options: [{ value: "bricolage", label: "Bricolage" }],
+				},
+			],
+		},
+		{
+			id: "contact",
+			label: "Votre contact",
+			title: "Votre contact",
+			fields: [
+				{ name: "prenom", label: "Prénom", width: "half", required: true },
+				{ name: "nom", label: "Nom", width: "half", required: true },
+				{ name: "email", type: "email", label: "E-mail", required: true, validation: { email: true } },
+			],
+		},
+	]}
+	onSubmit={(values) => envoyerCandidature(values)}
+/>;
+```
+
+`settings.salesforceUrl` contient l'URL Salesforce Web-to-Lead configurée par le CMS. À la
+soumission, le composant poste l'objet complet avec un formulaire HTML `POST` encodé en
+`application/x-www-form-urlencoded`. `onSubmit` reste appelé avec le même objet pour le
+suivi côté parent et Storybook. `settings.successUrl` est envoyé comme `retURL` : Salesforce
+redirige la fenêtre principale vers cette URL après le traitement du lead.
+
+## Champs
+
+Le `type` choisit le contrôle DS rendu : `select` → `Select`, `textarea` → `Textarea`,
+`autocomplete` → `Autocomplete`, tout le reste → `TextField` (`text` par défaut, plus
+`email`, `tel`, `number`, `url`, `password`, `date`).
+
+Toutes les valeurs sont des **chaînes** — un `<input>` ne rend jamais autre chose, y
+compris en `type="number"`. Les conversions (nombre, date, booléen) restent au parent,
+dans `onSubmit`, là où le domaine métier est connu.
+
+`width: "half"` place deux champs sur une ligne à partir du palier tablette ; en mobile la
+grille reste à une colonne.
+
+### Champ `autocomplete`
+
+Pour une valeur qui vient d'un service plutôt que d'une liste connue d'avance. `onSearch`
+est appelée à la frappe et rend les options ; le formulaire, lui, ne connaît aucune API.
+
+Deux rappels vont par paire quand la valeur retenue ne suffit pas à désigner le choix —
+le cas du code postal, qui désigne jusqu'à **quatorze communes** :
+
+- `fills` range les valeurs annexes à côté de la principale, au moment du choix. Ses clés
+  n'ont pas à figurer dans `fields` (elles ne sont jamais saisies) mais sont amorcées à
+  vide dès le premier rendu, pour que `onSubmit` reçoive toujours le même objet ;
+- `display` refait le libellé affiché à partir des valeurs. Les champs d'une étape quittée
+  étant démontés, sans elle le champ se rouvrirait vide sur une valeur pourtant
+  renseignée. Configurer `fills` sans `display` produit exactement ce trou.
+
+```tsx
+{
+	name: "codePostal",
+	type: "autocomplete",
+	label: "Code postal",
+	minLength: 2,
+	onSearch: (query, signal) => searchCityOptions(query, { signal }),
+	fills: (option) => ({ ville: option.meta?.city ?? "" }),
+	display: (values) => (values.ville ? `${values.ville} (${values.codePostal})` : ""),
+	validation: { pattern: /^\d{5}$/ },
+}
+```
+
+Effacer le champ vide aussi les clés annexes : sans quoi la commune d'un code effacé
+survivrait seule jusqu'à `onSubmit`.
+
+## Validation
+
+Les règles sont évaluées dans cet ordre : `required`, `email`, `pattern`, `minLength`,
+`maxLength`, `min`/`max`, puis la règle libre `validate`.
+
+**Un champ facultatif laissé vide saute toutes les règles de format** — sans ce
+court-circuit, un `minLength` rendrait obligatoire un champ qu'on a le droit de ne pas
+remplir. Seule `validate` reste appelée, pour les règles croisées.
+
+Chaque règle a un message par défaut en français, remplaçable règle par règle via
+`errorMessages`. `validate` reçoit toutes les valeurs du formulaire, étapes précédentes
+comprises.
+
+Un champ `disabled` n'est **jamais validé** — comme en HTML natif, où `disabled` exclut de
+la validation de contrainte. C'est aussi la seule règle qui ne mène pas à une impasse : un
+champ à la fois désactivé et obligatoire mais vide bloquerait l'étape pour toujours. Sa
+valeur reste remontée dans `onSubmit`, puisqu'elle vient du CMS.
+
+Un message n'apparaît **qu'une fois le champ quitté**, ou après un « Continuer » refusé —
+pas dès la première frappe. Il disparaît ensuite dès que la saisie redevient valide : les
+règles sont rejouées à chaque changement de valeur, sur une cause de validation unique,
+seule façon qu'un message corrigé ne reste pas affiché.
+
+```tsx
+{
+	name: "confirmation",
+	label: "Confirmez l'adresse",
+	validation: {
+		validate: (value, values) =>
+			value === values.email ? undefined : "Les deux adresses diffèrent.",
+	},
+}
+```
+
+## Remontée vers Jahia
+
+`onSubmit` n'est appelé qu'une fois **toutes** les étapes valides. Un dernier contrôle
+rejoue les règles sur l'ensemble du parcours juste avant la sortie : si une étape franchie
+plus tôt a été invalidée depuis, l'utilisateur y est ramené plutôt que d'envoyer des
+données incomplètes.
+
+Si `onSubmit` retourne une promesse, l'attente est gérée seule (bouton en chargement).
+`isSubmitting` n'est utile que si le parent pilote lui-même l'appel réseau ; `submitError`
+affiche l'échec sous les boutons, saisie intacte.
+
+`onStepChange` est notifié à chaque changement d'étape, après validation de l'étape
+quittée. `onFirstStepBack` rend le bouton retour dès la première étape — sans lui, il n'y
+serait pas rendu, faute d'endroit où aller.
+
+## Accessibilité
+
+- à chaque changement d'étape, le focus est reposé sur l'en-tête de la nouvelle étape :
+  sans ça il resterait sur un bouton démonté et repartirait du `<body>`
+- en cas d'échec de validation, le focus va au **premier champ fautif**, dont le message
+  est déjà annoncé par le `role="alert"` de `Field`
+- la validation native du navigateur est désactivée (`noValidate`) : ses bulles
+  doublonneraient les messages du DS et ne sont pas traduisibles
+- le `Stepper` expose la progression en `role="progressbar"`, avec `aria-valuetext` au
+  format « n/N »
+
+<Canvas of={MultiStepFormStories.Default} />
+
+## Props
+
+<ArgTypes of={MultiStepFormStories.Default} />
+
+<Stories />

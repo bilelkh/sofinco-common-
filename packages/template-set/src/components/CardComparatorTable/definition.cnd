@@ -1,0 +1,6 @@
+[sofnt:comparatorCardList] > sofnt:listBase
+ + * (sofnt:comparatorCard) = sofnt:comparatorCard
+
+[sofnt:cardComparatorTable] > jnt:content, jmix:editorialContent, mix:title, sofmix:component orderable
+ - subtitle (string, textarea) i18n
+ + cards (sofnt:comparatorCardList) = sofnt:comparatorCardList autocreated mandatory

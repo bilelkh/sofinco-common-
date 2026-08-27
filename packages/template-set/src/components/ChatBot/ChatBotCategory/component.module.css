@@ -1,0 +1,15 @@
+.editCategoryList {
+	list-style: none;
+	margin: 4px 0 0 12px;
+	padding: 6px 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	border-left: 2px solid #56ea00;
+	border-bottom: 2px solid #56ea00;
+	border-radius: 4px;
+}
+.editCategoryItem {
+	font-size: 12px;
+	color: #0d1f3c;
+}

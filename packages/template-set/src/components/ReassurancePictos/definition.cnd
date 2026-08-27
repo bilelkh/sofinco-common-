@@ -1,0 +1,7 @@
+[sofnt:reassurancePictos] > jnt:content, sofmix:component orderable
+ - ariaLabel (string) i18n
+ - maxItems (long) = 4 autocreated < '[1,20]'
+ + * (sofnt:reassurancePictosItem) = sofnt:reassurancePictosItem
+
+[sofnt:reassurancePictosItem] > jnt:content, mix:title, jmix:editorialContent
+ - icon (weakreference, picker[type='image']) mandatory < jmix:image

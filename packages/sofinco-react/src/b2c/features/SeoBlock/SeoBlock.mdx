@@ -1,0 +1,75 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SeoBlockStories from "./SeoBlock.stories";
+
+<Meta of={SeoBlockStories} />
+
+# SeoBlock
+
+A SEO text section for page footers, rendering a title and one or more HTML content blocks. Color is applied via BEM modifier classes.
+
+## How It Works
+
+- `title`: object with a `text` string, an optional `color` from `AvailableColors`, and an optional heading `level` from `TitleLevel` (defaults to `"h2"`) — rendered as the matching heading tag (`<h2>`–`<h3>`) with `seoblock__title--{level}` and `seoblock__title--{color}` modifier classes
+- `sections`: array of content blocks, each with a raw HTML `content` string and an optional `color` from `AvailableColors`; the modifier class `seoblock__content--{color}` is applied to each block. The array **may be empty** — the text is optional in the CMS contribution, and a title-only block renders the heading without the content wrapper
+- `className`: optional extra class forwarded to the outer `<section>` element
+
+### SeoBlockProps shape
+
+```ts
+type SeoBlockProps = {
+  className?: string;
+  title: { text: string; color?: AvailableColors; level?: TitleLevel };
+  sections: Array<{ content: string; color?: AvailableColors }>;
+};
+
+type AvailableColors = "green" | "red" | "accent" | "primary";
+type TitleLevel = "h2" | "h3";
+```
+
+> **Note**
+> `title.level` controls both the rendered heading tag (semantics / SEO) and its visual size. `"h4"` reuses the `h3` typography. Use a single `h1` per page to keep the document outline valid.
+
+> **Note**
+> `sections[].content` is injected via `dangerouslySetInnerHTML` to support rich HTML from a CMS. Always sanitise content server-side before passing it to this prop.
+
+## Basic Usage
+
+```tsx
+import { SeoBlock } from "sofinco-react";
+
+<SeoBlock
+  title={{
+    text: "Sofinco, partenaire de confiance pour votre crédit conso",
+    color: "primary",
+    level: "h2",
+  }}
+  sections={[
+    {
+      content:
+        "<p>Le <strong>crédit à la consommation</strong> permet de financer vos projets sans justification d'utilisation des fonds.</p>",
+      color: "accent",
+    },
+    {
+      content:
+        "<p>Les <strong>taux d'intérêt</strong> varient selon le montant et la durée. Comparez les offres avant de vous engager.</p>",
+      color: "green",
+    },
+  ]}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={SeoBlockStories.Default} />
+<Canvas of={SeoBlockStories.MultipleSections} />
+<Canvas of={SeoBlockStories.SingleSection} />
+<Canvas of={SeoBlockStories.TitleOnly} />
+
+## Props
+
+<ArgTypes of={SeoBlockStories} />
+
+## All Stories
+
+<Stories />

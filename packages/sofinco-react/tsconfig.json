@@ -1,0 +1,22 @@
+{
+	// `paths` vit dans `tsconfig.paths.json` : ce fichier est aussi étendu par les
+	// consommateurs (module Jahia `sofinco-template`), qui compilent les sources du DS et
+	// doivent résoudre les mêmes alias. TypeScript résout les chemins relatifs d'un `paths`
+	// par rapport au fichier qui le déclare, donc l'héritage fonctionne tel quel.
+	"extends": "./tsconfig.paths.json",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"jsx": "preserve",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"plugins": [
+			{
+				"name": "typescript-plugin-css-modules"
+			}
+		],
+		"strict": true,
+		"verbatimModuleSyntax": true,
+		"target": "esnext"
+	}
+}

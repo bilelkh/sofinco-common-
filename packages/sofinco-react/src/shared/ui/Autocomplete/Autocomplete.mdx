@@ -1,0 +1,121 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as AutocompleteStories from "./Autocomplete.stories";
+
+<Meta of={AutocompleteStories} />
+
+# Autocomplete
+
+Champ de saisie adossé à une **recherche distante**. Là où `Select` propose une liste
+connue d'avance, `Autocomplete` n'a pas de liste : il appelle `onSearch` à la frappe et
+rend ce qu'on lui répond.
+
+Il suit le motif *combobox with list autocomplete* des WAI-ARIA APG. Le contrôle est un
+`<input>` — il faut pouvoir y taper — mais le focus n'en sort jamais : l'option courante
+est désignée par `aria-activedescendant`, ce qui laisse les flèches parcourir la liste
+sans que le lecteur d'écran perde le champ.
+
+**Visuellement, c'est un `TextField`, pas un `Select`** : ni icône de tête, ni chevron en
+fin de champ. La fin de champ n'accueille que le fileur d'attente et le bouton
+d'effacement, comme dans `TextField`. Un chevron promet une liste qu'on déplie ; ici il
+n'y a rien à déplier tant que rien n'est tapé, et il invitait à un clic qui n'ouvre aucun
+panneau utile. C'est un champ où l'on tape, il doit donc se présenter comme tel. Une icône
+de tête reste possible via `icon`, elle n'est simplement pas posée par défaut.
+
+<Canvas of={AutocompleteStories.Default} />
+
+## How It Works
+
+- **le composant ne filtre rien** : `onSearch` est seule juge de ce qui correspond. Elle
+  reçoit la saisie et un `AbortSignal`, et rend des options
+- **une recherche part au plus tard**, jamais à chaque frappe : `debounceMs` (250 ms par
+  défaut) laisse le temps de finir de taper, et toute frappe pendant ce délai annule
+  l'appel qui n'était pas encore parti
+- **la requête en vol est annulée** à la frappe suivante — sa réponse n'intéresse plus
+  personne, et une réponse hors d'ordre écraserait la bonne
+- **rien ne part sous `minLength`** (1 par défaut) : le panneau invite à préciser
+- **la valeur et l'affichage sont deux choses distinctes** : le champ montre le `label` de
+  l'option, `onValueChange` remonte son `value`
+- **une saisie non validée est réalignée à la sortie du champ** sur la dernière option
+  retenue : le champ ne peut pas afficher « ANTON » pendant que la valeur vaut « 92160 »
+
+## Valeur, libellé, et le reste
+
+`value` ne suffit pas toujours à désigner un choix. Le cas qui l'impose est celui du
+référentiel des communes : **un code postal désigne jusqu'à quatorze communes** — quatorze
+options partagent la valeur `62128`, seul leur libellé les distingue.
+
+`meta` est la réponse : les données de la source y voyagent telles quelles et reviennent
+dans `onValueChange`.
+
+```tsx
+<Autocomplete
+	label="Code postal"
+	minLength={2}
+	onSearch={(query, signal) => searchCityOptions(query, { signal })}
+	onValueChange={(code, option) => {
+		setCodePostal(code); // « 62128 »
+		setVille(option?.meta?.city); // « BOYELLES »
+	}}
+/>
+```
+
+<Canvas of={AutocompleteStories.Cities} />
+
+## Dans un MultiStepForm
+
+Le formulaire expose ce champ sous `type: "autocomplete"`, avec deux rappels qui vont par
+paire — `fills` déclare les valeurs annexes, `display` sait les relire :
+
+```tsx
+{
+	name: "codePostal",
+	type: "autocomplete",
+	label: "Code postal",
+	minLength: 2,
+	onSearch: (query, signal) => searchCityOptions(query, { signal }),
+	// La commune retenue est rangée à côté du code.
+	fills: (option) => ({ ville: option.meta?.city ?? "" }),
+	// Les champs d'une étape quittée sont démontés : au retour, c'est cette
+	// fonction qui refait le libellé affiché à partir des valeurs conservées.
+	display: (values) => (values.ville ? `${values.ville} (${values.codePostal})` : ""),
+}
+```
+
+Les clés rendues par `fills` n'ont pas à figurer dans `fields` — elles ne sont jamais
+saisies. Elles sont en revanche amorcées à vide dès le premier rendu, pour que `onSubmit`
+reçoive toujours le même objet quel que soit le chemin parcouru.
+
+## Le référentiel des communes
+
+`searchCityOptions` habille l'API Sofinco pour ce composant. Elle absorbe trois
+particularités du service, qu'il vaut mieux connaître :
+
+| Ce que fait le service | Ce que l'adaptateur en fait |
+| --- | --- |
+| Sensible aux accents — `ORLÉANS` ne renvoie rien | Les diacritiques sont retirés avant l'appel |
+| Ne connaît que l'espace — `saint-denis` ne renvoie rien | Traits d'union, apostrophes et points deviennent des espaces |
+| Répond **400** sur un `q` vide | Une saisie vide n'est pas envoyée |
+| Plafonne à **20 réponses** | Le panneau défile ; `minLength: 2` réduit le bruit |
+
+Le service apparie de lui-même les graphies alternatives : `SAINT DENIS LES BOURG` trouve
+bien `ST DENIS LES BOURG`.
+
+## Accessibilité
+
+- `role="combobox"` avec `aria-expanded`, `aria-controls` et `aria-activedescendant` ;
+  `aria-autocomplete="list"` — la liste ne réécrit jamais la saisie
+- le panneau n'existe pas dans le DOM tant qu'il n'est pas ouvert : fermé, le champ ne
+  pointe vers rien
+- `autocomplete="off"` sur le champ, sinon l'autocomplétion du navigateur rendrait une
+  seconde liste par-dessus la nôtre
+- `↑` `↓` `Home` `End` parcourent, `Entrée` valide, `Échap` annule la saisie en cours et
+  referme, `Tab` referme et laisse le focus filer
+- le message d'erreur est rendu par `Field` en `role="alert"`, donc annoncé dès qu'il
+  apparaît
+
+## Props
+
+<ArgTypes of={AutocompleteStories.Default} />
+
+<Stories />

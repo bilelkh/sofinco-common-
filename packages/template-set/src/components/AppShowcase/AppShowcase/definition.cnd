@@ -1,0 +1,7 @@
+[sofnt:appShowcase] > jnt:content, mix:title, sofmix:component, jmix:list orderable
+ - subtitle (string) mandatory
+ - backgroundColor (string, choicelist[resourceBundle]) = 'blueDark' indexed=no < 'blueDark', 'cyanClair', 'blanc'
+ - mainIcon (weakreference, picker[type='image'])
+ + qrCode (sofnt:qrSticker) = sofnt:qrSticker mandatory autocreated
+ - mobileImage (weakreference, picker[type='image']) mandatory
+ + * (sofnt:appShowcaseFeature) = sofnt:appShowcaseFeature

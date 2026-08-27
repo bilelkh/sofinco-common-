@@ -1,0 +1,51 @@
+@import "@styles/base.css";
+
+.alert-band {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: calc(var(--spacing) * 4) calc(var(--spacing) * 10);
+	gap: calc(var(--spacing) * 2);
+	min-height: 50px;
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	width: 100%;
+
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+}
+
+.alert-band {
+	background-color: var(--alert-band-bg);
+	color: var(--alert-band-fg);
+	background-color: var(--alert-band-bg);
+	color: var(--alert-band-fg);
+}
+
+.alert-band--info {
+	--alert-band-bg: var(--color-success-light);
+	--alert-band-fg: var(--color-success-strong);
+}
+.alert-band--warning {
+	--alert-band-bg: var(--color-warning-light);
+	--alert-band-fg: var(--color-warning-strong);
+}
+.alert-band--error {
+	--alert-band-bg: var(--color-secondary-light);
+	--alert-band-fg: var(--color-secondary-strong);
+}
+.alert-band--success {
+	--alert-band-bg: var(--color-success-light);
+	--alert-band-fg: var(--color-success-strong);
+}
+.alert-band--sanitary {
+	--alert-band-bg: var(--color-neutral-00);
+	--alert-band-fg: var(--color-primary-base);
+}

@@ -1,0 +1,25 @@
+{
+	"nodeType": "sofnt:insuranceFocus",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "mix:title",
+					"fields": [
+						{ "name": "jcr:title", "rank": "1.0", "mandatory": true }
+					]
+				},
+				{
+					"name": "sofnt:insuranceFocus",
+					"fields": [
+						{ "name": "description", "rank": "2.0", "mandatory": true },
+						{ "name": "image", "rank": "3.0", "mandatory": true },
+						{ "name": "imageAlt", "rank": "4.0" }
+					]
+				}
+			]
+		}
+	]
+}

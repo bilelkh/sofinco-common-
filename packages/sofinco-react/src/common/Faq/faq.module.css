@@ -1,0 +1,174 @@
+@import "@styles/base.css";
+
+.faq {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background-color: var(--color-white);
+	font-family: var(--font-sans);
+	color: var(--color-primary-base);
+	margin: 0 auto;
+	max-width: 928px;
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 20);
+}
+
+.faq__hero {
+	width: 100%;
+}
+
+.faq__hero-image {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 6;
+	object-fit: cover;
+	display: block;
+	border-radius: var(--radius-3xl);
+}
+
+/* Spacing (internal gap + bottom margin) is owned by SectionHeading. */
+
+/* Font-family, size, line-height, weight and color come from the DS heading
+   visual style (driven by `titleStyle` → SectionHeading `visualStyle`). Only the
+   FAQ-specific margin reset stays here. */
+.faq__title {
+	margin: 0;
+}
+
+.faq__external {
+	width: 100%;
+}
+
+.faq__items {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+}
+
+.faq__footer {
+	display: flex;
+	justify-content: center;
+	margin-top: calc(var(--spacing) * 10);
+}
+
+.faq__item {
+	background-color: var(--color-primary-subtle);
+	border-radius: var(--radius-3xl);
+	overflow: hidden;
+	transition: background-color 0.2s ease;
+}
+
+.faq__item-header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: calc(var(--spacing) * 4);
+	padding: 20px 24px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	text-align: left;
+	font-family: inherit;
+	color: inherit;
+	user-select: none;
+	list-style: none;
+}
+
+/* Remove the native <summary> disclosure marker (triangle). */
+.faq__item-header::-webkit-details-marker {
+	display: none;
+}
+
+.faq__item-header:focus-visible {
+	outline: 2px solid var(--color-accent-strong);
+	outline-offset: -2px;
+}
+
+.faq__item-question {
+	font-size: var(--text-base);
+	font-weight: 600;
+	line-height: var(--text-base--line-height);
+	color: var(--color-primary-base);
+	flex: 1;
+}
+
+.faq__item-number {
+	margin-right: calc(var(--spacing) * 1);
+}
+
+.faq__item-toggle {
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-accent-base);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-primary-base);
+	transition: background-color 0.2s ease;
+}
+
+.faq__item:hover .faq__item-toggle {
+	background-color: var(--color-accent-strong);
+}
+
+.faq__item-toggle-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Icon swap driven purely by the native open state — Plus when closed, Minus
+   when open. No JS. */
+.faq__item-toggle-icon--minus {
+	display: none;
+}
+
+.faq__item[open] .faq__item-toggle-icon--plus {
+	display: none;
+}
+
+.faq__item[open] .faq__item-toggle-icon--minus {
+	display: inline-flex;
+}
+
+.faq__answer-text {
+	padding: 0 24px 24px 24px;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: var(--text-sm);
+	line-height: 1.6;
+	color: var(--color-primary-base);
+	white-space: pre-line;
+}
+
+.faq__answer-text a {
+	color: var(--color-primary-base);
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.faq__answer-text a:hover {
+	color: var(--color-accent-strong);
+}
+
+@media (--medium-down) {
+	.faq {
+		gap: calc(var(--spacing) * 10);
+	}
+
+	.faq__hero-image {
+		aspect-ratio: 4 / 3;
+		border-radius: var(--radius-3xl);
+	}
+
+	.faq__item-header {
+		padding: 16px 20px;
+	}
+
+	.faq__answer-text {
+		padding: 0 20px 20px 20px;
+	}
+}

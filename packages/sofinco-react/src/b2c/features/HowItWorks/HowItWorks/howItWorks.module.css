@@ -1,0 +1,55 @@
+@import "@styles/base.css";
+
+/* =====================================================================
+   HowItWorks — bloc d'assemblage
+   ---------------------------------------------------------------------
+   Empile en-tête + <ScrollSteps> + CTA + <VideoBlock>. Chaque brique gère
+   son propre rythme vertical : on ne pose pas de `gap` ici pour éviter le
+   double-espacement avec le padding interne de ScrollSteps/VideoBlock.
+   ===================================================================== */
+
+.howItWorks {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* ---- En-tête (titre H2 + sous-titre) ---- */
+.header {
+	text-align: center;
+	max-width: 1232px;
+	margin: 0 auto;
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6);
+	box-sizing: border-box;
+}
+
+@media (--small-up) {
+	.header {
+		padding-bottom: calc(var(--spacing) * 20);
+	}
+}
+
+.title {
+	color: var(--color-primary-base);
+	margin: 0;
+}
+
+.subtitle {
+	margin: calc(var(--spacing) * 4) auto 0;
+	max-width: 60ch;
+	font-size: var(--text-base);
+}
+
+/* ---- CTA optionnel (entre les étapes et la vidéo) ---- */
+.ctaWrapper {
+	display: flex;
+	justify-content: center;
+	padding-top: calc(var(--spacing) * 10);
+}
+
+@media (--small-up) {
+	.ctaWrapper {
+		padding-top: calc(var(--spacing) * 20);
+	}
+}

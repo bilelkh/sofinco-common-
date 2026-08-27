@@ -1,0 +1,13 @@
+@import "@styles/base.css";
+
+.hero {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-primary-base);
+	padding: 0 calc(var(--spacing) * 4);
+	overflow: hidden;
+	width: 100%;
+	min-height: max(620px, calc(100dvh - var(--header-height, 100px)));
+}

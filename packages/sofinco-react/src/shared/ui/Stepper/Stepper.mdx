@@ -1,0 +1,77 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as StepperStories from "./Stepper.stories";
+
+<Meta of={StepperStories} />
+
+# Stepper
+
+Indicateur de progression d'un parcours en plusieurs étapes. Deux variantes, qui ne
+partagent que la boîte extérieure.
+
+## How It Works
+
+- `variant` choisit la forme : `line` (barre segmentée + compteur) ou `number` (pastilles numérotées)
+- `activeStep` est indexé à partir de **1** et borné à `[1, totalSteps]`
+- `totalSteps` vaut par défaut 6 en `line` et 4 en `number` — les valeurs de la maquette
+- `label` n'est rendu qu'au-dessus de la pastille courante, et seulement en `number`
+- `hasButton` / `onBack` ajoutent le bouton retour, seulement en `line`
+
+## Usage
+
+```tsx
+import { Stepper } from "sofinco-react";
+
+<Stepper activeStep={3} />
+<Stepper variant="line" activeStep={2} hasButton onBack={() => history.back()} />
+<Stepper variant="number" activeStep={2} label="Vos informations" />
+<Stepper variant="number" totalSteps={3} activeStep={1} label="Votre projet" />
+```
+
+## Variante `line`
+
+Six segments égaux remplis jusqu'à l'étape courante, compteur « n/N » à droite.
+
+Les deux gouttières latérales font 80px **en permanence**, y compris sans bouton retour :
+sinon la barre se décalerait entre un écran qui affiche le retour et un écran qui ne
+l'affiche pas.
+
+<Canvas of={StepperStories.LineAllSteps} />
+<Canvas of={StepperStories.LineWithBackButton} />
+
+## Variante `number`
+
+Pastilles reliées par un trait. Étape passée → pastille pleine + coche, étape courante →
+pastille pleine + numéro, étape à venir → contour seul.
+
+La hauteur (58px) est réservée en permanence pour la ligne de libellé, afin que les étapes
+sans libellé ne remontent pas quand l'étape courante change.
+
+<Canvas of={StepperStories.NumberAllSteps} />
+<Canvas of={StepperStories.NumberThreeSteps} />
+
+## Accessibilité
+
+Le composant est **non interactif** : on ne clique pas sur les étapes. Seul le bouton
+retour de la variante `line` l'est. Les deux variantes exposent donc des sémantiques
+distinctes plutôt qu'une liste d'onglets.
+
+- **`line`** — `role="progressbar"` est posé sur la barre, pas sur la racine : celle-ci
+  contient le bouton retour, or un `progressbar` ne doit pas embarquer d'élément
+  interactif. Le compteur visible est `aria-hidden`, sa valeur passant par
+  `aria-valuetext`, pour ne pas être annoncée deux fois.
+- **`number`** — liste ordonnée, l'étape courante portant `aria-current="step"`. Les
+  pastilles sont décoratives : la coche n'a pas de texte et le numéro seul n'énoncerait
+  pas l'état. Chaque étape porte donc son libellé complet en `sr-only`
+  (« Étape 2 sur 4 : Vos informations, en cours »).
+
+Le bouton retour n'a pas de libellé visible : son nom accessible vient de `backLabel`
+(« Étape précédente » par défaut).
+
+## Props
+
+<ArgTypes of={StepperStories} />
+
+## All Stories
+
+<Stories />

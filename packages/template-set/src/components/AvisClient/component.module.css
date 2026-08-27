@@ -1,0 +1,24 @@
+.editPreview {
+	padding: 24px;
+	border: 1px dashed var(--color-primary-light, #b0c0c8);
+	border-radius: 16px;
+}
+
+.editTitle {
+	font-weight: 700;
+	font-size: 22px;
+	margin: 0 0 8px 0;
+}
+
+.editSubtitle {
+	font-size: 16px;
+	color: var(--color-text-muted, #547688);
+	margin: 0 0 8px 0;
+}
+
+.editNote {
+	font-size: 14px;
+	color: var(--color-text-muted, #547688);
+	margin: 12px 0 0 0;
+	font-style: italic;
+}

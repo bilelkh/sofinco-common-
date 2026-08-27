@@ -1,0 +1,80 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as ComparativeTableStories from "./ComparativeTable.stories";
+
+<Meta of={ComparativeTableStories} />
+
+# ComparativeTable
+
+`ComparativeTable` displays a side-by-side comparison between two offers, with a clear list of criteria and one CTA per column.
+
+## Composition
+
+- A section title and subtitle.
+- A comparison table with one row per criterion.
+- Two offer columns, left and right.
+- A CTA for each offer.
+- A responsive layout that adapts between mobile and desktop.
+
+## Responsive behavior
+
+- **Mobile**: the component renders a compact table with the comparison values first, then the CTAs below the content.
+- **Desktop**: the component renders a full comparison table with a dedicated CTA row at the bottom.
+
+## Accessibility
+
+- Uses semantic table markup (`table`, `thead`, `tbody`, `th`, `td`).
+- Column and row headers rely on explicit `scope` values.
+- A hidden `caption` is provided for screen readers.
+- The section is linked to the title with `aria-labelledby`.
+
+## Usage
+
+```tsx
+import { ComparativeTable } from "sofinco-react";
+
+export function Example() {
+  return (
+    <ComparativeTable
+      title="Prêt Personnel ou Crédit Renouvelable"
+      subtitle="Je compare et choisis ce qui me convient le mieux"
+      rowHeaderLabel="Critère"
+      leftColumnLabel="Prêt personnel"
+      rightColumnLabel="Crédit renouvelable"
+      leftColumnButton={{
+        label: "Demander un prêt personnel",
+        href: "#",
+        variant: "primary",
+      }}
+      rightColumnButton={{
+        label: "Découvrir le crédit renouvelable",
+        href: "#",
+        variant: "accent",
+      }}
+      rows={[
+        {
+          label: "Montant",
+          leftValue: {
+            label: "De 3 001 € à 75 000 €",
+          },
+          rightValue: {
+            label: "Jusqu'à 10 000 €",
+          },
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Preview
+
+<Canvas of={ComparativeTableStories.Default} />
+
+## Props
+
+<ArgTypes of={ComparativeTableStories} />
+
+## All Stories
+
+<Stories />

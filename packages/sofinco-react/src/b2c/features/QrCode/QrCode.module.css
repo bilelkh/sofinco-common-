@@ -1,0 +1,41 @@
+@import "@styles/base.css";
+@import "@styles/breakpoints.css";
+
+/* `display: none` par défaut, révélé par le média : la vignette est ainsi TOUJOURS présente
+   dans le HTML serveur, et c'est le navigateur qui décide de la montrer. Voir `QrCode.tsx`
+   pour la raison (sous-arbre non hydraté). */
+.qr-code {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	text-align: center;
+	font-family: var(--font-sans);
+	font-size: var(--text-xs);
+	color: var(--color-neutral-00);
+	max-width: 148px;
+	min-height: 160px;
+	padding: calc(var(--spacing) * 4) calc(var(--spacing) * 4) calc(var(--spacing) * 3)
+		calc(var(--spacing) * 4);
+	border-radius: var(--radius-2xl);
+	background-color: var(--color-primary-strong);
+	line-height: 1rem;
+
+	img {
+		width: 110px;
+		height: 110px;
+		object-fit: contain;
+	}
+}
+
+@media (--qr-code-up) {
+	.qr-code {
+		display: flex;
+	}
+}
+
+/* Échappatoire d'ÉDITION : spécificité 0-2-0, donc gagne sur le média ci-dessus quelle que
+   soit la largeur. Le modificateur est toujours posé EN PLUS de `.qr-code`, jamais seul. */
+.qr-code.qr-code--always {
+	display: flex;
+}

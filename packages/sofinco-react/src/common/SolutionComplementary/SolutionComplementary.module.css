@@ -1,0 +1,227 @@
+@import "@styles/breakpoints.css";
+@import "@styles/tokens.css";
+
+.solution-complementary {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10)
+		calc(var(--spacing) * 6);
+	background-color: var(--color-primary-subtle);
+}
+
+.solution-complementary__content {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+/* Layout (flex/align/gap sp-4) and bottom spacing (sp-9 = 80px) are owned
+   by SectionHeading — both already match the previous values here. */
+.solution-complementary__header {
+	max-width: 900px;
+	margin-inline: auto;
+}
+
+.solution-complementary__eyebrow {
+	display: inline-block;
+	width: 32px;
+	height: 12px;
+	border-radius: var(--radius-full);
+}
+
+.solution-complementary__logo {
+	display: block;
+	height: 20px;
+	width: auto;
+	object-fit: contain;
+	max-width: 120px;
+}
+
+.solution-complementary__grid {
+	display: flex;
+	gap: calc(var(--spacing) * 6);
+	max-width: 1232px;
+	margin: 0 auto;
+	height: 500px;
+	align-items: stretch;
+}
+
+.solution-complementary__card {
+	position: relative;
+	flex: 1 1 0;
+	border-radius: var(--radius-4xl);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: calc(var(--spacing) * 4);
+	min-height: 480px;
+	box-sizing: border-box;
+}
+
+.solution-complementary__card--expanded {
+	flex: 2 1 0;
+}
+
+.solution-complementary__card--collapsed {
+	flex: 1 1 0;
+}
+
+.solution-complementary__card-bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+	user-select: none;
+	pointer-events: none;
+}
+
+.solution-complementary__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(0, 51, 77, 0) 40%, rgba(0, 51, 77, 0.35) 100%);
+	z-index: 0;
+	pointer-events: none;
+}
+
+.solution-complementary__panel {
+	position: relative;
+	z-index: 1;
+	background: var(--color-alpha-neutral-100-20);
+	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
+	border: none;
+	border-radius: var(--radius-3xl);
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 6);
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.solution-complementary__panel::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		120deg,
+		var(--color-alpha-neutral-00-40),
+		rgba(255, 255, 255, 0),
+		var(--color-alpha-neutral-00-20)
+	);
+	-webkit-mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.solution-complementary__panel-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+}
+
+.solution-complementary__titles {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 1);
+}
+
+.solution-complementary__card-title {
+	color: var(--color-neutral-00);
+	font-size: var(--text-xl);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1.3;
+	margin: 0;
+}
+
+.solution-complementary__card-subtitle {
+	color: var(--color-neutral-00);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-medium);
+	line-height: 1.4;
+	margin: 0;
+}
+
+.solution-complementary__expand-button {
+	width: 50px;
+	height: 30px;
+	border-radius: var(--radius-3xl);
+	background: var(--color-neutral-00);
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: default;
+	color: var(--color-secondary-base);
+	flex-shrink: 0;
+	transition: box-shadow 0.2s ease;
+	box-shadow: 0 2px 8px rgba(0, 36, 55, 0.15);
+}
+
+.solution-complementary__expanded-content {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.solution-complementary__chips {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 2);
+	margin-top: calc(var(--spacing) * 4);
+	margin-bottom: calc(var(--spacing) * 6);
+}
+
+.solution-complementary__check-icon {
+	background-color: white;
+}
+
+.solution-complementary__check-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+@media (max-width: 900px) {
+	.solution-complementary__grid {
+		flex-direction: column;
+		height: auto;
+		min-height: 0;
+	}
+
+	.solution-complementary__card,
+	.solution-complementary__card--expanded,
+	.solution-complementary__card--collapsed {
+		flex: none;
+		width: 100%;
+		min-height: 560px;
+	}
+
+	.solution-complementary__logo {
+		height: 18px;
+	}
+
+	.solution-complementary__expand-button {
+		display: none;
+	}
+}
+
+@media (--large-up) {
+	.solution-complementary {
+		padding: calc(var(--spacing) * 30) calc(var(--spacing) * 26) calc(var(--spacing) * 20)
+			calc(var(--spacing) * 26);
+	}
+}

@@ -1,0 +1,3 @@
+[sofnt:comparisonOfferFeature] > jnt:content, jmix:editorialContent, mix:title
+ - jcr:title (string) mandatory i18n
+ - text (string, textarea) mandatory i18n

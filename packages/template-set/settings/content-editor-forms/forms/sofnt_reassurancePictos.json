@@ -1,0 +1,18 @@
+{
+	"nodeType": "sofnt:reassurancePictos",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "sofnt:reassurancePictos",
+					"fields": [
+						{ "name": "maxItems", "rank": "1.0" },
+						{ "name": "ariaLabel", "rank": "2.0" }
+					]
+				}
+			]
+		}
+	]
+}

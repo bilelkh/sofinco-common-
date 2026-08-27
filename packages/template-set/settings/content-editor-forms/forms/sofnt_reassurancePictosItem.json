@@ -1,0 +1,27 @@
+{
+	"nodeType": "sofnt:reassurancePictosItem",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "mix:title",
+					"fields": [
+						{
+							"name": "jcr:title",
+							"rank": "1.0",
+							"mandatory": true
+						}
+					]
+				},
+				{
+					"name": "sofnt:reassurancePictosItem",
+					"fields": [
+						{ "name": "icon", "rank": "2.0" }
+					]
+				}
+			]
+		}
+	]
+}

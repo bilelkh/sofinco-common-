@@ -1,0 +1,203 @@
+@import "@styles/base.css";
+
+/* =====================================================
+   BASE — mobile first
+   ===================================================== */
+
+.chatbot {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background-color: var(--color-white);
+	margin: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+	font-family: var(--font-sans);
+	display: flex;
+	flex-direction: column;
+}
+
+.chatbot__content {
+	display: flex;
+	flex-direction: column;
+}
+
+.chatbot__step {
+	display: flex;
+	flex-direction: column;
+}
+
+.chatbot__message {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: calc(var(--spacing) * 3);
+	color: var(--color-primary-base);
+}
+
+.chatbot__avatar {
+	float: left;
+	width: 40px;
+	height: 40px;
+	margin-right: calc(var(--spacing) * 3);
+	background-color: var(--color-accent-base);
+	border-radius: var(--radius-full);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: var(--shadow-sm);
+}
+
+/* Aucune largeur/hauteur ici : ce sont les attributs `width`/`height` de l'<img> (40x40,
+   la taille de la bulle ci-dessus) qui dimensionnent l'avatar. `object-fit` garantit
+   qu'un avatar contribue dans un autre ratio soit contenu plutot qu'etire. */
+.chatbot__avatar-img {
+	object-fit: contain;
+}
+
+.chatbot__message-body {
+	display: block;
+	width: 100%;
+}
+
+.chatbot__greeting,
+.chatbot__question {
+	composes: h3 from "@styles/utilities/typography.module.css";
+	color: var(--color-primary-base);
+	margin: 0;
+}
+
+.chatbot__question {
+	padding-bottom: calc(var(--spacing) * 10);
+}
+
+.chatbot__category-grid {
+	clear: left;
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 4);
+}
+
+.chatbot__category-button {
+	background-color: var(--color-primary-subtle);
+	border-radius: var(--radius-2xl);
+	padding: 16px 20px;
+	width: fit-content;
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 8);
+	cursor: pointer;
+	text-align: left;
+	font-family: var(--font-sans);
+	border: none;
+}
+
+.chatbot__category-button svg {
+	transform: translateY(1px);
+}
+
+.chatbot__category-text {
+	color: var(--color-primary-base);
+	font-weight: var(--font-weight-normal);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	white-space: normal;
+}
+
+@keyframes fadeInReply {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.chatbot__user-reply {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	margin: calc(var(--spacing) * 10) 0;
+	animation: fadeInReply 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.chatbot__user-bubble {
+	background: linear-gradient(
+		180deg,
+		var(--color-primary-subtle) 0%,
+		var(--color-primary-light) 100%
+	);
+	border: none;
+	color: var(--color-primary-base);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+	border-radius: var(--radius-full);
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-base);
+	max-width: 100%;
+	white-space: normal;
+}
+
+.chatbot__result {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	animation: fadeInReply 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.chatbot__conclusion {
+	composes: h3 from "@styles/utilities/typography.module.css";
+	color: var(--color-primary-base);
+	margin: 0;
+}
+
+.chatbot__features {
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+}
+
+.chatbot__chip-text {
+	background-color: var(--color-primary-subtle);
+}
+
+.chatbot__cta {
+	width: 100%;
+	align-self: stretch;
+	margin-top: calc(var(--spacing) * 6);
+}
+
+.chatbot__result-actions {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	margin-top: calc(var(--spacing) * 6);
+	width: 100%;
+}
+
+/* =====================================================
+   TABLET — small-up (≥ 768px)
+   ===================================================== */
+
+@media (--small-up) {
+	.chatbot__cta {
+		width: fit-content;
+		margin-right: auto;
+	}
+
+	.chatbot__result-actions {
+		flex-direction: row;
+		flex-wrap: wrap;
+		width: fit-content;
+		margin-right: auto;
+	}
+}
+
+@media (--medium-up) {
+	.chatbot {
+		max-width: 960px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: calc(var(--spacing) * 30);
+		margin-bottom: calc(var(--spacing) * 30);
+	}
+}

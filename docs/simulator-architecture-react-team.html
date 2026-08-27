@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Refactor Simulator CTA — Équipe React</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1a202c;
+    background: #f7fafc;
+    padding: 40px 20px;
+  }
+  .container { max-width: 1280px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #2b6cb0 0%, #44337a 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  header h1 { font-size: 2.2em; margin-bottom: 10px; }
+  header p { font-size: 1.1em; opacity: 0.95; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; margin-top: 8px; }
+  section { background: white; border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  h2 { color: #44337a; font-size: 1.6em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #e9d8fd; }
+  h3 { color: #2d3748; margin: 20px 0 10px; font-size: 1.2em; }
+  h4 { color: #44337a; margin: 15px 0 8px; }
+  .intro { font-size: 1.1em; color: #4a5568; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th { background: #44337a; color: white; padding: 12px; text-align: left; }
+  td { padding: 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) { background: #faf5ff; }
+  code { background: #e9d8fd; padding: 2px 6px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 0.9em; color: #44337a; }
+  pre { background: #1a202c; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.82em; line-height: 1.5; margin: 12px 0; }
+  pre .keyword { color: #f687b3; }
+  pre .string { color: #68d391; }
+  pre .comment { color: #718096; font-style: italic; }
+  pre .type { color: #f6ad55; }
+  pre .fn { color: #63b3ed; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .card { background: #faf5ff; border-left: 5px solid #44337a; padding: 18px; border-radius: 8px; }
+  .card h4 { color: #44337a; margin-bottom: 8px; }
+  .card.warning { background: #fffaf0; border-left-color: #d69e2e; }
+  .card.warning h4 { color: #d69e2e; }
+  .card.success { background: #f0fff4; border-left-color: #38a169; }
+  .card.success h4 { color: #38a169; }
+  .card.danger { background: #fff5f5; border-left-color: #e53e3e; }
+  .card.danger h4 { color: #e53e3e; }
+  .diff-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+  .diff-col { padding: 0; }
+  .diff-col h4 { padding: 8px 12px; margin-bottom: 0; border-radius: 8px 8px 0 0; color: white; font-size: 0.95em; }
+  .diff-col.before h4 { background: #c53030; }
+  .diff-col.after h4 { background: #2f855a; }
+  .diff-col pre { margin-top: 0; border-radius: 0 0 8px 8px; }
+  .note { background: #fef5e7; border-left: 4px solid #d69e2e; padding: 15px; margin: 15px 0; border-radius: 4px; }
+  .check::before { content: "✅ "; }
+  .warn::before { content: "⚠️ "; }
+  .cross::before { content: "❌ "; }
+  ul { margin: 10px 0 10px 25px; }
+  li { margin-bottom: 6px; }
+  .file-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .file-card.new { border-color: #38a169; }
+  .file-card.modified { border-color: #d69e2e; }
+  .file-card.removed { border-color: #c53030; }
+  .file-header {
+    padding: 12px 18px;
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .file-card.new .file-header { background: #f0fff4; }
+  .file-card.modified .file-header { background: #fffaf0; }
+  .file-card.removed .file-header { background: #fff5f5; }
+  .file-path {
+    font-family: "Consolas", monospace;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #2d3748;
+    flex: 1;
+    word-break: break-all;
+  }
+  .file-tag {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+  }
+  .file-tag.new { background: #38a169; }
+  .file-tag.modified { background: #d69e2e; }
+  .file-tag.removed { background: #c53030; }
+  .file-body { padding: 18px; }
+  .change-list { margin: 8px 0; }
+  .change-list li { margin-bottom: 4px; }
+  .pill {
+    display: inline-block;
+    background: #44337a;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    margin-left: 4px;
+  }
+  .pill.new { background: #2f855a; }
+  .pill.changed { background: #d69e2e; }
+  .pill.removed { background: #c53030; }
+  .file-tree {
+    background: #1a202c;
+    color: #e2e8f0;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: "Consolas", monospace;
+    font-size: 0.9em;
+    line-height: 1.8;
+    margin: 15px 0;
+  }
+  .file-tree .deleted { color: #fc8181; text-decoration: line-through; }
+  .file-tree .added { color: #9ae6b4; font-weight: 600; }
+  .file-tree .modified { color: #f6ad55; font-weight: 600; }
+  .toc {
+    background: #faf5ff;
+    border: 1px solid #d6bcfa;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .toc h3 { margin-top: 0; color: #44337a; }
+  .toc ol { margin: 8px 0 0 20px; }
+  .toc a { color: #44337a; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, #44337a 0%, #6b46c1 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .stat-card .num { font-size: 2.2em; font-weight: 700; line-height: 1; }
+  .stat-card .label { font-size: 0.9em; opacity: 0.9; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>⚛️ Refactor Simulator CTA — Équipe React</h1>
+  <p>Liste détaillée des fichiers modifiés dans <code>packages/sofinco-react</code> + impacts côté template-set Jahia</p>
+  <div>
+    <span class="badge">React 19</span>
+    <span class="badge">Design System</span>
+    <span class="badge">Storybook</span>
+    <span class="badge">Helper partagé</span>
+    <span class="badge">Breaking changes documentés</span>
+  </div>
+</header>
+
+<section>
+  <div class="toc">
+    <h3>📑 Table des matières</h3>
+    <ol>
+      <li><a href="#stats">Statistiques du refactor</a></li>
+      <li><a href="#why">Pourquoi ce refactor ?</a></li>
+      <li><a href="#tree">Arborescence des fichiers impactés</a></li>
+      <li><a href="#new-files">Fichiers NOUVEAUX</a></li>
+      <li><a href="#modified-files">Fichiers MODIFIÉS — sofinco-react</a></li>
+      <li><a href="#template-set-impact">Impacts côté template-set</a></li>
+      <li><a href="#breaking">Breaking changes</a></li>
+      <li><a href="#migration">Guide de migration consommateurs externes</a></li>
+      <li><a href="#testing">Tests &amp; Storybook</a></li>
+    </ol>
+  </div>
+</section>
+
+<section id="stats">
+  <h2>📊 Statistiques du refactor</h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="num">2</div>
+      <div class="label">fichiers créés</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">5</div>
+      <div class="label">fichiers modifiés (sofinco-react)</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">~40</div>
+      <div class="label">lignes dupliquées supprimées</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">3</div>
+      <div class="label">stories Storybook</div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <h2>🤔 Pourquoi ce refactor ?</h2>
+  <p class="intro">Le helper Jahia <code>buildSimulatorCtaUrl</code> produit des URLs avec hash Vue.js (<code>#/montant-financement</code>), mais le navigateur <strong>strippe le hash</strong> lors d'un form GET natif.</p>
+
+  <div class="grid-2">
+    <div class="card danger">
+      <h4 class="cross">Avant le refactor</h4>
+      <code>&lt;form action="/path?p=X#/route"&gt;</code><br>
+      Submit natif → navigation vers <code>/path?amount=150</code><br>
+      → <strong>params perdus, hash perdu</strong>
+    </div>
+    <div class="card success">
+      <h4 class="check">Après le refactor</h4>
+      onSubmit handler intercepte → reconstruit l'URL :<br>
+      <code>/path?p=X&amount=150#/route</code><br>
+      → <strong>tout préservé</strong>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Bénéfice secondaire</strong> : factorisation de la logique form submit entre <code>HeroSimulator</code> et <code>SimulatorBlock</code> via un helper partagé (DRY).
+  </div>
+</section>
+
+<section id="tree">
+  <h2>📁 Arborescence des fichiers impactés</h2>
+  <div class="file-tree">packages/sofinco-react/src/
+├── <span class="added">shared/utils/simulatorFormSubmit.ts</span>             <span class="pill new">NEW</span>
+├── <span class="added">shared/utils/simulatorFormSubmit.test.ts</span>        <span class="pill new">NEW</span>
+│
+├── Hero/ui/HeroSimulator/
+│   ├── <span class="modified">HeroSimulator.tsx</span>                         <span class="pill changed">MOD</span>
+│   └── <span class="modified">HeroSimulator.type.ts</span>                     <span class="pill changed">MOD</span>
+│
+└── SimulatorBlock/
+    ├── <span class="modified">SimulatorBlock.tsx</span>                        <span class="pill changed">MOD majeur</span>
+    ├── <span class="modified">SimulatorBlock.type.ts</span>                    <span class="pill changed">MOD breaking</span>
+    └── <span class="modified">SimulatorBlock.stories.tsx</span>                <span class="pill changed">MOD</span>
+
+packages/template-set/src/components/  (consommation des changements)
+├── SimulatorCredit/
+│   ├── <span class="modified">default.server.tsx</span>                       <span class="pill changed">MOD</span> simplifié
+│   ├── <span class="modified">simulator.mapper.ts</span>                      <span class="pill changed">MOD</span> helper central
+│   └── <span class="modified">simulator.mapper.test.ts</span>                 <span class="pill changed">MOD</span> mocks adaptés
+│
+└── SimulatorBlock/
+    ├── <span class="modified">default.server.tsx</span>                       <span class="pill changed">MOD</span> simplifié
+    ├── <span class="modified">SimulatorBlockJahia.client.tsx</span>           <span class="pill changed">MOD</span> thin wrapper
+    ├── <span class="modified">simulatorBlock.mapping.ts</span>                <span class="pill changed">MOD</span> helper central
+    └── <span class="modified">simulatorBlock.mapping.test.ts</span>           <span class="pill changed">MOD</span> mocks adaptés</div>
+</section>
+
+<section id="new-files">
+  <h2>🆕 Fichiers NOUVEAUX</h2>
+
+  <div class="file-card new">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/shared/utils/simulatorFormSubmit.ts</div>
+      <div class="file-tag new">NEW</div>
+    </div>
+    <div class="file-body">
+      <h4>Rôle</h4>
+      <p>Factory function pure qui crée un handler <code>onSubmit</code> réutilisable pour tous les formulaires simulateur Sofinco. Mutualise la logique de préservation du hash route Vue.js.</p>
+
+      <h4>API exportée</h4>
+      <pre><span class="keyword">export interface</span> SimulatorFormSubmitOptions {
+  ctaHref?: <span class="type">string</span>;   <span class="comment">// URL complète, possiblement avec hash route</span>
+  ctaTarget?: <span class="type">string</span>; <span class="comment">// "_blank" → window.open ; sinon location.href</span>
+}
+
+<span class="keyword">export function</span> <span class="fn">createSimulatorFormSubmitHandler</span>(
+  opts: SimulatorFormSubmitOptions
+): (e: FormEvent&lt;HTMLFormElement&gt;) =&gt; <span class="keyword">void</span></pre>
+
+      <h4>Comportement</h4>
+      <ul>
+        <li><strong>ctaHref vide</strong> → return immédiat (no preventDefault → soumission native)</li>
+        <li><strong>Pas de hash dans ctaHref</strong> → return immédiat (rien à préserver)</li>
+        <li><strong>Hash présent</strong> → preventDefault + reconstruction URL avec params form + hash</li>
+        <li><strong>target=_blank</strong> → <code>window.open(url, "_blank", "noopener,noreferrer")</code></li>
+        <li><strong>target autre</strong> → <code>window.location.href = url</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="file-card new">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/shared/utils/simulatorFormSubmit.test.ts</div>
+      <div class="file-tag new">NEW</div>
+    </div>
+    <div class="file-body">
+      <h4>5 tests unitaires</h4>
+      <ol>
+        <li><code>no-op quand ctaHref est vide</code> — preventDefault non appelé</li>
+        <li><code>laisse passer la soumission native quand pas de hash</code></li>
+        <li><code>intercepte le submit et réinjecte le hash après les params (amount inclus)</code></li>
+        <li><code>hash sans query existante → ajoute ? puis params puis hash</code></li>
+        <li><code>target=_blank → window.open avec noopener,noreferrer</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="modified-files">
+  <h2>✏️ Fichiers MODIFIÉS — <code>sofinco-react</code></h2>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/b2c/features/Hero/ui/HeroSimulator/HeroSimulator.tsx</div>
+      <div class="file-tag modified">MOD</div>
+    </div>
+    <div class="file-body">
+      <h4>Changements</h4>
+      <ul class="change-list">
+        <li>➕ Import de <code>createSimulatorFormSubmitHandler</code> depuis <code>@shared/utils/simulatorFormSubmit</code></li>
+        <li>➕ Ajout du handler <code>handleSubmit</code> (factory call) déclaré dans le composant</li>
+        <li>➕ Ajout de <code>onSubmit={handleSubmit}</code> sur le <code>&lt;form&gt;</code></li>
+        <li>♻️ Aucune autre modification de structure / JSX</li>
+      </ul>
+
+      <h4>Diff résumé</h4>
+      <div class="diff-container">
+        <div class="diff-col before">
+          <h4>AVANT</h4>
+          <pre><span class="keyword">import</span> Cta <span class="keyword">from</span> <span class="string">"@shared/ui/Cta/Cta"</span>;
+
+<span class="comment">// pas de handleSubmit</span>
+
+&lt;form
+  action={formAction}
+  method=<span class="string">"GET"</span>
+  target={formTarget}
+&gt;
+  ...
+&lt;/form&gt;</pre>
+        </div>
+        <div class="diff-col after">
+          <h4>APRÈS</h4>
+          <pre><span class="keyword">import</span> Cta <span class="keyword">from</span> <span class="string">"@shared/ui/Cta/Cta"</span>;
+<span class="keyword">import</span> { <span class="fn">createSimulatorFormSubmitHandler</span> }
+  <span class="keyword">from</span> <span class="string">"@shared/utils/simulatorFormSubmit"</span>;
+
+<span class="keyword">const</span> handleSubmit =
+  <span class="fn">createSimulatorFormSubmitHandler</span>({
+    ctaHref, ctaTarget,
+  });
+
+&lt;form
+  action={formAction}
+  method=<span class="string">"GET"</span>
+  target={formTarget}
+  onSubmit={handleSubmit}
+&gt;</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/b2c/features/Hero/ui/HeroSimulator/HeroSimulator.type.ts</div>
+      <div class="file-tag modified">MOD</div>
+    </div>
+    <div class="file-body">
+      <h4>Changements</h4>
+      <ul class="change-list">
+        <li>♻️ Le type <code>cta</code> reste <code>CtaProps | null</code> (déjà OK avant — pas de breaking)</li>
+        <li>📝 Ajout de JSDoc clarifiant que <code>cta.href</code> est utilisé comme action native + injection hash via onSubmit</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/b2c/features/SimulatorBlock/SimulatorBlock.tsx</div>
+      <div class="file-tag modified">MOD majeur</div>
+    </div>
+    <div class="file-body">
+      <h4>Changements — refactor architectural</h4>
+      <ul class="change-list">
+        <li>➖ Suppression du paramètre <code>onSimulate</code> (callback)</li>
+        <li>➕ Lecture de <code>cta.href</code>, <code>cta.target</code>, <code>cta.label</code> depuis les props</li>
+        <li>➕ Ajout de <code>action={ctaHref}</code> + <code>method="GET"</code> + <code>target={ctaTarget}</code> sur le form</li>
+        <li>➕ Utilisation du handler partagé <code>createSimulatorFormSubmitHandler</code></li>
+        <li>➖ Suppression du <code>handleSubmit</code> custom qui appelait <code>onSimulate(amount)</code></li>
+        <li>♻️ Le <code>&lt;Cta&gt;</code> ne reçoit plus directement les props CTA — juste <code>label</code> (le href est sur le form)</li>
+      </ul>
+
+      <h4>Diff structurel</h4>
+      <div class="diff-container">
+        <div class="diff-col before">
+          <h4>AVANT — callback pattern</h4>
+          <pre><span class="keyword">const</span> SimulatorBlock = ({
+  ...,
+  cta,
+  onSimulate,
+}) =&gt; {
+  <span class="keyword">const</span> handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    <span class="keyword">const</span> input = e.currentTarget
+      .elements.namedItem(<span class="string">"amount"</span>);
+    onSimulate(<span class="type">Number</span>(input.value));
+  };
+
+  <span class="keyword">return</span> &lt;form onSubmit={handleSubmit}&gt;
+    ...
+    &lt;Cta {...cta} type=<span class="string">"submit"</span> /&gt;
+  &lt;/form&gt;;
+};</pre>
+        </div>
+        <div class="diff-col after">
+          <h4>APRÈS — href + handler partagé</h4>
+          <pre><span class="keyword">const</span> SimulatorBlock = ({
+  ...,
+  cta,  <span class="comment">// CtaProps avec href + label + target</span>
+}) =&gt; {
+  <span class="keyword">const</span> ctaHref = cta?.href ?? <span class="string">""</span>;
+  <span class="keyword">const</span> ctaTarget = cta?.target;
+  <span class="keyword">const</span> handleSubmit =
+    <span class="fn">createSimulatorFormSubmitHandler</span>({
+      ctaHref, ctaTarget,
+    });
+
+  <span class="keyword">return</span> &lt;form
+    action={ctaHref}
+    method=<span class="string">"GET"</span>
+    target={ctaTarget}
+    onSubmit={handleSubmit}
+  &gt;
+    ...
+    &lt;Cta label={buttonLabel}
+         type=<span class="string">"submit"</span> /&gt;
+  &lt;/form&gt;;
+};</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/b2c/features/SimulatorBlock/SimulatorBlock.type.ts</div>
+      <div class="file-tag modified">MOD breaking</div>
+    </div>
+    <div class="file-body">
+      <h4>Changements — ⚠️ Breaking API</h4>
+      <ul class="change-list">
+        <li>➖ Suppression de <code>onSimulate: (amount: number) =&gt; void</code></li>
+        <li>♻️ Type <code>cta</code> change : <code>{ label: string }</code> → <code>CtaProps | null</code> (qui inclut href, target, variant, ctaSection)</li>
+      </ul>
+
+      <h4>Diff complet du type</h4>
+      <div class="diff-container">
+        <div class="diff-col before">
+          <h4>AVANT</h4>
+          <pre><span class="keyword">type</span> SimulatorCtaProps = <span class="type">Pick</span>&lt;
+  CtaProps,
+  <span class="string">"tracking"</span>
+&gt; &amp; {
+  label: <span class="type">string</span>;
+};
+
+<span class="keyword">interface</span> SimulatorBlockProps {
+  title: TitleProps;
+  amountPlaceholder: <span class="type">string</span>;
+  amountMin: <span class="type">number</span>;
+  amountMax: <span class="type">number</span>;
+  cta: SimulatorCtaProps;
+  onSimulate: (
+    amount: <span class="type">number</span>
+  ) =&gt; <span class="keyword">void</span>;
+}</pre>
+        </div>
+        <div class="diff-col after">
+          <h4>APRÈS</h4>
+          <pre><span class="comment">// Type SimulatorCtaProps supprimé</span>
+
+<span class="keyword">interface</span> SimulatorBlockProps {
+  title: TitleProps;
+  amountPlaceholder: <span class="type">string</span>;
+  amountMin: <span class="type">number</span>;
+  amountMax: <span class="type">number</span>;
+  cta?: CtaProps | <span class="keyword">null</span>;
+  <span class="comment">// onSimulate supprimé</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/sofinco-react/src/b2c/features/SimulatorBlock/SimulatorBlock.stories.tsx</div>
+      <div class="file-tag modified">MOD</div>
+    </div>
+    <div class="file-body">
+      <h4>Changements</h4>
+      <ul class="change-list">
+        <li>➖ Suppression du <code>onSimulate</code> mock callback</li>
+        <li>➕ Story <code>Default</code> avec <code>cta.href</code> pointant sur une URL simulateur réaliste</li>
+        <li>➕ Story <code>NewTab</code> avec <code>cta.target="_blank"</code> pour tester l'ouverture nouvel onglet</li>
+        <li>➕ Story <code>NoTarget</code> avec <code>cta.href=""</code> pour tester le rendu sans cible</li>
+      </ul>
+
+      <h4>Exemple story Default</h4>
+      <pre>{
+  title: { children: <span class="string">"Financez vos projets..."</span>, as: <span class="string">"h1"</span> },
+  amountPlaceholder: <span class="string">"J'ai besoin de"</span>,
+  amountMin: 100,
+  amountMax: 999999,
+  cta: {
+    label: <span class="string">"Je simule mon crédit"</span>,
+    href: <span class="string">"/parcours-simulateur?idcatorigin=home_page&project=AUTO#/auto-recherche"</span>,
+    target: <span class="string">"_self"</span>,
+    ctaSection: <span class="string">"simulator-block-cta"</span>,
+    variant: <span class="string">"accent"</span>,
+  },
+}</pre>
+    </div>
+  </div>
+</section>
+
+<section id="template-set-impact">
+  <h2>🔗 Impacts côté template-set (consommation des nouveaux contrats)</h2>
+  <p class="intro">Les changements React entraînent des adaptations côté template-set Jahia pour fournir des <code>CtaProps</code> au lieu de callbacks.</p>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/template-set/src/components/SimulatorCredit/default.server.tsx</div>
+      <div class="file-tag modified">MOD simplifié</div>
+    </div>
+    <div class="file-body">
+      <p>Devient un thin wrapper de 6 lignes — pas d'Island wrapper, le DS React gère tout.</p>
+      <pre><span class="keyword">export default</span> jahiaComponent(
+  { nodeType: <span class="string">"sofnt:simulatorCredit"</span>, ... },
+  (_, { currentNode, renderContext }) =&gt; {
+    <span class="keyword">const</span> { t } = <span class="fn">useAppTranslation</span>();
+    <span class="keyword">const</span> props = <span class="fn">mapSimulatorProps</span>(currentNode, renderContext, t);
+    <span class="keyword">return</span> &lt;HeroSimulator {...props} /&gt;;
+  },
+);</pre>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/template-set/src/components/SimulatorCredit/simulator.mapper.ts</div>
+      <div class="file-tag modified">MOD helper central</div>
+    </div>
+    <div class="file-body">
+      <ul class="change-list">
+        <li>➕ Utilise <code>buildSimulatorCtaFromNode</code> du <code>#lib/simulatorCta</code></li>
+        <li>➕ Utilise <code>resolveAmountBounds()</code> pour lire les bornes depuis le settings node global</li>
+        <li>➖ Suppression de la lecture locale <code>num(node, "amountMin")</code> / <code>num(node, "amountMax")</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/template-set/src/components/SimulatorBlock/SimulatorBlockJahia.client.tsx</div>
+      <div class="file-tag modified">MOD thin wrapper</div>
+    </div>
+    <div class="file-body">
+      <p>Devient un simple passthrough vers le DS — toute la logique navigation vit dans le DS.</p>
+      <pre><span class="keyword">import</span> { SimulatorBlock, <span class="keyword">type</span> SimulatorBlockProps } <span class="keyword">from</span> <span class="string">"sofinco-react"</span>;
+
+<span class="keyword">export default function</span> <span class="fn">SimulatorBlockJahia</span>(props: SimulatorBlockProps) {
+  <span class="keyword">return</span> &lt;SimulatorBlock {...props} /&gt;;
+}</pre>
+    </div>
+  </div>
+
+  <div class="file-card modified">
+    <div class="file-header">
+      <div class="file-path">packages/template-set/src/components/SimulatorBlock/simulatorBlock.mapping.ts</div>
+      <div class="file-tag modified">MOD helper central</div>
+    </div>
+    <div class="file-body">
+      <ul class="change-list">
+        <li>➕ Utilise <code>buildSimulatorCtaFromNode</code> (cohérent avec SimulatorCredit)</li>
+        <li>➕ Utilise <code>resolveAmountBounds()</code> (bornes settings global)</li>
+        <li>➖ Suppression du compose manuel <code>redirection + params</code> dict</li>
+        <li>➖ Suppression de la lecture <code>nodeUrl(node, "redirection")</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="breaking">
+  <h2>⚠️ Breaking changes — résumé</h2>
+
+  <div class="card danger">
+    <h4 class="warn">SimulatorBlock — API React DS</h4>
+    <p>Si une autre app (mobile, BO Sofinco, partenaire) consomme <code>&lt;SimulatorBlock&gt;</code>, elle <strong>doit migrer</strong> :</p>
+    <ul>
+      <li><code>onSimulate</code> prop : <strong>SUPPRIMÉE</strong></li>
+      <li><code>cta</code> prop : type changé de <code>{ label: string }</code> à <code>CtaProps | null</code></li>
+      <li>Nouvelle responsabilité : passer <code>cta.href</code> contenant l'URL cible complète</li>
+    </ul>
+  </div>
+
+  <div class="card success" style="margin-top: 15px;">
+    <h4 class="check">HeroSimulator — pas de breaking</h4>
+    <p>Le contrat de <code>HeroSimulator</code> n'a pas changé. Seul l'interne a été modifié pour ajouter le handler de hash preservation. <strong>Aucune migration nécessaire</strong> pour les consommateurs.</p>
+  </div>
+</section>
+
+<section id="migration">
+  <h2>📦 Guide de migration consommateurs externes</h2>
+  <p>Pour les consommateurs externes du DS qui utilisaient l'ancien contrat callback :</p>
+
+  <div class="diff-container">
+    <div class="diff-col before">
+      <h4>AVANT — pattern callback</h4>
+      <pre>&lt;SimulatorBlock
+  title={titleProps}
+  amountPlaceholder=<span class="string">"Montant"</span>
+  amountMin={500}
+  amountMax={50000}
+  cta={{ label: <span class="string">"Calculer"</span> }}
+  onSimulate={(amount) =&gt; {
+    <span class="keyword">const</span> url =
+      `/sim?amount=${amount}`;
+    window.location.href = url;
+  }}
+/&gt;</pre>
+    </div>
+    <div class="diff-col after">
+      <h4>APRÈS — pattern href</h4>
+      <pre>&lt;SimulatorBlock
+  title={titleProps}
+  amountPlaceholder=<span class="string">"Montant"</span>
+  amountMin={500}
+  amountMax={50000}
+  cta={{
+    label: <span class="string">"Calculer"</span>,
+    href: <span class="string">"/sim#/montant"</span>,
+    target: <span class="string">"_self"</span>,
+    ctaSection: <span class="string">"my-app-cta"</span>,
+    variant: <span class="string">"accent"</span>,
+  }}
+/&gt;
+<span class="comment">// Le DS injecte &amount=X au submit</span>
+<span class="comment">// + préserve #/montant via onSubmit</span></pre>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Avantage migration</strong> : plus besoin d'écrire de callback navigation custom. Le DS gère seul : validation input, prévention min&gt;max, hash preservation, target=_blank, fallback JS désactivé.
+  </div>
+</section>
+
+<section id="testing">
+  <h2>🧪 Tests &amp; Storybook</h2>
+
+  <h3>Tests unitaires ajoutés</h3>
+  <table>
+    <thead>
+      <tr><th>Fichier</th><th>Tests</th><th>Couverture</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>simulatorFormSubmit.test.ts</code> <span class="pill new">NEW</span></td>
+        <td>5</td>
+        <td>Factory pure : no-op vide, fallback sans hash, intercept + hash, séparateur, target=_blank</td>
+      </tr>
+      <tr>
+        <td><code>simulator.mapper.test.ts</code> <span class="pill changed">MOD</span></td>
+        <td>5</td>
+        <td>Mock <code>buildSimulatorCtaFromNode</code> + <code>resolveAmountBounds</code>, vérifie ctaSection</td>
+      </tr>
+      <tr>
+        <td><code>simulatorBlock.mapping.test.ts</code> <span class="pill changed">MOD</span></td>
+        <td>5</td>
+        <td>Mock helper central, vérifie shape props + ctaSection</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Stories Storybook</h3>
+  <div class="grid-3">
+    <div class="card">
+      <h4>Default</h4>
+      <code>cta.href</code> avec params simulateur complets + hash route. Tester le submit normal.
+    </div>
+    <div class="card">
+      <h4>NewTab</h4>
+      <code>cta.target="_blank"</code>. Tester l'ouverture dans un nouvel onglet (popup blocker à désactiver).
+    </div>
+    <div class="card">
+      <h4>NoTarget</h4>
+      <code>cta.href=""</code>. Tester le rendu visuel quand pas de cible configurée (fallback gracieux).
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>🎯 Synthèse des bénéfices</h2>
+  <div class="grid-2">
+    <div class="card success">
+      <h4 class="check">DRY</h4>
+      Une seule implémentation du submit handler (factory partagée). Bug fix = 1 endroit.
+    </div>
+    <div class="card success">
+      <h4 class="check">Cohérence DS</h4>
+      <code>HeroSimulator</code> et <code>SimulatorBlock</code> partagent le même contrat (CtaProps) et le même comportement (hash preservation).
+    </div>
+    <div class="card success">
+      <h4 class="check">Storybook réaliste</h4>
+      Stories avec vraies URLs au lieu de mock callbacks → l'équipe DS voit ce que la prod voit.
+    </div>
+    <div class="card success">
+      <h4 class="check">Accessibilité</h4>
+      Form HTML standard avec <code>action</code> — fonctionne sans JS (graceful degradation).
+    </div>
+    <div class="card success">
+      <h4 class="check">Type safety</h4>
+      <code>CtaProps</code> typé exporté du DS — autocomplétion + erreurs compile-time côté consommateurs.
+    </div>
+    <div class="card success">
+      <h4 class="check">Code template-set allégé</h4>
+      Plus de URL builder custom (<code>simulatorUrl.ts</code> obsolète), plus d'Island wrapper sur SimulatorCredit.
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center; padding: 20px; color: #718096; font-size: 0.9em;">
+  Doc générée le 24 juin 2026 · Sofinco SOF-5407 · Pour questions : voir <code>packages/sofinco-react/src/shared/utils/simulatorFormSubmit.ts</code>
+</footer>
+
+</div>
+</body>
+</html>

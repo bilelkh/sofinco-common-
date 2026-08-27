@@ -1,0 +1,7 @@
+[sofnt:productAdvantageCategory] > jnt:content, jmix:editorialContent, mix:title
+ - jcr:title (string) mandatory i18n
+ - heading (string, text) mandatory i18n
+ - text (string, richtext[ckeditor.toolbar='Simple']) mandatory i18n
+ - imageDesktop (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ - imageMobile (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ - imageAlt (string) i18n

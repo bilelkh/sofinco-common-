@@ -1,0 +1,22 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as TagStories from "./Tag.stories";
+
+<Meta of={TagStories} />
+
+# Tag
+
+Small pill-shaped, uppercase label — used to identify an argument category
+(e.g. "CARTE", "CRÉDIT") above a descriptive text.
+
+## How It Works
+
+- `children` — the label text (uppercased via CSS).
+- `className` — additional class (e.g. to add spacing specific to the usage
+  context).
+
+<Stories />
+
+## Props
+
+<ArgTypes of={TagStories} />

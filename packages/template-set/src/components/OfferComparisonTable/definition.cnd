@@ -1,0 +1,6 @@
+[sofnt:comparisonOfferList] > sofnt:listBase
+ + * (sofnt:comparisonOffer) = sofnt:comparisonOffer
+
+[sofnt:offerComparisonTable] > jnt:content, jmix:editorialContent, mix:title, sofmix:component orderable
+ - jcr:title (string) mandatory i18n
+ + offers (sofnt:comparisonOfferList) = sofnt:comparisonOfferList autocreated mandatory

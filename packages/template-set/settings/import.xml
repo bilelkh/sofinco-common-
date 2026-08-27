@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content
+  xmlns:j="http://www.jahia.org/jahia/1.0"
+  xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  >
+  <modules jcr:primaryType="jnt:modules">
+    <sofinco-template>
+ 
+      <home j:isHomePage="true"
+               j:originWS="default"
+               j:templateName="basic"
+               jcr:created="2026-04-07T12:43:30.129Z"
+               jcr:createdBy="system"
+               jcr:lastModified="2026-04-07T12:43:30.207Z"
+               jcr:lastModifiedBy=""
+               jcr:primaryType="jnt:page">
+        <j:translation_en jcr:language="en"
+                          jcr:lastModified="2026-04-07T12:43:30.207Z"
+                          jcr:lastModifiedBy=""
+                          jcr:mixinTypes="mix:title"
+                          jcr:primaryType="jnt:translation"
+                          jcr:title="Home"/>
+        <j:translation_fr jcr:language="fr"
+                          jcr:lastModified="2026-04-07T12:43:30.207Z"
+                          jcr:lastModifiedBy=""
+                          jcr:mixinTypes="mix:title"
+                          jcr:primaryType="jnt:translation"
+                          jcr:title="Accueil"/>
+        <main j:originWS="default"
+              jcr:created="2026-04-07T12:43:30.130Z"
+              jcr:createdBy="system"
+              jcr:lastModified="2026-04-07T13:43:18.124Z"
+              jcr:lastModifiedBy="root"
+              jcr:mixinTypes="jmix:isAreaList"
+              jcr:primaryType="jnt:contentList"/>
+        <header j:originWS="default"
+                jcr:created="2026-04-07T12:53:19.155Z"
+                jcr:createdBy="root"
+                jcr:lastModified="2026-04-07T12:53:19.164Z"
+                jcr:lastModifiedBy="root"
+                jcr:mixinTypes="jmix:isAreaList"
+                jcr:primaryType="sofnt:header"/>
+        <heroSection jcr:primaryType="sofnt:heroSection"
+            xmlns:jcr="http://www.jcp.org/jcr/1.0"
+            xmlns:j="http://www.jahia.org/jahia/1.0"
+            xmlns:sofnt="http://www.sofinco.fr/jahia/nt/1.0"
+            xmlns:sofmix="http://www.sofinco.fr/jahia/mix/1.0">
+
+            <hero jcr:primaryType="sofnt:hero" variant="v1" jcr:mixinTypes="sofmix:heroV1">
+              <j:translation_fr jcr:primaryType="jnt:translation" jcr:language="fr"
+                jcr:title="Gérez vos dépenses. Financez vos projets."
+                subtitle="Prêts, réserve d'argent, paiements flexibles : optez pour la solution qui vous convient." />
+              <arg1 jcr:primaryType="sofnt:heroArgument">
+                <j:translation_fr jcr:primaryType="jnt:translation" jcr:language="fr" jcr:title="Suivi de mes prêts" />
+              </arg1>
+              <arg2 jcr:primaryType="sofnt:heroArgument">
+                <j:translation_fr jcr:primaryType="jnt:translation" jcr:language="fr" jcr:title="Pilotage de ma réserve" />
+              </arg2>
+              <arg3 jcr:primaryType="sofnt:heroArgument">
+                <j:translation_fr jcr:primaryType="jnt:translation" jcr:language="fr" jcr:title="Paiement différé ou fractionné" />
+              </arg3>
+            </hero>
+
+            <simulator jcr:primaryType="sofnt:simulatorCredit" amountMin="100" amountMax="999999" ctaUrl="/simulateur">
+              <j:translation_fr jcr:primaryType="jnt:translation" jcr:language="fr"
+                simulatorTitle="Financez vos projets avec le crédit conso Sofinco"
+                amountPlaceholder="J'ai besoin de"
+                ctaLabel="Je découvre mes conditions" />
+            </simulator>
+
+          </heroSection>
+         
+      </home>
+      <menu j:originWS="default"
+               j:templateName="menu"
+               j:workInProgressLanguages=""
+               j:workInProgressStatus="DISABLED"
+               jcr:created="2026-04-08T08:07:19.554Z"
+               jcr:createdBy="root"
+               jcr:lastModified="2026-04-08T08:07:19.575Z"
+               jcr:lastModifiedBy="root"
+               jcr:mixinTypes="jmix:seoHtmlHead"
+               jcr:primaryType="jnt:page">
+            <j:translation_fr jcr:language="fr"
+                              jcr:lastModified="2026-04-08T08:07:19.575Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Menu"/>
+            <menu j:originWS="default"
+                  jcr:created="2026-04-08T08:07:19.727Z"
+                  jcr:createdBy="root"
+                  jcr:lastModified="2026-04-08T09:34:48.710Z"
+                  jcr:lastModifiedBy="root"
+                  jcr:mixinTypes="jmix:isAreaList"
+                  jcr:primaryType="sofnt:navMenu"
+                  logo="#/sites/sofinco-common/files/menu/logo.svg">
+               <nos-solutions j:originWS="default"
+                              jcr:created="2026-04-08T08:47:31.881Z"
+                              jcr:createdBy="root"
+                              jcr:lastModified="2026-04-09T09:11:54.684Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:primaryType="sofnt:navSection"
+                              sideImg="#/sites/sofinco-common/files/menu/solutions.png"
+                              sidePage="#/sites/sofinco-common/menu"
+                              sideTitle="Financez vos projets avec le crédit conso Sofinco"
+                              titleCta="Je simule mon prêt">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-09T09:11:54.684Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="Nos solutions"/>
+                  <carte-sofinco j:originWS="default"
+                                 j:workInProgressLanguages=""
+                                 j:workInProgressStatus="DISABLED"
+                                 jcr:created="2026-04-08T09:35:06.403Z"
+                                 jcr:createdBy="root"
+                                 jcr:lastModified="2026-04-08T14:46:15.389Z"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:primaryType="sofnt:navLink">
+                     <j:translation_fr jcr:language="fr"
+                                       jcr:lastModified="2026-04-08T09:35:06.416Z"
+                                       jcr:lastModifiedBy="root"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="Carte Sofinco"/>
+                     <lien-interne j:node="#/sites/sofinco-common/home"
+                                   j:originWS="default"
+                                   j:workInProgressLanguages=""
+                                   j:workInProgressStatus="DISABLED"
+                                   jcr:created="2026-04-09T09:47:39.308Z"
+                                   jcr:createdBy="root"
+                                   jcr:lastModified="2026-04-09T09:47:39.317Z"
+                                   jcr:lastModifiedBy="root"
+                                   jcr:primaryType="jnt:nodeLink"/>
+                  </carte-sofinco>
+                  <pret-personnel j:originWS="default"
+                                  j:workInProgressLanguages=""
+                                  j:workInProgressStatus="DISABLED"
+                                  jcr:created="2026-04-08T14:04:55.139Z"
+                                  jcr:createdBy="root"
+                                  jcr:lastModified="2026-04-08T14:46:32.268Z"
+                                  jcr:lastModifiedBy="root"
+                                  jcr:primaryType="sofnt:navLink">
+                     <j:translation_fr jcr:language="fr"
+                                       jcr:lastModified="2026-04-08T14:04:55.156Z"
+                                       jcr:lastModifiedBy="root"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="Prêt personnel"/>
+                  </pret-personnel>
+                  <credit-renouvelable j:originWS="default"
+                                       j:workInProgressLanguages=""
+                                       j:workInProgressStatus="DISABLED"
+                                       jcr:created="2026-04-08T14:11:00.986Z"
+                                       jcr:createdBy="root"
+                                       jcr:lastModified="2026-04-08T14:11:01.003Z"
+                                       jcr:lastModifiedBy="root"
+                                       jcr:primaryType="sofnt:navLink">
+                     <j:translation_fr jcr:language="fr"
+                                       jcr:lastModified="2026-04-08T14:11:01.003Z"
+                                       jcr:lastModifiedBy="root"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="Crédit renouvelable"/>
+                  </credit-renouvelable>
+               </nos-solutions>
+               <mySpace j:originWS="default"
+                        j:workInProgressLanguages=""
+                        j:workInProgressStatus="DISABLED"
+                        jcr:created="2026-04-08T08:48:10.958Z"
+                        jcr:createdBy="root"
+                        jcr:lastModified="2026-04-08T08:48:10.968Z"
+                        jcr:lastModifiedBy="root"
+                        jcr:primaryType="sofnt:mySpace"/>
+            </menu>
+         </menu>
+    </sofinco-template>
+  </modules>
+</content>

@@ -1,0 +1,101 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as BlockStories from "./Block.stories";
+
+<Meta of={BlockStories} />
+
+# SeoMesh Block
+
+A SEO-optimised content block that exposes a title, a CTA, and up to two link sections arranged side by side.
+
+> **Note**
+> This component is part of the `SeoMesh` feature. It is designed to surface internal navigation links in a structured, crawlable layout.
+
+## How It Works
+
+The block is divided into two zones:
+
+- **Header** (left on desktop): a `Title` (`h2`) and a `Cta` button
+- **Nav** (right on desktop): one or two optional link sections, each with its own sub-heading and list of `Link` items. A visual divider is rendered automatically between the two sections when both are present.
+
+Layout switches from a vertical stack on mobile to a horizontal `space-between` row at the `--medium-up` breakpoint.
+
+### Props
+
+- `title`: section heading displayed via the shared `Title` component as `h2`
+- `ctaProps`: call-to-action button/link configuration — passed directly to the `Cta` component (all props including `variant` and `size` are controlled by the caller)
+- `linkSectionLeft` _(optional)_: left group of links, each with a `title` and `links` array
+- `linkSectionRight` _(optional)_: right group of links, same shape as `linkSectionLeft`
+- `className`: optional extra class for layout overrides
+
+### LinkSection shape
+
+```ts
+type LinkSection = {
+  title: string;
+  links: LinkProps[];
+};
+```
+
+Each `LinkProps` item supports:
+
+- `href`: destination URL
+- `label`: visible link text
+- `iconLeft` / `iconRight`: optional React node rendered on either side of the label
+- `isExternal`: adds `target="_blank"` and `rel="noopener noreferrer"` when `true`
+- `iconVariant`: colours the icon — `"primary"` | `"accent"` | `"danger"` (defaults to `"primary"`)
+
+## Basic Usage
+
+```tsx
+import Block from "@common/SeoMesh/Block/Block";
+import { ArrowRight } from "sofinco-react";
+
+<Block
+  title="Besoins d'un Crédit ?"
+  ctaProps={{
+    href: "/credit-conso",
+    label: "Je fais un crédit conso",
+    type: "button",
+    variant: "accent",
+    size: "small",
+    iconRight: <ArrowRight size="small" color="secondary" />,
+  }}
+  linkSectionLeft={{
+    title: "Types de crédit",
+    links: [
+      {
+        href: "/credit-personnel",
+        label: "Crédit personnel",
+        iconLeft: <ArrowRight size="small" color="secondary" />,
+      },
+      { href: "/credit-auto", label: "Crédit auto", iconLeft: <ArrowRight size="small" color="secondary" /> },
+    ],
+  }}
+  linkSectionRight={{
+    title: "Guides pratiques",
+    links: [
+      {
+        href: "/guide/simuler-credit",
+        label: "Simuler un crédit",
+        iconLeft: <ArrowRight size="small" color="secondary" />,
+      },
+    ],
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={BlockStories.Default} />
+<Canvas of={BlockStories.OnlyLeftSection} />
+<Canvas of={BlockStories.OnlyRightSection} />
+<Canvas of={BlockStories.NoLinkSections} />
+
+## Props
+
+<ArgTypes of={BlockStories} />
+
+## All Stories
+
+<Stories />

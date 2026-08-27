@@ -1,0 +1,306 @@
+@import "@styles/base.css";
+
+.menu__sections {
+	/* Radix's <List> wraps the <ul> in a div with an inline `position: relative` — the anchor
+	   for <Indicator>. We render no indicator, and left alone that div becomes the containing
+	   block of the panels below, pinning them to the width of the trigger row. Neutralising it
+	   hands the panels back to `.menu` (the header), which is what they must centre on.
+	   Matched on what the node contains, not on its position, so a Radix minor that inserts
+	   a sibling doesn't silently collapse the panel layout. `Sections.ssr.test.tsx` asserts
+	   the wrapper is still there. */
+	& > div:has(> ul[data-orientation]) {
+		position: static !important;
+	}
+}
+
+.menu__sections__list {
+	display: flex;
+	justify-content: center;
+	gap: calc(var(--spacing) * 2);
+}
+
+.menu__sections__trigger {
+	all: unset;
+	font-family: var(--font-sans);
+	display: inline-block;
+	font-size: var(--text-base);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	cursor: pointer;
+	border-radius: 80px;
+	background-color: transparent;
+
+	&:hover {
+		background-color: var(--color-accent-subtle);
+		font-weight: var(--font-weight-bold);
+	}
+
+	&:focus-visible {
+		outline: 1px solid var(--color-accent-base);
+	}
+
+	&[data-state="open"] {
+		background-color: var(--color-accent-subtle);
+		font-weight: var(--font-weight-bold);
+	}
+}
+
+/* Rendered in place (no Radix Viewport) so the links ship in the SSR HTML. The containing
+   block is `.menu` (the only positioned ancestor), hence `top: 100%` = just under the header
+   bar, and `left/right: 0` + `margin: … auto` to centre the panel. */
+.menu__sections__content {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 2;
+
+	background-color: var(--color-neutral-00);
+	border-radius: var(--radius-4xl);
+	max-height: 520px;
+	max-width: 1400px;
+	width: fit-content;
+	display: flex;
+	gap: calc(var(--spacing) * 14);
+	margin: calc(var(--spacing) * 6) auto;
+	animation-duration: 350ms;
+	animation-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 6) calc(var(--spacing) * 6)
+		calc(var(--spacing) * 10);
+	box-shadow:
+		hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
+		hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+
+	/* `forceMount` keeps every panel mounted; `visibility` (not just `opacity`) is what pulls
+	   the closed ones out of the tab order and the accessibility tree. */
+	opacity: 0;
+	visibility: hidden;
+	/* Delayed to `animation-duration` so the exit slide (`data-motion="to-*"`) plays out. */
+	transition:
+		opacity 350ms ease,
+		visibility 0s linear 350ms;
+
+	&[data-state="open"] {
+		opacity: 1;
+		visibility: visible;
+		transition:
+			opacity 350ms ease,
+			visibility 0s;
+	}
+
+	&[data-motion="from-start"] {
+		animation-name: enterFromLeft;
+	}
+	&[data-motion="from-end"] {
+		animation-name: enterFromRight;
+	}
+	&[data-motion="to-start"] {
+		animation-name: exitToLeft;
+	}
+	&[data-motion="to-end"] {
+		animation-name: exitToRight;
+	}
+}
+
+@media (--xlarge-up) {
+	.menu__sections__item {
+		position: relative;
+	}
+
+	.menu__sections__content {
+		left: -2rem;
+		right: auto;
+		margin: calc(var(--spacing) * 10) 0 0;
+		width: max-content;
+	}
+}
+
+@media (--large-down) {
+	.menu__sections__card--isDisplayed {
+		display: none;
+		visibility: hidden;
+	}
+}
+
+.menu__sections__card {
+	width: 100%;
+	max-width: 364px;
+}
+
+.menu__subsectionswrapper {
+	display: flex;
+	flex-flow: column wrap;
+	gap: calc(var(--spacing) * 8);
+}
+
+/* Sized by how many subsection columns the panel holds. Keyed on `.menu__subsection`
+   (the wrapper div) rather than `ul`, which is now nested one level deeper. */
+.menu__subsectionswrapper:has(.menu__subsection:last-child:nth-child(1)) {
+	width: 320px;
+}
+.menu__subsectionswrapper:has(.menu__subsection:last-child:nth-child(2)) {
+	width: 560px;
+}
+.menu__subsectionswrapper:has(.menu__subsection:nth-last-child(1):nth-child(n + 3)) {
+	min-width: 560px;
+}
+
+.menu__subsectionswrapper:has(.menu__subsection:nth-last-child(3):nth-child(n + 5)) {
+	min-width: 860px;
+}
+
+.menu__subsection {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+}
+
+.menu__subsection__list {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+}
+
+.menu__subsection__title {
+	font-family: var(--font-display);
+	font-weight: var(--font-weight-bold);
+	font-size: var(--text-sm);
+	text-transform: uppercase;
+}
+
+.menu__subsection__link {
+	all: unset;
+	position: relative;
+	color: var(--color-primary-base);
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+	max-width: 296px;
+	a {
+		z-index: 1;
+		flex: 1 1 0;
+
+		/* Stretched link. The trailing arrow is a sibling <span>, not a child of the anchor,
+		   so its 14 px sit outside the link box and a click there hits the decorative <svg>
+		   and does nothing. This overlay hands the whole row — arrow included — back to the
+		   anchor without moving anything visually. Paired with `pointer-events: none` on
+		   `.menu__subsection__link__icon`, which otherwise paints (and hit-tests) above it. */
+		&::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--color-accent-base);
+			outline-offset: 2px;
+			border-radius: var(--radius-sm);
+		}
+	}
+
+	&:hover,
+	&:focus-within,
+	&:focus-visible,
+	&:focus {
+		text-decoration: underline;
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: -6px;
+			left: -16px;
+			width: 100%;
+			height: 164%;
+			background-color: var(--color-accent-subtle);
+			border-radius: 80px;
+			z-index: 0;
+			animation: fadeIn 300ms ease-in-out forwards;
+		}
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: -6px;
+			left: 16px;
+			width: 100%;
+			height: 164%;
+			background-color: var(--color-accent-subtle);
+			border-radius: 80px;
+			z-index: 0;
+			animation: fadeIn 300ms ease-in-out forwards;
+		}
+
+		.menu__subsection__link__icon {
+			animation: enterIconFromLeft 300ms ease-in-out forwards;
+		}
+	}
+}
+
+.menu__subsection__link__icon {
+	opacity: 0;
+	z-index: 1;
+	place-self: end;
+	/* Purely decorative (`aria-hidden`) and it sits above the stretched anchor — left
+	   hit-testable it swallows every click aimed at the arrow. `opacity: 0` does not make
+	   an element click-through, so this has to be explicit. */
+	pointer-events: none;
+}
+
+/* Les « ponts » de survol (cf. Sections.tsx) : calques invisibles sur les zones vides, rendus
+   seulement menu ouvert. Positionnés par rapport à `.menu`, comme le panneau et le scrim. */
+
+/* L'espace sous le header (= la marge haute du panneau). Au-dessus du scrim, sinon c'est lui
+   qui recevrait le survol. */
+.menu__sections__gapbridge {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	height: calc(var(--spacing) * 6);
+	z-index: 2;
+}
+
+/* Le header lui-même. `z-index` négatif = derrière son contenu, donc les vrais boutons et liens
+   gardent la priorité et ce calque ne capte que le vide. */
+.menu__sections__headerbridge {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+}
+
+/* Replaces the former Radix Viewport, which doubled as the page backdrop. */
+.menu__sections__scrim {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	height: 100dvh;
+	z-index: 1;
+
+	background: color-mix(in srgb, var(--color-primary-base) 20%, transparent);
+	box-shadow: 0 4px 30px color-mix(in srgb, var(--color-primary-strong) 10%, transparent);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 300ms ease;
+
+	&[data-state="open"] {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+@keyframes enterIconFromLeft {
+	from {
+		opacity: 0;
+		transform: translateX(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0) translateY(4px);
+	}
+}

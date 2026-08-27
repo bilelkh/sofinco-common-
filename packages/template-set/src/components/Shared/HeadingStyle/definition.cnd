@@ -1,0 +1,3 @@
+[sofmix:headingStyle] mixin
+ - titleLevel (string, choicelist) = 'h2' autocreated < 'h1','h2', 'h3', 'h4'
+ - titleStyle (string, choicelist) = 'h2' autocreated < 'h1','h2', 'h3', 'h4'

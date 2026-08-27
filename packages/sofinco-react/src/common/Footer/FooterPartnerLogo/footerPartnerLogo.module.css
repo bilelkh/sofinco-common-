@@ -1,0 +1,24 @@
+@import "@styles/breakpoints.css";
+
+.partnerLink,
+.partnerWrapper {
+	display: inline-block;
+	transition: opacity 0.3s ease;
+}
+
+.partnerLink:hover {
+	opacity: 0.8; /* Petit effet de survol pour indiquer que c'est cliquable */
+}
+
+.logo {
+	max-width: 85px;
+	max-height: 75px;
+	height: auto;
+	display: block;
+}
+
+@media (--medium-up) {
+	.logo {
+		max-width: 120px;
+	}
+}

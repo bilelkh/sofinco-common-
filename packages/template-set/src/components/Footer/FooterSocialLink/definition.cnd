@@ -1,0 +1,3 @@
+[sofnt:socialLink] > jnt:content, sofmix:footerElements
+ - network (string, choicelist[resourceBundle]) = 'facebook' autocreated < 'facebook', 'linkedin', 'youtube', 'x', 'instagram', 'tiktok'
+ - url (string) mandatory

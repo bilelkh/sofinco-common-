@@ -1,0 +1,5 @@
+[sofnt:arrayFocusWrapper] > jnt:content, sofmix:component, sofmix:sectionHeader
+ - backgroundColor (string) = '#DFF1FC' autocreated indexed=no
+ + productFocus (sofnt:productFocus) = sofnt:productFocus autocreated mandatory
+ + seoBlock (sofnt:seoBlock) = sofnt:seoBlock autocreated mandatory
+ + insuranceFocus (sofnt:insuranceFocus) = sofnt:insuranceFocus autocreated mandatory

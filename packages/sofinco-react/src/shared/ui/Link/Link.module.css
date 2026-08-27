@@ -1,0 +1,81 @@
+@import "@styles/base.css";
+
+.link {
+	all: unset;
+	color: var(--color-primary-base);
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	transition: color 250ms ease-in-out;
+
+	&:hover {
+		color: var(--color-primary-contrast);
+		text-decoration: underline;
+	}
+
+	&:focus {
+		text-decoration: underline;
+	}
+
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+.link__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.link__icon-left {
+	margin-right: calc(var(--spacing) * 2);
+}
+.link__icon-right {
+	margin-left: calc(var(--spacing) * 2);
+}
+
+.link--primary {
+	svg {
+		color: var(--color-primary-base);
+	}
+}
+
+.link--accent {
+	svg {
+		color: var(--color-accent-strong);
+	}
+}
+
+.link--danger {
+	svg {
+		color: var(--color-danger-base);
+	}
+}
+
+.link--light {
+	color: var(--color-primary-base);
+	&:hover {
+		color: var(--color-primary-contrast);
+		text-decoration: underline;
+	}
+
+	&:focus {
+		text-decoration: underline;
+	}
+}
+
+.link--dark {
+	color: var(--color-neutral-00);
+	&:hover {
+		color: var(--color-accent-base);
+		text-decoration: underline;
+	}
+
+	&:focus {
+		text-decoration: underline;
+	}
+}

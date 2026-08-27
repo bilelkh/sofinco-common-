@@ -1,0 +1,112 @@
+import { Meta, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as TextFieldStories from "./TextField.stories";
+
+<Meta of={TextFieldStories} />
+
+# TextField
+
+The design system's text input: label, input area, hint text and error message,
+assembled and wired together for accessibility.
+
+## Matrix
+
+Four interaction states (`enabled`, `hovered`, `focused`, `disabled`) crossed
+with three content states (`placeholder`, `value`, `error`).
+
+<Canvas of={TextFieldStories.Matrix} />
+
+`hovered` and `focused` are frozen here through CSS module modifiers that
+**share their rule** with `:hover` and `:focus-within` — so what you see is the
+real rendering, not a lookalike, and it cannot drift from the live states. The
+`disabled` column holds a single cell: a disabled field is neither hovered nor
+focused, and its error state is not specified.
+
+## How it works
+
+- `label` is **required** — it carries the `<label for>` link. For a design with
+  no visible label, keep the prop and add `hideLabel`: the label stays available
+  to screen readers, which a `placeholder` never is.
+- `errorMessage` switches the field to its error state *and* renders the message.
+  `invalid` performs the same switch without a message, for forms that collect
+  their errors elsewhere.
+- `hint` steps aside while an error is shown, so two competing messages never
+  stack under the same field.
+- Every native `<input>` prop passes through: `type`, `inputMode`,
+  `autoComplete`, `maxLength`, `name`, `onBlur`…
+
+## Trailing slot
+
+One element at a time, in priority order:
+
+1. **alert** — `invalid` or `errorMessage`
+2. **clear button** — `clearable` and the field holds a value
+3. **`trailingIcon`** — the rest of the time
+
+`disabled` adds nothing here: the greyed-out field and the `<input>`'s own
+`disabled` attribute — which assistive technologies announce — already carry the
+state, so the trailing slot keeps whatever it would otherwise show.
+
+## Mask
+
+`mask` formats the display only — a DS preset name, or a template of your own:
+
+| Mask      | Template            | Renders             |
+| --------- | ------------------- | ------------------- |
+| `"phone"` | `__ __ __ __ __`    | `06 12 34 56 78`    |
+| `"siret"` | `___ ___ ___ _____` | `324 767 899 90963` |
+
+The separators never leave the field. `value`, `defaultValue` and
+`onValueChange` all stay bare, so validation rules (`/^\d{14}$/`) and downstream
+services keep seeing digits only — which is why a masked field is driven through
+`onValueChange`, not `onChange`: the native event's `target.value` carries the
+grouped text, not the value.
+
+Caret placement, backspace over a separator and paste are handled by
+[`@react-input/mask`](https://github.com/GoncharukOrg/react-input/tree/main/packages/mask),
+which attaches to the `<input>` through a ref — it owns neither the value nor the
+rendering, so the `Field` shell is untouched. Two consequences: a `maxLength` of
+your own is dropped (the template already bounds the field, and `maxLength` would
+truncate a pasted `+33 6 12 34 56 78` before the library ever sees it), and `type`
+must stay one of `text`, `email`, `tel`, `search` or `url` — the library refuses
+to mask anything else.
+
+One behaviour worth knowing: backspace **hops** a separator rather than deleting
+through it. From `06 12 |34`, the first press moves the caret before the space and
+the second deletes the `2`. That is the library's convention — the separator is
+not something the user typed, so it is not something backspace consumes.
+
+For a template of your own, pass the library's own shape:
+`mask={{ mask: "__/__/____", replacement: { _: /\d/ } }}`.
+
+<Canvas of={TextFieldStories.Masked} />
+
+## Controlled vs uncontrolled
+
+Without `value`, the component tracks the value internally (`defaultValue` seeds
+it) and the `clearable` button empties the field on its own.
+
+With `value`, the parent owns the value outright: the component never fabricates
+a synthetic `change` event, so it is `onClear` that must reset it.
+
+## Usage
+
+```tsx
+import { TextField } from "sofinco-react";
+
+<TextField label="Email address" type="email" icon="mail" placeholder="placeholder" />
+
+<TextField label="Email address" errorMessage="Enter a valid email address." />
+```
+
+## Playground
+
+<Canvas of={TextFieldStories.Playground} />
+
+## Controlled
+
+<Canvas of={TextFieldStories.Controlled} />
+
+## Props
+
+<ArgTypes of={TextFieldStories} />

@@ -1,0 +1,100 @@
+@import "@styles/base.css";
+
+.menu {
+	position: relative;
+	z-index: 100;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	padding: calc(var(--spacing) * 4);
+	background-color: var(--color-neutral-00);
+	min-height: 72px;
+	border-bottom: 1px solid var(--color-primary-light);
+}
+
+.menu__inner {
+	display: flex;
+	align-items: center;
+	/* Keep the hamburger + logo on the left so the header CTAs group on the right. */
+	margin-right: auto;
+}
+
+.menu__logo {
+	display: flex;
+	align-items: center;
+	margin-left: calc(var(--spacing) * 2);
+	gap: calc(var(--spacing) * 2);
+	img {
+		max-width: 124px;
+		height: auto;
+	}
+}
+
+.menu__actions {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+}
+
+.menu__links {
+	display: flex;
+	gap: calc(var(--spacing) * 2);
+	flex-direction: column;
+	width: 100%;
+}
+
+.menu__cta {
+	padding: calc(var(--spacing) * 1) calc(var(--spacing) * 3);
+	font-size: var(--text-sm);
+	min-height: 0;
+	font-weight: 800;
+	height: calc(var(--spacing) * 8);
+	max-height: calc(var(--spacing) * 8);
+}
+
+.menu__cta__search {
+	max-width: calc(var(--spacing) * 8);
+}
+
+.menu__cta__login {
+	min-width: 172px;
+}
+
+/* Login Cta is icon-only: strip the button chrome so only the self-contained
+   30x30 Single avatar shows (Cta otherwise pads to 48px and caps icons at 20px). */
+.menu__login {
+	min-height: auto;
+	padding: 0;
+	flex-shrink: 0;
+}
+
+.menu__login span svg {
+	min-width: 30px;
+	min-height: 30px;
+	max-width: 30px;
+	max-height: 30px;
+	transform: none;
+}
+
+/* @media (--medium-up) {
+} */
+
+@media (--large-up) {
+	.menu {
+		padding: calc(var(--spacing) * 4) calc(var(--spacing) * 10);
+	}
+	.menu__inner {
+		gap: calc(var(--spacing) * 14);
+	}
+	.menu__links {
+		display: flex;
+		gap: calc(var(--spacing) * 6);
+		flex-direction: row;
+	}
+	.menu__actions {
+		display: flex;
+		align-items: center;
+		gap: calc(var(--spacing) * 6);
+	}
+}

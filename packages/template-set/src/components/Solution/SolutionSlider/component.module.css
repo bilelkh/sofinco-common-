@@ -1,0 +1,56 @@
+.editPreview {
+	padding: 24px;
+	border: 1px dashed var(--color-primary-light, #b0c0c8);
+	border-radius: 16px;
+}
+
+.editHeading {
+	font-weight: 700;
+	font-size: 22px;
+	margin: 0 0 8px 0;
+}
+
+.editSubHeading {
+	font-size: 16px;
+	color: var(--color-text-muted, #547688);
+	margin: 0 0 16px 0;
+}
+
+/* Conteneur des cartes en edit mode — `<div>` et non `<ul>` (cf. commentaire
+   dans default.server.tsx).
+   Grille bornee a 3 colonnes : c'est le nombre de cartes visibles simultanement
+   dans le slider en live, l'apercu de contribution reste donc representatif. */
+.editCardList {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+}
+
+@media (max-width: 1100px) {
+	.editCardList {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 700px) {
+	.editCardList {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Override du DS <SolutionCard> sans toucher a sofinco-react.
+
+   `solution-card__body` est une classe CSS module : elle est hachee au build en
+   `_solution-card__body_<hash>_<ligne>` (generateScopedName par defaut de Vite,
+   qui conserve le nom local en dev comme en prod). Le selecteur d'attribut
+   `[class*="..."]` est donc stable dans les deux modes.
+
+   Portee : uniquement l'apercu d'edition. Pour appliquer ce padding aussi en
+   live, il faudrait le porter dans le CSS module du DS (sofinco-react).
+   --------------------------------------------------------------------------- */
+.editCardList [class*="solution-card__body"] {
+	padding: 0 20px 20px 20px;
+}

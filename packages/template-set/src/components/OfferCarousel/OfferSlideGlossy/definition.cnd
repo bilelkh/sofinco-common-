@@ -1,0 +1,4 @@
+[sofnt:offerSlideGlossy] > sofnt:offerSlideBase, sofmix:cta
+ - jcr:title (string) mandatory i18n
+ - imgDesktop (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ - imgMobile (weakreference, picker[type='image']) mandatory < 'jmix:image'

@@ -1,0 +1,129 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as GuideStories from "./Guide.stories";
+
+<Meta of={GuideStories} />
+
+# Guide
+
+Editorial promotion block ("Suivez le guide !") that surfaces guide articles grouped by product category. Rendered on a navy Sofinco card with a dashed outer border, a left-column title + capsule CTA, and a right-column stack of category rows — each row pairs a square image with an uppercase turquoise category label and a list of underlined links prefixed by a turquoise arrow.
+
+## How It Works
+
+`Guide` composes:
+
+- `title`: main heading rendered with the tag specified by `titleSize` (`h2` or `h3`). Defaults to `h2`.
+- `titleSize`: controls both the HTML tag and the type-scale token applied to the heading.
+- `ctaLabel` / `ctaUrl`: optional turquoise capsule CTA shown under the title. If either is empty, the CTA is hidden.
+- `categories`: array of `GuideCategory` objects rendered as rows.
+
+Layout:
+
+- **Desktop (≥ 768 px):** two-column grid — title + CTA on the left, categories stacked on the right. Each category row is horizontal (square image left, links right).
+- **Mobile (< 768 px):** single column. Title + CTA at the top, then each category as a card with a wide banner image above the title and links.
+
+The component is **pure SSR** (no `useState`, no `useEffect`, no client-only APIs) and renders the same tree on the server and during hydration. Arrows are inline `<svg>` — no icon library is required.
+
+### GuideCategory & GuideLink Details
+
+```ts
+type GuideLink = {
+  id: string;
+  label: string;
+  url: string;
+};
+
+type GuideCategory = {
+  id: string;
+  title: string;
+  imageUrl: string;
+  imageAlt: string;
+  links: GuideLink[];
+};
+```
+
+Field notes:
+
+- `id`: stable identifier used as the React `key`. In Jahia, this is the JCR node identifier of the child node.
+- `title` (category): rendered as a turquoise uppercase eyebrow (`PRÊT PERSONNEL`, `CRÉDIT RENOUVELABLE`, …).
+- `imageUrl`: square on desktop (`120 × 120`, radius `xl`), wide banner on mobile (`16 / 7` aspect ratio, radius `lg`). Pass an empty string to hide the image — the layout collapses gracefully.
+- `links[].label`: rendered with a turquoise `→` prefix and an underlined white label.
+
+## Basic Usage
+
+```tsx
+import { Guide } from "sofinco-react";
+
+<Guide
+  title="Suivez le guide !"
+  titleSize="h2"
+  ctaLabel="Guides prêts perso"
+  ctaUrl="/guides"
+  categories={[
+    {
+      id: "1",
+      title: "Prêt personnel",
+      imageUrl: "/images/guides/pret-personnel.jpg",
+      imageAlt: "Voyageur avec une valise orange",
+      links: [
+        { id: "1-1", label: "Crédit renouvelable ou prêt personnel : comment choisir ?", url: "/guides/choisir" },
+        { id: "1-2", label: "Bien préparer son dossier", url: "/guides/dossier" },
+      ],
+    },
+    {
+      id: "2",
+      title: "Crédit renouvelable",
+      imageUrl: "/images/guides/credit-renouvelable.jpg",
+      imageAlt: "Smartphone tenu en main",
+      links: [
+        { id: "2-1", label: "Comment fonctionne un crédit renouvelable ?", url: "/guides/renouvelable" },
+      ],
+    },
+  ]}
+/>;
+```
+
+## Jahia Integration
+
+In the Jahia template-set, the component is mapped from a `sofnt:guide` node:
+
+- `jcr:title` → `title`
+- `titleSize` (choicelist: `h2` | `h3`, default `h2`) → `titleSize`
+- named child `cta` of type `sofnt:link` → `ctaLabel` (link label) + `ctaUrl` (resolved href)
+- child nodes of type `sofnt:guideCategory` → `categories`
+
+Each `sofnt:guideCategory` maps to a `GuideCategory`:
+
+- `jcr:title` → `title`
+- `image` (image picker) → `imageUrl`
+- `imageAlt` (i18n) → `imageAlt`
+- child nodes of type `sofnt:link` → `links` (resolved via the shared `readLink` helper)
+
+Each `sofnt:link` child maps to a `GuideLink`:
+
+- `jcr:title` (fallback) / `j:linkTitle` → `label`
+- `j:linknode` (internal page) → `url` via `buildNodeUrl`, otherwise `j:url` (external)
+
+Disabled (`j:linkType = none`), label-less, or target-less link nodes are filtered out.
+
+In edit mode:
+
+- `<AddContentButtons nodeTypes={["sofnt:guideCategory"]} />` is rendered under the block so editors can append new categories.
+- Inside each category preview, `<AddContentButtons nodeTypes={["sofnt:link"]} />` lets editors append shared links.
+- `sofnt:guideCategory` and `sofnt:link` children are `orderable`, so editors can reorder via drag-and-drop in Page Composer.
+
+## Story Variants
+
+<Canvas of={GuideStories.Default} />
+<Canvas of={GuideStories.TitleH2} />
+<Canvas of={GuideStories.SansCta} />
+<Canvas of={GuideStories.UneCategorie} />
+<Canvas of={GuideStories.Mobile} />
+
+## Props
+
+<ArgTypes of={GuideStories} />
+
+## All Stories
+
+<Stories />

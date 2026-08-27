@@ -1,0 +1,11 @@
+[sofnt:header] > jnt:content, sofmix:component
+
+[sofmix:alert] mixin
+ extends = sofnt:header
+ itemtype = content
+ - activate (boolean) = 'false' i18n
+ - typeMessage (string, choicelist[resourceBundle]) mandatory < info, warning
+ - message (string) mandatory
+ - picto (weakreference, picker[type='image']) < jmix:image
+ - textColor (string, color) 
+ - bgColor (string, color)

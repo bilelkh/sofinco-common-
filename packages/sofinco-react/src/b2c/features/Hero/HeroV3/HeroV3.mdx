@@ -1,0 +1,95 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as HeroV3Stories from "./HeroV3.stories";
+
+<Meta of={HeroV3Stories} />
+
+# HeroV3
+
+Banner variant centred on a large rate / hook value and a primary CTA.
+
+## How It Works
+
+- `imgBeforeAnim` / `imgDesktop` / `imgMobile`: progressive responsive background image set
+- `title` / `subtitle`: main headline copy
+- `hookValue`: large emphasised value (e.g. `0,9 %`)
+- `hookDateLabel`: secondary date / context label below the hook
+- `badgeLabel`: optional short label displayed below the hook value (e.g. `Prêt perso`)
+- `cta`: primary CTA (forwarded to the shared `Cta` component)
+- `simulator`: optional sticky simulator CTA
+- `tracking`: optional GA promotion identifiers — emits **two** GA events (see below)
+
+## GA tracking — `view_promotion` + `select_promotion`
+
+When `tracking` is provided, HeroV3 wires two GA events:
+
+### 1. `view_promotion` (impression)
+
+The root `<section>` carries a `data-tracking-view` JSON attribute. The global IntersectionObserver installed by `Layout.tsx` fires the event the first time the Hero crosses 25 % of the viewport (fired once per page load).
+
+### 2. `select_promotion` (CTA click) — V3 only
+
+When a `cta` is rendered, the CTA's `tracking` prop is set to a `select_promotion` event using the same promotion identifiers. The Cta component merges it with its default `click_cta` event, so the global click delegator pushes **both** events on click:
+
+```js
+// dataLayer pushes on CTA click
+{ event: "select_promotion", ecommerce: { promotions: [{ promotion_id, … }] }, /* + base context */ }
+{ event: "click_cta",        cta_label: "…", cta_section: "…", cta_url: "…",   /* + base context */ }
+```
+
+Tracking is skipped entirely (no attributes, no events) if `promotionId` is empty.
+
+```ts
+type PromotionTracking = {
+  promotionId: string;    // e.g. "banner_home_rac"
+  promotionName: string;  // e.g. "Rachat de crédit - bannière home"
+  creativeName: string;   // e.g. "banner_rac_v1"
+  creativeSlot: string;   // e.g. "homepage_top"
+  locationId: string;     // e.g. "home_page"
+};
+```
+
+## Usage
+
+```tsx
+import { HeroV3 } from "sofinco-react";
+
+<HeroV3
+  variant="v3"
+  title="Rachat de crédit"
+  subtitle="Réunissez vos crédits en un seul"
+  imgBeforeAnim="/images/rac-lq.jpg"
+  imgDesktop="/images/rac-d.jpg"
+  imgMobile="/images/rac-m.jpg"
+  hookValue="0,9 %"
+  badgeLabel="Prêt perso"
+  hookDateLabel="TAEG fixe — avril 2026"
+  cta={{
+    type: "button",
+    variant: "accent",
+    label: "Je simule mon rachat",
+    href: "/parcours-simulateur",
+    ctaSection: "hero-v3-cta",
+  }}
+  tracking={{
+    promotionId: "banner_home_rac",
+    promotionName: "Rachat de crédit - bannière home",
+    creativeName: "banner_rac_v1",
+    creativeSlot: "homepage_top",
+    locationId: "home_page",
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={HeroV3Stories.Default} />
+<Canvas of={HeroV3Stories.WithoutBadge} />
+
+## Props
+
+<ArgTypes of={HeroV3Stories} />
+
+## All Stories
+
+<Stories />

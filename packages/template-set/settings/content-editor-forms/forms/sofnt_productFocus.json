@@ -1,0 +1,28 @@
+{
+	"nodeType": "sofnt:productFocus",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "mix:title",
+					"fields": [{ "name": "jcr:title", "rank": "1.0" }]
+				},
+				{
+					"name": "sofnt:productFocus",
+					"fields": [
+						{ "name": "subtitle", "rank": "2.0" },
+						{ "name": "image", "rank": "3.0", "mandatory": true },
+						{
+							"name": "backgroundColor",
+							"rank": "4.0",
+							"hide": true,
+							"readOnly": true
+						}
+					]
+				}
+			]
+		}
+	]
+}

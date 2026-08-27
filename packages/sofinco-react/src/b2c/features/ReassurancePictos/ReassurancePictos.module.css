@@ -1,0 +1,29 @@
+@import "@styles/base.css";
+
+.pictos-block {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	display: block;
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 10);
+	max-width: 1232px;
+	margin: 0 auto;
+}
+
+.pictos-block__list {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: calc(var(--spacing) * 10);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+@media (--small-up) {
+	.pictos-block {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+	}
+
+	.pictos-block__list {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: calc(var(--spacing) * 10);
+	}
+}

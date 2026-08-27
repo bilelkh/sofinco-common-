@@ -1,0 +1,40 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as ProductFocusStories from "./ProductFocus.stories";
+
+<Meta of={ProductFocusStories} />
+
+# ProductFocus
+
+Product spotlight section: centered title + subtitle, a central visual, and
+two columns of short label/description arguments around it. Visually close to
+`OfferComparisonTable`, but there is no comparison and no offer switching —
+the markup is plain semantic lists, not a table.
+
+## How It Works
+
+- `leftFeatures`/`rightFeatures` (`ProductFocusItemData[]`) — arguments
+  displayed in each column around the image, contributed explicitly (same
+  shape as `OfferComparisonTable`'s `ComparisonOffer.leftFeatures`/
+  `rightFeatures`). On mobile everything stacks in contribution order (left
+  items, image, right items).
+- Each item renders its `label` as a pill (uppercased by the design system)
+  above its `description` paragraph — styled to match the shared `Tag`
+  component, inlined as a plain `<span>` for now pending its landing on this
+  branch.
+- `title` (`TitleProps`, optional) — rendered through `SectionHeading` (H2 by
+  default, level/style contributable via `sofmix:headingStyle`); when present
+  the section is named by it (`aria-labelledby`). Without title and subtitle,
+  no heading block is rendered.
+- `imageSrc` — the central visual is decorative (`alt=""`), lazy-loaded, and
+  cropped to a rounded 3:4 portrait (`--radius-4xl`).
+- `backgroundColor` — contributed value applied to the whole section, falling
+  back to the `--color-primary-subtle` token.
+- Vertical section spacing: 80px (`--sof-sp-9`) on mobile, 104px
+  (`--sof-sp-10`) from `--small-up` up — same rhythm as `OfferComparisonTable`.
+
+<Stories />
+
+## Props
+
+<ArgTypes of={ProductFocusStories} />

@@ -1,0 +1,52 @@
+@import "@styles/tokens.css";
+@import "@styles/breakpoints.css";
+
+.avis-clients-sticker {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+	/* Self-contained: don't inherit text styling from the surrounding context
+     (e.g. when placed in SectionHeading's eyebrow slot). */
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-normal);
+	text-transform: none;
+}
+
+.avis-clients-sticker--row {
+	flex-direction: row;
+	align-items: baseline;
+}
+
+.avis-clients-sticker--column {
+	flex-direction: column;
+	.avis-clients-sticker__logo {
+		margin-bottom: 5px;
+	}
+}
+
+.avis-clients-sticker__logo {
+	height: 30px;
+
+	max-width: 140px;
+	width: 100%;
+}
+
+.avis-clients-sticker__rating-text {
+	font-size: var(--text-sm);
+	margin: 0;
+	display: inline-flex;
+	align-items: center;
+	min-width: 185px;
+}
+
+.avis-clients-sticker[data-theme="light"] {
+	color: var(--color-primary-base);
+}
+
+.avis-clients-sticker[data-theme="dark"] {
+	color: var(--color-white);
+}
+
+.avis-clients-sticker[data-variant="accent"] .avis-clients-sticker__rating-text {
+	color: var(--color-accent-base);
+}

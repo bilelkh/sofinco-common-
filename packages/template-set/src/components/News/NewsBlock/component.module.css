@@ -1,0 +1,28 @@
+.editPreview {
+	padding: 24px;
+	border: 1px dashed var(--color-primary-light, #b0c0c8);
+	border-radius: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.editEyebrow {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--color-secondary-base, #cc1d49);
+	font-weight: 700;
+}
+
+.editTitle {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--color-primary-base, #03334d);
+	margin: 0;
+}
+
+.editSubtitle {
+	color: var(--color-text-muted, #547688);
+	margin: 0;
+}

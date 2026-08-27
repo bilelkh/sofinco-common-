@@ -1,0 +1,149 @@
+.guide-category {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	color: var(--color-white);
+	font-family: var(--font-sans);
+}
+
+/* Meme fond que la tuile live. Le degrade n'existe pas encore en token : il est
+   duplique tel quel depuis le DS — a factoriser si un token est ajoute.
+   Reference live : packages/sofinco-react/src/b2c/features/Guide/guide.module.css
+   -> .guide__image-wrapper */
+.guide-category__image-wrapper {
+	width: 100%;
+	/* Meme ratio que la banniere live, calque sur le gabarit du visuel mobile
+	   (279x80) : l'apercu cadre l'illustration comme le rendu live. */
+	aspect-ratio: 279 / 80;
+	overflow: hidden;
+	border-radius: var(--radius-3xl);
+	background: linear-gradient(90deg, #35deff 0%, #aeffd9 100%);
+}
+
+/* <picture> est inline par defaut : sans ca il ajoute un espace de ligne de base
+   sous l'image et ne relaie pas la hauteur de la tuile. */
+.guide-category__picture {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* `contain` comme en live : les visuels sont transparents et calibres au ratio de
+   la tuile, un `cover` rognerait l'illustration si le contributeur televerse un
+   gabarit legerement different. */
+.guide-category__image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+}
+
+.guide-category__content {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+}
+
+.guide-category__eyebrow {
+	font-family: var(--font-display);
+	color: var(--color-accent-base);
+	font-size: var(--text-xs);
+	font-weight: var(--font-weight-extrabold);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	line-height: 1;
+}
+
+/* Conteneur des liens en edit mode. Ce n'est plus un `<ul>` : les enfants
+   sont rendus par Jahia (RenderChildren) qui les enveloppe dans son propre
+   markup d'edition, incompatible avec une liste semantique. */
+.guide-category__link-list {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 2);
+}
+
+/* ---------------------------------------------------------------------------
+   Styling des liens rendus par Jahia (RenderChildren).
+
+   Les `sofnt:link` sont rendus par leur propre vue, on ne peut donc plus leur
+   passer `className` / `iconLeft` / `iconVariant` en props. On reproduit ici en
+   CSS ce que le DS <Guide> force en live (arrow-right + accent + theme dark),
+   en ciblant la classe globale `.link` que la vue `sofnt:link` applique.
+
+   Reference live : packages/sofinco-react/src/b2c/features/Guide/Guide.tsx
+   -> <Link iconLeft="arrow-right" iconVariant="accent" theme="dark" />
+   --------------------------------------------------------------------------- */
+
+/* Le wrapper d'edition Jahia insere un niveau de <div> autour de chaque enfant :
+   on garde l'alignement en ligne du lien. */
+.guide-category__link-list :global(.link) {
+	display: inline-flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 1);
+	color: var(--color-white);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.guide-category__link-list :global(.link):hover,
+.guide-category__link-list :global(.link):focus-visible {
+	color: var(--color-white);
+	opacity: 0.8;
+}
+
+/* Fleche accent a gauche — equivalent CSS de `iconLeft="arrow-right"`.
+   Un pseudo-element ne peut pas injecter le SVG du DS : on utilise le glyphe,
+   suffisant pour un apercu de contribution. */
+.guide-category__link-list :global(.link)::before {
+	content: "\2192";
+	color: var(--color-accent-base);
+	font-weight: var(--font-weight-extrabold);
+	text-decoration: none;
+	flex-shrink: 0;
+}
+
+/* En live le DS ignore les icones contribuees sur le noeud et force sa propre
+   fleche : on masque donc celles-ci pour que l'apercu reste fidele. */
+.guide-category__link-list :global(.link) > span {
+	display: none;
+}
+
+.guide-category__edit-controls {
+	display: flex;
+	justify-content: flex-start;
+	padding: calc(var(--spacing) * 2) 0 0 0;
+	margin: 0;
+}
+
+/* Width is wide enough to fit the AddContentButtons label (e.g. "Add new
+   sofnt:link"), but not stretched edge-to-edge — that way the GWT button,
+   which centres its label inside its own width, lands visually on the
+   left of the column. Tune the width if the label is longer. */
+.guide-category__edit-controls > div {
+	width: 150px;
+	max-width: 100%;
+	display: block;
+}
+
+@media (min-width: 768px) {
+	.guide-category {
+		flex-direction: row;
+		align-items: flex-start;
+		gap: calc(var(--spacing) * 6);
+	}
+
+	.guide-category__image-wrapper {
+		width: 120px;
+		height: 120px;
+		aspect-ratio: 1 / 1;
+		border-radius: var(--radius-3xl);
+		flex-shrink: 0;
+	}
+
+	.guide-category__content {
+		flex: 1;
+	}
+}

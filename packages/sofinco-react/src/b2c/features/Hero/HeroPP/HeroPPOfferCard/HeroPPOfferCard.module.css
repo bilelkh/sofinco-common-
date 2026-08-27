@@ -1,0 +1,176 @@
+@import "@styles/base.css";
+
+.card {
+	position: relative;
+	background: linear-gradient(135deg, rgba(53, 222, 255, 1) 0%, rgba(174, 255, 217, 1) 100%);
+	border-radius: var(--radius-3xl);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: center;
+	width: 100%;
+	aspect-ratio: 1/1;
+	padding: calc(var(--spacing) * 14) calc(var(--spacing) * 14) 0;
+	gap: calc(var(--spacing) * 4);
+}
+
+/* Image seule (pas d'infoBlock, donc pas de `.card__top`) : padding-top seul. */
+.card:not(:has(.card__top)) {
+	padding: calc(var(--spacing) * 14) 0 0;
+}
+
+.card__top {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+}
+
+.card__rateCluster {
+	flex-shrink: 0;
+}
+
+.card__rate {
+	margin: 0;
+	display: flex;
+	line-height: 0.8;
+	font-weight: var(--font-weight-extrabold);
+	font-family: var(--font-display);
+	color: var(--color-primary-base);
+}
+
+.card__rateInteger {
+	display: inline-flex;
+	align-items: flex-end;
+	font-size: 110px;
+}
+
+.card__rateDecimalCluster {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: start;
+}
+
+.card__rateDecimal {
+	line-height: 1;
+	font-size: 38px;
+	padding-inline-start: 0.02em;
+}
+
+.card__rateLabel {
+	margin: 4px 0 0 8px;
+	font-size: var(--text-lg);
+	font-weight: var(--font-weight-bold);
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--color-primary-base);
+	font-family: var(--font-display);
+	line-height: 1.2;
+}
+
+.card__details {
+	list-style: none;
+	width: 100%;
+	padding: calc(var(--spacing) * 4) 0 0;
+	border-top: 1.5px solid var(--color-primary-base);
+	text-align: center;
+	a {
+		font-size: var(--text-sm);
+		color: var(--color-primary-base);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		font-weight: var(--font-weight-semibold);
+		&:hover {
+			color: var(--color-accent-strong);
+		}
+	}
+}
+
+.card__detail {
+	margin: 0;
+	font-size: var(--text-sm);
+	line-height: var(--text-xs--line-height);
+	color: var(--color-primary-base);
+	font-weight: var(--font-weight-medium);
+}
+
+.card__imgWrapper {
+	flex: 1 1 auto;
+	line-height: 0;
+}
+
+/* Avec infoBlock, l'image est masquée jusqu'à `--medium-up`. */
+.card__top ~ .card__imgWrapper {
+	display: none;
+}
+
+/* Image masquée (avec infoBlock, < medium-up) : rien n'affleure le bas → padding
+   sp-8 symétrique. */
+@media (--medium-down) {
+	.card:has(.card__top) {
+		padding-bottom: calc(var(--spacing) * 14);
+	}
+}
+
+/* Le <picture> n'existe que pour porter le <source> mobile : `display: contents`
+   le retire du flux pour que `.card__img` reste dimensionne (height: 100%) par
+   rapport a `.card__imgWrapper` comme sans wrapper. */
+.card__picture {
+	display: contents;
+}
+
+.card__img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	object-position: bottom;
+}
+
+/* small→medium : avec infoBlock, bandeau pleine largeur ; image seule, carte
+   bornée à 504 centrée. */
+@media (--small-up) {
+	.card:has(.card__top) {
+		aspect-ratio: auto;
+	}
+
+	.card:not(:has(.card__top)) {
+		max-width: 504px;
+		align-self: center;
+	}
+}
+
+@media (--medium-up) {
+	.card {
+		flex: 1;
+		max-width: 504px;
+		align-self: center;
+		aspect-ratio: 1/1;
+	}
+
+	.card__top ~ .card__imgWrapper {
+		display: block;
+	}
+
+	.card__rateDecimal {
+		font-size: var(--text-5xl);
+	}
+
+	.card__rateLabel {
+		margin: -4px 0 0 8px;
+	}
+
+	.card__details {
+		padding: 0 0 0 calc(var(--spacing) * 4);
+		border-top: none;
+		border-left: 1.5px solid var(--color-primary-base);
+		max-width: 180px;
+		text-align: left;
+	}
+
+	.card__top {
+		flex-direction: row;
+	}
+}

@@ -1,0 +1,6 @@
+[sofnt:navSection] > jnt:content, mix:title, sofmix:component orderable
+ - sideImg (weakreference, picker[type='image']) < jmix:image
+ - sideTitle (string)
+ - sidePage (weakreference, picker[type='page'])
+ - titleCta (string)
+ + * (sofnt:navLink)

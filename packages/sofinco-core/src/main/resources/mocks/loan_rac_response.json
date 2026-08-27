@@ -1,0 +1,60 @@
+{
+    "id": "rac-mock-recette-30000-96-001",
+    "capitalAmount": 30000.0,
+    "label": "RACHAT DE CRÉDITS",
+    "productCode": "RAC     ",
+    "campaignCode": "NEOURL04",
+    "proposals": [
+        {
+            "loanDuration": 96,
+            "dueNumber": 96,
+            "dueDeferralNumber": 0,
+            "scaleCode": null,
+            "annualDebitRate": 8.141,
+            "annualGlobalEffectiveRate": 8.6,
+            "annualChargeRate": 0.0,
+            "annualInsuranceEffectiveRate": 2.552,
+            "contractFees": 150.0,
+            "totalCostWithoutInsurance": 11123.52,
+            "totalCostWithInsurance": 14651.52,
+            "totalCostWithInsuranceAndServices": 14651.52,
+            "fixedRate": true,
+            "totalAmountWithoutInsurance": 41123.52,
+            "totalAmountWithInsurance": 44651.52,
+            "overdraftChargesAmount": 11123.52,
+            "personInsuranceTotalAmount": 3528.0,
+            "installmentWithoutInsurance": {
+                "amount": 428.37,
+                "firstAmount": 428.37,
+                "lastAmount": 428.37,
+                "totalDueNumber": 96,
+                "dueNumber": 96
+            },
+            "installmentWithInsurance": {
+                "amount": 465.12,
+                "firstAmount": 465.12,
+                "lastAmount": 465.12,
+                "totalDueNumber": 96,
+                "dueNumber": 96
+            },
+            "hasBorrowerInsurance": true,
+            "hasCoBorrowerInsurance": false,
+            "borrowerInsurance": {
+                "insuranceCode": "01",
+                "insuranceInstallment": {
+                    "amount": 36.75,
+                    "firstAmount": 36.75,
+                    "lastAmount": 36.75,
+                    "totalDueNumber": 96,
+                    "dueNumber": 96
+                },
+                "totalInsuranceCost": 3528.0,
+                "insuranceProducts": null
+            },
+            "coBorrowerInsurance": null,
+            "alternativeBorrowerInsurance": null,
+            "alternativeCoBorrowerInsurance": null,
+            "maxProposal": null
+        }
+    ]
+}

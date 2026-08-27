@@ -1,0 +1,45 @@
+.container {
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 6);
+	border: 2px dashed var(--color-primary-light);
+	border-radius: var(--radius-lg);
+	background-color: var(--color-primary-subtle);
+}
+
+/* ===== Titre ===== */
+.title {
+	font-size: var(--text-3xl);
+	font-weight: var(--font-weight-extrabold);
+	color: var(--color-primary-base);
+	margin: 0;
+	line-height: var(--text-3xl--line-height);
+	max-width: 800px;
+}
+
+.subtitle {
+	max-width: 750px;
+	margin: 0 auto calc(var(--spacing) * 14);
+	text-wrap: pretty;
+
+	@supports not (text-wrap: pretty) {
+		text-wrap: auto;
+	}
+}
+
+.simulatorSlot {
+	width: 100%;
+	min-height: 120px;
+	padding: calc(var(--spacing) * 6);
+	background-color: var(--color-neutral-00);
+	border: 1px dashed var(--color-primary-light);
+	border-radius: var(--radius-lg);
+	max-width: 960px;
+}
+
+.ctaButton {
+	width: auto;
+}

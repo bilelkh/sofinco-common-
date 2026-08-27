@@ -1,0 +1,472 @@
+@import "@styles/tokens.css";
+
+/* ---------------------------------------------------------------------------
+	 CardAdvantages — two-section block animated via GSAP + ScrollTrigger.
+	 - `.card-track` wraps section 1 AND section 2: the card (CSS sticky)
+		 stays displayed at the same visual position across both sections.
+	 - `.pin-content` is pinned by GSAP during the sequential reveal of the
+		 3 arguments. Section 1 then resumes its natural scroll.
+	 - The card + its "Discover the card" CTA follow section 2.
+--------------------------------------------------------------------------- */
+
+/* ========== ROOT ========== */
+
+.encart-carte {
+	position: relative;
+	isolation: isolate;
+	overflow: clip;
+	--encart-content-max-width: 1440px;
+	--encart-argument-track-max-width: 1240px;
+	/* Cap on the arguments track height: on tall viewports the zigzag stays
+	   grouped (and vertically centered between header and viewport bottom)
+	   instead of spreading over the whole 100vh. 620px = the track height on
+	   the 1440×900 reference design, where the cap is exactly reached. */
+	--encart-argument-track-max-height: 620px;
+	/* Measured header height, exposed by useExposeHeightAsCssVar (0 until the
+	   first measure). */
+	--encart-sticky-content-height: 0px;
+	/* Free space above/below the capped track once centered in the
+	   header→bottom zone; 0 whenever the zone is not taller than the cap.
+	   The card layer adds it to its bottom anchor so the card rises with the
+	   centered zigzag group instead of staying glued to the viewport bottom. */
+	--encart-zone-h: calc(100vh - var(--encart-sticky-content-height));
+	--encart-track-void: calc(
+		(var(--encart-zone-h) - min(var(--encart-zone-h), var(--encart-argument-track-max-height))) / 2
+	);
+}
+
+/* ========== CARD-TRACK (layout root, contains card + section 1 + section 2) ========== */
+
+.encart-carte__card-track {
+	position: relative;
+}
+
+/* ========== CARD-STICKY (first child of card-track) ========== */
+
+.encart-carte__card-sticky {
+	/* Natural position: first element of card-track, 1 viewport tall,
+	   content aligned at the bottom. Negative margin-bottom so section-one
+	   overlaps underneath (the card takes no visual space in the flow).
+	   GSAP then applies a pin (position: fixed) for the entire duration of
+	   the two sections, then releases. */
+	position: relative;
+	height: 100vh;
+	margin-bottom: -100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	/* Base offset + the centering void, so the card stays visually attached
+	   to the zigzag group when the track is centered on tall viewports. */
+	padding-bottom: calc(var(--encart-track-void) + clamp(5rem, 9vh, 8rem));
+	pointer-events: none;
+	z-index: 6;
+}
+
+.encart-carte__card-sticky > * {
+	pointer-events: auto;
+}
+
+/* ----- card-frame (container of the card visual) ----- */
+
+.encart-carte__card-frame {
+	position: relative;
+	display: inline-block;
+	border-radius: 26px;
+	padding: calc(var(--spacing) * 3);
+	background: rgba(255, 255, 255, 0.12);
+	border: 1px solid rgba(255, 255, 255, 0.42);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	overflow: hidden;
+}
+
+.encart-carte__card-image {
+	display: block;
+	/* Height-aware: on short viewports the card shrinks instead of riding up
+	   over the section header (both are anchored to opposite edges of 100vh). */
+	width: clamp(140px, 22vh, 200px);
+	height: auto;
+	border-radius: 14px;
+	transform: translateZ(0);
+}
+
+/* ----- card-cta-wrapper & card-cta ----- */
+
+.encart-carte__card-cta-wrapper {
+	margin-top: calc(var(--spacing) * 4);
+	display: flex;
+	justify-content: center;
+}
+
+.encart-carte__card-cta {
+	width: fit-content;
+	min-width: 140px;
+}
+
+/* ========== SECTION-ONE (second child of card-track) ========== */
+
+.encart-carte__section-one {
+	position: relative;
+	z-index: 1;
+	background-color: var(--color-primary-subtle);
+}
+
+/* ----- pin-content (wrapper pinned by GSAP) ----- */
+
+.encart-carte__pin-content {
+	position: relative;
+	height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	overflow: hidden;
+}
+
+/* ----- sticky-content (contains the header) ----- */
+
+.encart-carte__sticky-content {
+	position: relative;
+	width: min(var(--encart-content-max-width), 100%);
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	pointer-events: none;
+	z-index: 5;
+}
+
+/* ----- sticky-header (section 1 title + subtitle) ----- */
+
+/* Layout, gap and alignment are owned by SectionHeading. */
+.encart-carte__sticky-header {
+	max-width: 980px;
+	pointer-events: none;
+}
+
+/* Neutralize SectionHeading's 80px bottom margin: the arguments track is
+   positioned from the measured sticky-content height, not a header margin. */
+.encart-carte__sticky-content .encart-carte__sticky-header {
+	margin-bottom: 0;
+}
+
+/* ----- arguments & argument (animated product cards) ----- */
+
+/* The track is an overlay, but the arguments themselves live in a grid:
+   items in normal flow push each other instead of overlapping when the track
+   gets short (100vh minus header) or when author texts run long. The padding
+   reproduces the previous absolute slot offsets, with lower floors so the
+   zigzag stays compact on short viewports (dock + browser zoom ≈ 680px). */
+.encart-carte__arguments {
+	position: absolute;
+	top: var(--encart-sticky-content-height);
+	left: 50%;
+	bottom: 0;
+	width: 100%;
+	max-width: var(--encart-argument-track-max-width);
+	/* When the header→bottom zone is taller than the cap, the auto block
+	   margins center the capped track in it; otherwise they resolve to 0 and
+	   the track fills the zone exactly as before. */
+	max-height: var(--encart-argument-track-max-height);
+	margin-block: auto;
+	transform: translateX(-50%);
+	pointer-events: none;
+	z-index: 4;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: repeat(3, 1fr);
+	row-gap: calc(var(--spacing) * 4);
+	padding: clamp(1.5rem, 4vh, 4rem) 6% clamp(3rem, 11vh, 10rem);
+}
+
+/* Zigzag slots: top-left / right (spans the whole track, vertically centered,
+   so it costs no vertical space of its own) / bottom-left. The track's
+   minimum height is therefore only the two left cards + gap, which keeps the
+   zigzag fitting down to ~650px-tall viewports. */
+.encart-carte__arguments > .encart-carte__argument:nth-child(1) {
+	grid-area: 1 / 1;
+	align-self: start;
+	justify-self: start;
+}
+
+.encart-carte__arguments > .encart-carte__argument:nth-child(2) {
+	grid-row: 1 / -1;
+	grid-column: 2;
+	align-self: center;
+	justify-self: end;
+}
+
+.encart-carte__arguments > .encart-carte__argument:nth-child(3) {
+	grid-area: 3 / 1;
+	align-self: end;
+	justify-self: start;
+}
+
+.encart-carte__arguments--static {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+	margin-top: calc(var(--spacing) * 8);
+	z-index: 4;
+}
+
+/* Positioning-only slot — never touched by GSAP, see `-inner` below. */
+.encart-carte__argument {
+	position: relative;
+	width: 283px;
+}
+
+/* Visual card surface, animated by GSAP (reveal on scroll). Kept separate
+   from `.encart-carte__argument` above so GSAP's `transform`/`opacity`/
+   `filter` never fight the positioning `transform` React sets on the `<li>`. */
+.encart-carte__argument-inner {
+	padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
+	border-radius: 20px;
+	background: var(--color-primary-strong);
+	color: var(--color-neutral-00);
+	will-change: transform, opacity, filter;
+}
+
+.encart-carte__argument-title {
+	composes: h3 from "@styles/utilities/typography.module.css";
+	font-weight: var(--font-weight-medium);
+	color: var(--color-neutral-00);
+}
+
+.encart-carte__argument-subtitle {
+	margin-top: calc(var(--spacing) * 2);
+	font-family: var(--font-sans);
+	font-size: 15px;
+	line-height: 1.2;
+	font-weight: var(--font-weight-medium);
+	letter-spacing: 0;
+	color: var(--color-neutral-00);
+	opacity: 0.9;
+}
+
+/* ========== SECTION-TWO (third child of card-track) ========== */
+
+.encart-carte__section-two {
+	position: relative;
+	min-height: 100vh;
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10);
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	overflow: hidden;
+	background-color: #2b2b2b;
+	background-size: cover;
+	background-position: center;
+	z-index: 1;
+}
+
+/* ----- video-overlay (darkening gradient) ----- */
+
+.encart-carte__video-overlay {
+	position: absolute;
+	inset: 0;
+	background: var(--color-alpha-neutral-100-30);
+	z-index: 1;
+}
+
+/* ----- section-two-heading (section 2 title + subtitle) -----
+   Layout, spacing and colour (variant="white") are handled by SectionHeading. */
+
+.encart-carte__section-two-heading {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	max-width: 860px;
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* ---------- Large screens (1600px+) ---------- */
+
+@media (min-width: 1600px) {
+	.encart-carte {
+		--encart-content-max-width: 1600px;
+		--encart-argument-track-max-width: 1400px;
+		--encart-argument-track-max-height: 680px;
+	}
+
+	.encart-carte__card-image {
+		width: clamp(150px, 22vh, 220px);
+	}
+
+	.encart-carte__section-two-heading {
+		max-width: 820px;
+	}
+}
+
+/* ---------- Extra large screens (2200px+) ---------- */
+
+@media (min-width: 2200px) {
+	.encart-carte {
+		--encart-content-max-width: 1760px;
+		--encart-argument-track-max-width: 1520px;
+		--encart-argument-track-max-height: 720px;
+	}
+
+	.encart-carte__card-image {
+		width: clamp(160px, 22vh, 240px);
+	}
+
+	.encart-carte__section-two-heading {
+		max-width: 900px;
+	}
+}
+
+/* ---------- Extra large screens (1920px+) ---------- */
+
+@media (min-width: 1920px) {
+	.encart-carte__sticky-header {
+		max-width: 1080px;
+	}
+}
+
+/* ---------- Compact desktop: wide but short (dock, browser zoom…) ----------
+   Between 641px and 760px of viewport height the zigzag still applies but
+   space is tight: shrink the header padding and widen the argument cards —
+   wider cards wrap their titles on 2 lines instead of 3, which is what buys
+   the vertical room the short track lacks. */
+
+@media (min-width: 901px) and (max-height: 760px) {
+	.encart-carte__sticky-content {
+		padding-top: calc(var(--spacing) * 10);
+	}
+
+	.encart-carte__argument {
+		width: 340px;
+	}
+
+	.encart-carte__arguments {
+		padding-top: clamp(1rem, 3vh, 2rem);
+		/* Floor high enough to clear the page-level floating conditions bar
+		   (~70px) that overlays the bottom of the viewport. */
+		padding-bottom: clamp(4.5rem, 10vh, 5rem);
+	}
+}
+
+/* ---------- Stacked layout: narrow OR very short viewports ----------
+   The height clause is a last-resort fallback: the compact zigzag grid above
+   holds down to ~650px of viewport height; below that (tiny snapped windows)
+   the 100vh-based layout cannot fit and we stack vertically instead.
+   Keep in sync with MOBILE_BREAKPOINT in cardAdvantages.hooks.ts. */
+
+@media (max-width: 900px), (max-height: 640px) {
+	.encart-carte {
+		/* Slot enlarged to fit card-image 180px + frame padding (24px)
+		   + CTA wrapper (~60px) + bottom margin (~24px) ≈ 290-320px. */
+		--encart-mobile-card-slot: clamp(290px, 40vh, 340px);
+		--encart-mobile-floating-bottom: calc(clamp(3.5rem, 8vh, 5.5rem) + env(safe-area-inset-bottom));
+	}
+
+	.encart-carte__card-track {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.encart-carte__card-sticky {
+		order: 2;
+		position: relative;
+		top: auto;
+		bottom: auto;
+		height: auto;
+		margin-top: calc(-1 * var(--encart-mobile-card-slot));
+		margin-bottom: 0;
+		padding: calc(var(--spacing) * 6) 0 0;
+		justify-content: center;
+		z-index: 4;
+	}
+
+	.encart-carte__card-image {
+		width: 180px;
+	}
+
+	.encart-carte__card-sticky--mobile-active {
+		position: fixed;
+		left: 50%;
+		width: 100%;
+		margin-top: 0;
+		margin-left: -50%;
+		bottom: 75px;
+		z-index: 8;
+	}
+
+	.encart-carte__card-sticky--mobile-bottom-locked {
+		position: absolute;
+		left: 50%;
+		width: 100%;
+		margin-top: 0;
+		margin-left: -50%;
+		bottom: 75px;
+		z-index: 5;
+	}
+
+	.encart-carte__section-one {
+		order: 1;
+		padding-bottom: var(--encart-mobile-card-slot);
+	}
+
+	.encart-carte__pin-content {
+		height: auto;
+		max-width: 960px;
+		/* Center the capped column: the stacked layout also applies to wide-but-
+		   short viewports (> 960px wide), not just narrow mobile screens. */
+		margin-inline: auto;
+	}
+
+	.encart-carte__sticky-content {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10);
+	}
+
+	.encart-carte__sticky-header {
+		max-width: 100%;
+	}
+
+	.encart-carte__arguments {
+		position: static;
+		max-width: 100%;
+		max-height: none;
+		left: 0;
+		transform: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: calc(var(--spacing) * 4);
+		margin-top: calc(var(--spacing) * 6);
+		padding: 0;
+	}
+
+	.encart-carte__section-two {
+		order: 3;
+		min-height: max(100vh, 750px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		padding-top: calc(var(--spacing) * 20);
+		padding-left: calc(var(--spacing) * 6);
+		padding-right: calc(var(--spacing) * 6);
+		padding-bottom: calc(var(--spacing) * 10);
+	}
+
+	.encart-carte__section-two-heading {
+		max-width: 340px;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion (accessibility)
+   The desktop zigzag layout is preserved on purpose: arguments stay in their
+   final positions around the card, only the GSAP scroll-driven animations
+   (pin, snap, sequential reveal) are skipped — see CardAdvantages.tsx.
+   On narrow/very-short viewports the static vertical layout is already
+   applied by the stacked-layout media query above.
+--------------------------------------------------------------------------- */

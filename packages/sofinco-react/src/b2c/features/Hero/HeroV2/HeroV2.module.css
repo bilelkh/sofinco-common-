@@ -1,0 +1,29 @@
+@import "@styles/base.css";
+
+.heroWrapper {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background: transparent;
+	gap: 0;
+}
+
+.hero {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	background-color: var(--color-primary-base);
+	padding: 0 calc(var(--spacing) * 4);
+	overflow: hidden;
+	width: 100%;
+}
+
+@media (--large-up) {
+	.hero {
+		height: calc(100dvh - 112px);
+		min-height: unset;
+		aspect-ratio: 2 / 1;
+	}
+}

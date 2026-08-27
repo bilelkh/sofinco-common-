@@ -1,0 +1,20 @@
+.heroSection {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.simContainer {
+	position: absolute;
+	z-index: 20;
+	padding: 0 24px;
+	width: 100%;
+	box-sizing: border-box;
+	bottom: 13px;
+}
+
+@media (max-width: 767px) {
+	.simContainer {
+		order: 2;
+	}
+}

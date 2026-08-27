@@ -1,0 +1,4 @@
+[sofnt:howItWorksStep] > jnt:content, mix:title orderable
+ - description (string, textarea) i18n
+ - image (weakreference, picker[type='image']) < jmix:image
+ - imageAlt (string) i18n

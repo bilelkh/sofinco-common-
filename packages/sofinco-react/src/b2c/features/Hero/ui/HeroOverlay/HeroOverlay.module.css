@@ -1,0 +1,6 @@
+.hero__overlay {
+	position: absolute;
+	inset: 0;
+	background: var(--color-alpha-neutral-100-30);
+	z-index: 1;
+}

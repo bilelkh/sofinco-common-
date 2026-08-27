@@ -1,0 +1,44 @@
+.link {
+	text-decoration: none;
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-xs);
+	color: var(--color-alpha-neutral-00-80) !important;
+	line-height: normal;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+/*
+ * Simple reset du chrome natif du bouton : la typographie vient de `.link`, partagée
+ * avec les liens voisins. Plus un seul `!important` — il n'y a plus de `Cta` à
+ * neutraliser depuis que `FooterLink` rend un `<button>` nu.
+ */
+.footer__consentButton {
+	padding: 0;
+	border: 0;
+	background: none;
+	letter-spacing: 0;
+	text-align: left;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	&:focus-visible {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+		border-radius: 2px;
+		background: rgb(255 255 255 / 16%);
+		box-shadow: 0 0 0 4px rgb(255 255 255 / 16%);
+		color: var(--sof-n-0);
+		text-decoration: underline;
+	}
+}
+
+.footerLink--small {
+	font-size: var(--sof-fs-micro);
+}

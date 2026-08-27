@@ -1,0 +1,82 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as MentionLegalStories from "./MentionLegal.stories";
+
+<Meta of={MentionLegalStories} />
+
+# MentionLegal
+
+A collapsible legal-mentions block. A clickable title row toggles the visibility of a list of
+legal-disclaimer paragraphs (offer conditions). Closed, it shows only the navy title with a
+magenta chevron pointing down; open, the chevron points up and the paragraphs are revealed.
+
+## How It Works
+
+MentionLegal composes:
+
+- `title`: the clickable heading, rendered inside a real `<button>` with `aria-expanded` /
+  `aria-controls` for accessibility.
+- `items`: array of `MentionLegalItem` rendered as paragraphs when the block is open.
+- `initiallyOpen`: the expanded state on first paint. Authors decide this per block in Jahia;
+  it defaults to `true`.
+
+The toggle state is owned client-side via `useState(initiallyOpen)`. Because the initial value
+is a stable prop (never a `window` read), the server and first client paint match — keeping the
+component SSR-safe (no React #418 on hydration). The chevron is the shared design-system
+`chevron-up` icon, rotated 180° via CSS for the closed state.
+
+### MentionLegalItem Details
+
+```ts
+type MentionLegalItem = {
+  anchorId: string;
+  content: string;
+};
+```
+
+Field notes:
+
+- `anchorId`: slugified anchor used as the element `id` for deep links (e.g.
+  `…/page#mention-1`). May be empty. Derived in Jahia from the `anchor` property of the
+  `sofnt:mentionLegalItem` child node, offset under the sticky header via `scroll-margin-top`.
+- `content`: pre-rendered rich-text HTML, injected with `dangerouslySetInnerHTML`.
+
+## Basic Usage
+
+```tsx
+import { MentionLegal } from "sofinco-react";
+
+<MentionLegal
+  title="Voir les conditions de l'offre"
+  initiallyOpen={false}
+  items={[
+    { anchorId: "mention-1", content: "(1) Vous pouvez utiliser votre Crédit Renouvelable…" },
+    { anchorId: "mention-2", content: "(2) La diminution du montant des mensualités…" },
+  ]}
+/>;
+```
+
+## Jahia Integration
+
+In the Jahia template-set, the component is mapped from a `sofnt:mentionLegal` node:
+
+- `jcr:title` → `title`
+- `initiallyOpen` (boolean) → `initiallyOpen`
+- child nodes of type `sofnt:mentionLegalItem` → `items` (each `anchor` → `anchorId`,
+  `content` richtext → `content`)
+
+It is mounted as an `<Island>` for client-side toggle interactivity. In edit mode the items are
+rendered with `RenderChildren` (always expanded and editable) instead of the collapsible view.
+
+## Story Variants
+
+<Canvas of={MentionLegalStories.Default} />
+<Canvas of={MentionLegalStories.Replie} />
+
+## Props
+
+<ArgTypes of={MentionLegalStories} />
+
+## All Stories
+
+<Stories />

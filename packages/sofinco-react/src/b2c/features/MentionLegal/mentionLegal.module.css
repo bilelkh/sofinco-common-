@@ -1,0 +1,106 @@
+@import "@styles/breakpoints.css";
+
+.mention-legal {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 26);
+	border-bottom: 1px solid var(--color-primary-light);
+	font-family: var(--font-sans);
+}
+
+.mention-legal__container {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	max-width: 1232px;
+	margin: 0 auto;
+}
+
+@media (--small-down) {
+	.mention-legal {
+		padding-left: calc(var(--spacing) * 6);
+		padding-right: calc(var(--spacing) * 6);
+	}
+}
+
+.mention-legal__toggle {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+	padding: 0;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	text-align: left;
+	font: inherit;
+}
+
+.mention-legal__title {
+	font-weight: var(--font-weight-bold);
+	color: var(--color-primary-strong);
+}
+
+.mention-legal__icon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: var(--color-secondary-base);
+	transition: transform 0.2s ease;
+}
+
+.mention-legal__icon svg {
+	width: 20px;
+}
+
+.mention-legal__icon--closed {
+	transform: rotate(180deg);
+}
+
+.mention-legal__items-wrapper {
+	display: grid;
+	grid-template-rows: 0fr;
+	opacity: 0;
+	transition:
+		grid-template-rows 0.28s ease,
+		opacity 0.2s ease;
+}
+
+.mention-legal__items-wrapper--open {
+	grid-template-rows: 1fr;
+	opacity: 1;
+}
+
+.mention-legal__items {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	overflow: hidden;
+	min-height: 0;
+	transform: translateY(calc(calc(var(--spacing) * 2) * -1));
+	transition: transform 0.28s ease;
+}
+
+.mention-legal__items-wrapper--open .mention-legal__items {
+	transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mention-legal__icon,
+	.mention-legal__items-wrapper,
+	.mention-legal__items {
+		transition: none;
+	}
+}
+
+.mention-legal__item {
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	color: var(--color-primary-base);
+	/* Offset the anchor target so it isn't hidden under the sticky header when linked to. */
+	scroll-margin-top: var(--header-height, 96px);
+}
+
+.mention-legal__item p {
+	margin: 0;
+}

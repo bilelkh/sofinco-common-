@@ -1,0 +1,105 @@
+@import "@styles/base.css";
+
+.product-advantage-slide {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: var(--radius-4xl);
+	color: var(--color-white);
+	isolation: isolate;
+}
+
+.product-advantage-slide__picture {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+}
+
+.product-advantage-slide__picture::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.product-advantage-slide__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Frosted-glass navy panel: the contributed title/text sit on a blurred,
+	semi-transparent navy surface inset from the slide edges. */
+.product-advantage-slide__overlay {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+	margin: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 3);
+	border-radius: var(--radius-3xl);
+	background: var(--color-alpha-neutral-100-30);
+	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
+
+	@media (--small-up) {
+		gap: calc(var(--spacing) * 4);
+		margin: calc(var(--spacing) * 6);
+		padding: calc(var(--spacing) * 6);
+	}
+}
+
+.product-advantage-slide__overlay::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		120deg,
+		var(--color-alpha-neutral-00-40),
+		rgba(255, 255, 255, 0),
+		var(--color-alpha-neutral-00-20)
+	);
+	-webkit-mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+/* Title and text keep fixed size and color regardless of contributed HTML.
+	Only inline styles (bold, italic...) remain visible. */
+.product-advantage-slide__title {
+	margin: 0;
+	composes: h4 from "@styles/utilities/typography.module.css";
+	color: inherit;
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+.product-advantage-slide__title :is(h1, h2, h3, h4, h5, h6, p, span) {
+	margin: 0;
+	font-size: var(--text-xl);
+	line-height: var(--leading-normal);
+	font-weight: inherit;
+	color: inherit;
+}
+
+.product-advantage-slide__text {
+	composes: text from "@styles/utilities/typography.module.css";
+	color: inherit;
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+.product-advantage-slide__text :is(p, ul, ol) + :is(p, ul, ol) {
+	margin-top: calc(var(--spacing) * 2);
+}

@@ -1,0 +1,5 @@
+[sofnt:guide] > jnt:content, mix:title, sofmix:component orderable
+ - titleSize (string, choicelist[resourceBundle]) = 'h2' autocreated < 'h2', 'h3'
+ - ctaLabel (string)
+ - linkType (string, choicelist[linkTypeInitializer,resourceBundle]) mandatory
+ + * (sofnt:guideCategory)

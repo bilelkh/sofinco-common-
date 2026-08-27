@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>sofinco-root</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <groupId>ch.sofinco.core</groupId>
+    <artifactId>sofinco-core</artifactId>
+    <name>sofinco-core</name>
+    <packaging>bundle</packaging>
+    <description>This is the custom module (sofinco-core) for running on a Jahia server.</description>
+
+    <scm>
+        <connection>scm:dummy:uri</connection>
+        <developerConnection>scm:dummy:uri</developerConnection>
+    </scm>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <junit.jupiter.version>5.13.1</junit.jupiter.version>
+        <mockito.version>5.12.0</mockito.version>
+        <assertj.version>3.26.3</assertj.version>
+        <httpclient5.version>5.6.1</httpclient5.version>
+        <httpcore5.version>5.4</httpcore5.version>
+        <surefire.version>3.2.5</surefire.version>
+        <jacoco.version>0.8.12</jacoco.version>
+
+        <!-- OAuth IdP connector (merged ex-sofinco-oauth-connector) — align to the platform's versions -->
+        <jahia-oauth.version>4.0.0</jahia-oauth.version>
+        <jahia-authentication.version>1.8.0</jahia-authentication.version>
+        <scribejava.version>8.3.3</scribejava.version>
+
+        <!-- Sonar : analyse Java du bundle sofinco-core -->
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/java</sonar.tests>
+        <sonar.java.binaries>target/classes</sonar.java.binaries>
+        <sonar.java.test.binaries>target/test-classes</sonar.java.test.binaries>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <!--
+            Exclusions de couverture : glue OSGi pure (initializers Jahia, provider Spring
+            via ThreadLocal), DTOs Jackson triviaux (records), bridge à refacto séparée,
+            package-info. Le reste de client/http/ (HttpClientFactory, ApimHttpExecutor,
+            HttpApimSimulationClient, MockApimSimulationClient, ApimSimulationClientFactory)
+            est testable et inclus dans la couverture.
+        -->
+        <sonar.coverage.exclusions>
+            **/bridge/SpringRequestOriginProvider.java,
+            **/bridge/ReviewServiceBridgeImpl.java,
+            **/initializers/**,
+            **/model/**,
+            **/observability/MetricsRecorder.java,
+            **/package-info.java,
+            **/jahia/oauth/SofincoApi.java,
+            **/jahia/oauth/SofincoApiBuilder.java,
+            **/jahia/oauth/SofincoApiRegistrar.java,
+            **/jahia/oauth/SofincoConnectorImpl.java,
+            **/jahia/oauth/SofincoGroupInstaller.java,
+            **/jahia/oauth/SofincoGroupSyncProcessor.java,
+            **/jahia/oauth/SofincoLoginUrlProvider.java,
+            **/jahia/oauth/SofincoConnectRedirectAction.java,
+            **/jahia/oauth/SofincoOAuthResultFilter.java
+        </sonar.coverage.exclusions>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-api</artifactId>
+            <version>8.2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            jahia-impl : fournit org.jahia.params.valves (LoginUrlProvider / LoginConfig) que jahia-api
+            n'exporte pas. Requis à la compilation de SofincoLoginUrlProvider. provided → non embarqué ;
+            le package est exporté par le runtime Jahia (jahia-authentication l'importe de même) et résolu
+            via Import-Package.
+        -->
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>8.2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Annotations OSGi DS — traitées au build par maven-bundle-plugin -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <version>1.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            Annotations OSGi Metatype — traitées au build par maven-bundle-plugin (génère
+            OSGI-INF/metatype/*.xml pour rendre les PID de config découvrables + typés en console OSGi,
+            au lieu d'un .cfg édité à l'aveugle). Rétention CLASS → effacées au runtime ; l'Import-Package
+            org.osgi.service.metatype.annotations est déjà déclaré optional plus bas.
+        -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.metatype.annotations</artifactId>
+            <version>1.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- portal-common-sofinco : fournit Jackson + commons-lang3 en runtime OSGi -->
+        <dependency>
+            <groupId>cacf.jahia.portal</groupId>
+            <artifactId>portal-common-sofinco</artifactId>
+            <version>26.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jackson : déjà exposé par portal-common-sofinco en runtime, juste pour la compilation -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            ============================================================
+            APACHE HTTPCLIENT 5 — stack HTTP des appels APIM (token + simulation).
+            scope=provided : les bundles OSGi natifs (httpclient5 / httpcore5 /
+            httpcore5-h2) sont déployés via le provisioning Jahia et importés via
+            Import-Package (org.apache.hc.*). HttpClient5 journalise via SLF4J (pas
+            commons-logging) → pas le piège classloader de commons-httpclient. Jackson
+            reste fourni par portal-common-sofinco (sérialisation via ObjectMapper).
+            ============================================================
+        -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpclient5.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>${httpcore5.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5-h2</artifactId>
+            <version>${httpcore5.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- commons-lang3 : utilitaires (StringUtils.isEmpty etc.) -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            ============================================================
+            CONNECTEUR OAuth/OIDC ("Sofinco") — ex-module sofinco-oauth-connector,
+            fusionné dans ce bundle. Companion de jahia-oauth : enregistre l'API
+            ScribeJava + le ConnectorService. Tout en provided : jahia-oauth embarque
+            déjà ScribeJava 8.3.3, et jahia-oauth/jahia-authentication sont des modules
+            déployés sur la plateforme (importés via Import-Package, cf. plus bas).
+            ⚠ Garder scribejava aligné sur ce que jahia-oauth embarque (mismatch =
+            NoClassDefFound/LinkageError au runtime, la panne la plus courante).
+            ============================================================
+        -->
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>jahia-oauth</artifactId>
+            <version>${jahia-oauth.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>jahia-authentication</artifactId>
+            <version>${jahia-authentication.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+            <version>${scribejava.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-core</artifactId>
+            <version>${scribejava.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            ============================================================
+            TEST (scope=test → exclus du JAR, aucun impact manifeste OSGi)
+            ============================================================
+        -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Binding SLF4J pour les tests uniquement : garantit qu'un MDC réel est disponible.
+            Sans implémentation, slf4j-api (1.7.36) retombe sur le NOPMDCAdapter (put/get no-op)
+            et CorrelationIdContextTest échoue. scope=test → exclu du JAR et du manifeste OSGi
+            (le runtime utilise pax-logging-api).
+
+            ⚠ Ce n'est PAS le binding effectif : log4j-slf4j-impl arrive transitivement des
+            dépendances Jahia et remporte l'arbitrage — LoggerFactory.getLogger(...) renvoie un
+            org.apache.logging.slf4j.Log4jLogger. Un test qui capture des journaux doit donc
+            passer par un appender log4j2, pas par un handler java.util.logging
+            (cf. LoggingMetricsRecorderTest).
+        -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            ASM — lecture des annotations OSGi DS dans le BYTECODE compilé.
+
+            Les annotations `@Component` / `@Reference` portent `@Retention(CLASS)` : elles sont
+            bien écrites dans le .class, mais invisibles à la réflexion, donc `getAnnotation`
+            renvoie toujours null. Et le XML DS qui fait foi n'est produit qu'à la phase
+            `package` (maven-bundle-plugin), après les tests.
+
+            ASM est le seul moyen de VÉRIFIER cette configuration pendant la phase test — cf.
+            `SimulationPrepareFilterTest#bridgeReferencesStayOptionalAndDynamic`. Il arrive déjà
+            transitivement (byte-buddy/jacoco) ; on le déclare pour ne pas dépendre d'une
+            transitive qui peut disparaître d'une montée de version de Mockito.
+        -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.8</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+                Force Java 17 sur ce module (records + lambdas) : le parent Jahia épingle le
+                compilateur en source/target 11, ce qui ignore la propriété maven.compiler.source.
+                ⚠ Le bundle émet du bytecode Java 17 → le runtime Jahia doit tourner sur une JVM 17+.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- override le <release>11</release> hérité du parent Jahia -->
+                    <release>17</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <!-- chaîne l'argLine posé par jacoco:prepare-agent sans l'écraser -->
+                    <argLine>@{argLine}</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!-- jahia-authentication + jahia-oauth ajoutés pour le connecteur OAuth fusionné
+                             (doivent être déployés avant ce bundle pour qu'il résolve). -->
+                        <Jahia-Depends>default,portal-common-sofinco,jahia-authentication,jahia-oauth</Jahia-Depends>
+
+                        <!--
+                            HttpClient5 / HttpCore5 NON embarqués : bundles OSGi natifs déployés via
+                            le provisioning Jahia (cf. template-set/docker/provisioning.yml) et
+                            importés ci-dessous. Jackson + commons-lang3 restent fournis par
+                            portal-common-sofinco.
+                        -->
+                        <Import-Package>
+                            <!-- Jackson (depuis portal-common-sofinco) -->
+                            com.fasterxml.jackson.databind,
+                            com.fasterxml.jackson.databind.json,
+                            com.fasterxml.jackson.core,
+                            com.fasterxml.jackson.annotation,
+
+                            <!-- commons-lang3 -->
+                            org.apache.commons.lang3,
+
+                            <!-- Apache HttpClient5 — sous-paquets énumérés (résolution-time fail-fast) -->
+                            <!-- `...http.classic` porte l'interface HttpClient : type des surcharges de
+                                 ReviewService auxquelles ReviewServiceBridgeImpl passe son client borné. -->
+                            org.apache.hc.client5.http.classic,
+                            org.apache.hc.client5.http.classic.methods,
+                            org.apache.hc.client5.http.config,
+                            org.apache.hc.client5.http.impl.classic,
+                            org.apache.hc.client5.http.impl.io,
+                            org.apache.hc.client5.http.ssl,
+
+                            <!-- Apache HttpCore5 — sous-paquets énumérés -->
+                            org.apache.hc.core5.http,
+                            org.apache.hc.core5.http.io,
+                            org.apache.hc.core5.http.io.entity,
+                            org.apache.hc.core5.util,
+
+                            <!-- JDK TLS — utilisé par HttpClientFactory (SSLContext explicite) -->
+                            javax.net.ssl,
+
+                            <!-- SLF4J (fourni par pax-logging-api) — HttpClient5 logue via SLF4J + MDC correlationId -->
+                            org.slf4j,
+
+                            <!-- Jahia : JCR + content -->
+                            javax.jcr,
+                            javax.jcr.query,
+                            org.jahia.services.content,
+                            org.jahia.services.content.decorator,
+                            org.jahia.services.content.nodetypes,
+                            org.jahia.services.content.nodetypes.initializers,
+
+                            <!-- Render action (SofincoConnectRedirectAction) : Action/ActionResult +
+                                 RenderContext/Resource/URLResolver vivent dans jahia-impl. Épinglés à
+                                 version="0.0.0" (comme jahia-oauth les importe : sans version) pour éviter
+                                 tout risque de range insatisfiable si le runtime les exporte non-versionnés. -->
+                            org.jahia.bin;version="0.0.0",
+                            org.jahia.services.render;version="0.0.0",
+                            org.jahia.services.render.filter;version="0.0.0",
+                            <!-- CacheKeyPartGenerator (SimulationCacheKeyPartGenerator). Même
+                                 traitement que les paquets render ci-dessus : exporté sans version
+                                 par le runtime, épinglé à 0.0.0 pour éviter un range insatisfiable. -->
+                            org.jahia.services.render.filter.cache;version="0.0.0",
+
+                            <!-- Cache de l'exemple représentatif. `CacheProvider` vit dans jahia-impl,
+                                 exporté sans version par le runtime : même épinglage à 0.0.0 que les
+                                 paquets render ci-dessus, sans quoi bnd infèrerait [8.2,9) depuis la
+                                 dép compile et le bundle ne résoudrait pas.
+                                 ehcache est fourni par le runtime Jahia (net.sf.ehcache 2.10) et
+                                 exporté avec version : on laisse un plancher permissif. -->
+                            org.jahia.services.cache;version="0.0.0",
+                            net.sf.ehcache;version="0.0.0",
+                            net.sf.ehcache.config;version="0.0.0",
+                            net.sf.ehcache.store;version="0.0.0",
+
+                            <!-- Servlet API (utilisée par SpringRequestOriginProvider + SofincoLoginUrlProvider) -->
+                            javax.servlet.http,
+
+                            <!-- Login URL provider (SofincoLoginUrlProvider) : LoginUrlProvider + LoginConfig
+                                 vivent dans jahia-impl, exporté par le runtime SANS version (résout en
+                                 0.0.0, cf. jahia-authentication qui l'importe sans version). bnd infèrerait
+                                 sinon [8.2,9) depuis la dép compile → range insatisfiable, le bundle ne
+                                 résout pas. On épingle à version="0.0.0" (même piège que jahiaoauth.service). -->
+                            org.jahia.params.valves;version="0.0.0",
+
+                            <!-- Spring web : ThreadLocal RequestContextHolder de SpringRequestOriginProvider -->
+                            org.springframework.web.context.request,
+
+                            <!--
+                                portal-common-sofinco (pour ReviewServiceBridge).
+
+                                Plancher épinglé à 26.5.2, la version qui a migré ReviewService vers
+                                HttpClient5 : c'est à partir d'elle que les surcharges
+                                `fetchReviews(..., HttpClient)` / `getAverageRate(config, HttpClient)`
+                                prennent un `org.apache.hc.client5.http.classic.HttpClient`. La 26.5.1
+                                porte les mêmes surcharges en commons-httpclient 3.1 — un type sans
+                                rapport. Sans ce plancher, bnd infère [26.5,27), une 26.5.1 résout, et
+                                l'absence se manifeste par un NoSuchMethodError en plein rendu : un
+                                `Error`, donc NON rattrapé par les `catch (Exception)` du pont. On préfère
+                                un échec de résolution, lisible dans `bundle:diag` au déploiement.
+                            -->
+                            fr.sofinco.portal.jahia.services;version="[26.5.2,27)",
+                            fr.sofinco.portal.jahia.model,
+
+                            <!-- DS annotations effacées au build, optional pour ne pas bloquer -->
+                            org.osgi.service.component.annotations;resolution:=optional,
+                            org.osgi.service.metatype.annotations;resolution:=optional,
+
+                            <!--
+                                CONNECTEUR OAuth. jahia-oauth 4.0.0 exporte
+                                org.jahia.modules.jahiaoauth.service SANS version (résout en 0.0.0) ; bnd
+                                infèrerait sinon un range [4.0,5) impossible à satisfaire → le bundle ne
+                                résout pas. On épingle ces imports à un plancher permissif (version="0.0.0"
+                                = [0.0.0,inf)). usermanager + org.json ne servent qu'au group-sync.
+                            -->
+                            org.jahia.modules.jahiaoauth.service;version="0.0.0",
+                            org.jahia.modules.jahiaauth.service;version="0.0.0",
+                            com.github.scribejava.*;version="[8,9)",
+                            org.jahia.services.usermanager;version="0.0.0",
+                            org.json;version="0.0.0",
+
+                            *
+                        </Import-Package>
+
+                        <Export-Package>
+                            ch.sofinco.core.bridge,
+                            ch.sofinco.core.observability;version="1.0.0"
+                        </Export-Package>
+
+                        <!--
+                            Requis pour le rendu JSP de la carte d'admin OAuth (joant:sofincoOAuthView).
+                            Les classes de tag handlers Jahia (ex. AddResourcesTag pour
+                            <template:addResources>) ne sont référencées que dans les JSP, donc bnd ne les
+                            met jamais dans Import-Package. Jahia injecte normalement un
+                            DynamicImport-Package via le goal "package-imports" de jahia-maven-plugin —
+                            mais redéclarer jahia-maven-plugin ci-dessous (pour i18n2js) supprime cette
+                            exécution héritée. On émet donc DynamicImport-Package: * explicitement, sinon
+                            Jasper ne charge pas les tag handlers au rendu.
+                        -->
+                        <DynamicImport-Package>*</DynamicImport-Package>
+
+                        <_dsannotations>*</_dsannotations>
+                        <!-- Traite @ObjectClassDefinition/@AttributeDefinition/@Designate → OSGI-INF/metatype/*.xml -->
+                        <_metatypeannotations>*</_metatypeannotations>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <!--
+                i18n2js : compile resources/sofinco-oauth-connector_*.properties en un dictionnaire JS
+                (sofincooai18n) consommé par le contrôleur AngularJS de la carte d'admin OAuth.
+                ⚠ Redéclarer ce plugin supprime l'exécution "package-imports" héritée → d'où le
+                DynamicImport-Package: * explicite ci-dessus.
+            -->
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>jahia-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>i18n2js</id>
+                        <goals>
+                            <goal>javascript-dictionary</goal>
+                        </goals>
+                        <configuration>
+                            <!-- resources/sofinco-oauth-connector_{en,fr}.properties -> the JS dictionary
+                                 the JSP loads as javascript/i18n/sofinco-oauth-connector-i18n_<locale>.js -->
+                            <resourceBundle>sofinco-oauth-connector</resourceBundle>
+                            <targetFileName>sofinco-oauth-connector-i18n</targetFileName>
+                            <languages>en,fr</languages>
+                            <dictionaryName>sofincooai18n</dictionaryName>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                        native2ascii : le parent jahia-modules déclare cette exécution SANS <encoding>,
+                        donc le mojo retombe sur son défaut ISO-8859-1. Or nos resources/*.properties
+                        sont écrits en UTF-8 : « é » (0xC3 0xA9) est alors relu comme deux caractères
+                        Latin-1 et échappé en Ã© → « Ã© » dans l'admin Jahia.
+                        On force donc UTF-8. (sofinco-template ne souffre pas du problème : c'est un
+                        module JS, ses properties ne passent pas par native2ascii.)
+                        Les goals/includes sont redéclarés pour rester valides même si l'héritage
+                        d'exécution ne fusionne pas (cf. remarque package-imports ci-dessus).
+                    -->
+                    <execution>
+                        <id>native2ascii</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                            <includes>resources/*.properties</includes>
+                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Javadoc plugin (P2.7) : génère un -javadoc.jar attaché en phase package, utile
+                aux consommateurs (sofinco-template) qui voient la doc dans leur IDE. doclint=none
+                + failOnError=false pour ne pas bloquer le build sur des warnings doc cosmétiques.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <locale>fr_FR</locale>
+                    <quiet>true</quiet>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <charset>UTF-8</charset>
+                    <source>17</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

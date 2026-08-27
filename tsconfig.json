@@ -1,0 +1,11 @@
+{
+	// This tsconfig is only used for config files
+	"compilerOptions": {
+		"checkJs": true,
+		"strict": true,
+		"moduleResolution": "nodenext",
+		"module": "nodenext",
+		"noEmit": true
+	},
+	"exclude": ["**/node_modules", "**/target"]
+}

@@ -1,0 +1,6 @@
+[sofnt:chatBotCategory] > jnt:content orderable
+ - label (string) mandatory
+ - question (string) mandatory
+ + * (sofnt:chatBotCategory)
+ + * (sofnt:chatBotLeaf)
+ + * (sofnt:chatBotSimulatorLeaf)

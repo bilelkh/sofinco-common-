@@ -1,0 +1,153 @@
+@import "@styles/base.css";
+
+/* Ancre du panneau, positionné en absolu juste dessous. */
+.autocomplete {
+	position: relative;
+	width: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   Fileur d'attente
+   --------------------------------------------------------------------------- */
+
+.autocomplete__spinner {
+	color: var(--color-text-muted);
+
+	& svg {
+		animation: autocomplete-spin 0.8s linear infinite;
+	}
+}
+
+/* Le mouvement n'apporte rien à la compréhension du champ : il signale une
+   attente, que la couleur suffit à porter pour qui refuse les animations. */
+@media (prefers-reduced-motion: reduce) {
+	.autocomplete__spinner svg {
+		animation: none;
+	}
+}
+
+@keyframes autocomplete-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Panneau
+   --------------------------------------------------------------------------- */
+
+.autocomplete__panel {
+	position: absolute;
+	z-index: 60;
+	top: calc(100% + calc(var(--spacing) * 1));
+	left: 0;
+	right: 0;
+
+	/* Plafonnée plutôt que libre : l'API renvoie jusqu'à 20 communes, et c'est
+	   ici que le défilement doit se produire, pas dans la page. */
+	max-height: 16rem;
+	overflow-y: auto;
+	padding: calc(var(--spacing) * 1);
+
+	background: var(--color-white);
+	border: 1px solid var(--color-neutral-30);
+	border-radius: var(--radius-sm);
+	box-shadow: var(--shadow-md);
+	outline: none;
+}
+
+/* Lignes d'état — attente, absence de résultat, panne. */
+.autocomplete__message {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	margin: 0;
+	color: var(--color-text-muted);
+}
+
+.autocomplete__message--error {
+	color: var(--color-danger-base);
+}
+
+.autocomplete__footer {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	margin-top: calc(var(--spacing) * 1);
+	border-top: 1px solid var(--color-neutral-20);
+	color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Options — mêmes règles que le panneau de `Select`, pour que deux champs
+   voisins dans un même formulaire ne se distinguent pas au survol.
+   --------------------------------------------------------------------------- */
+
+.autocomplete__option {
+	composes: text from "@styles/utilities/typography.module.css";
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	border-radius: var(--radius-xs);
+	color: var(--color-primary-base);
+	cursor: pointer;
+	user-select: none;
+
+	/* Survol et navigation clavier partagent `data-active` : une seule règle, là
+	   où un `:hover` et un état de focus auraient fini par diverger. */
+	&[data-active] {
+		background: var(--color-primary-subtle);
+	}
+
+	&[data-selected] {
+		background: var(--color-accent-subtle);
+		font-weight: var(--font-weight-semibold);
+	}
+
+	&[data-disabled] {
+		color: var(--color-neutral-40);
+		cursor: not-allowed;
+		background: transparent;
+	}
+}
+
+.autocomplete__option__body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.autocomplete__option__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.autocomplete__option__description {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	color: var(--color-text-muted);
+	font-weight: var(--font-weight-normal);
+}
+
+.autocomplete__option__icon,
+.autocomplete__option__check {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+}
+
+.autocomplete__option__icon svg {
+	width: 1.125rem;
+	height: 1.125rem;
+}
+
+.autocomplete__option__check {
+	margin-left: auto;
+	color: var(--color-accent-strong);
+}
+
+.autocomplete__option__check svg {
+	width: 1rem;
+	height: 1rem;
+}

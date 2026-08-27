@@ -1,0 +1,80 @@
+@import "sofinco-react/styles/base.css";
+
+.src-javascript-JContent-EditFrame-EditFrame__root--4i0Ds.src-javascript-JContent-EditFrame-EditFrame__root--4i0Ds
+	.src-javascript-JContent-EditFrame-Create__root--DSCDQ.src-javascript-JContent-EditFrame-Create__isEmpty--yfKzc {
+	background: transparent !important;
+}
+
+/*
+ * Notes de bas de page — décalage sous l'en-tête fixe, RETOUR UNIQUEMENT.
+ *
+ * L'aller et le retour n'ont pas le même besoin, et c'est délibéré.
+ *
+ * ALLER (renvoi → note, cible `#footerN`) : AUCUNE règle ici. Le comportement natif a été
+ * validé en situ et convient ; le forcer ajoutait une bande vide au-dessus de la mention.
+ * On n'y touche pas.
+ *
+ * RETOUR (flèche ↩ → marqueur) : là, la cible est en plein milieu du texte et se
+ * retrouvait DERRIÈRE l'en-tête fixe — le lecteur atterrissait sur un point invisible.
+ * D'où la réserve.
+ *
+ * `scroll-margin-top` est respecté aussi bien par `scrollIntoView` (footnote-bootstrap.ts)
+ * que par la navigation native sur `#fragment` : un lien partagé pointant un marqueur est
+ * donc couvert lui aussi, sans JavaScript.
+ *
+ * La règle vit dans le CSS global et non dans un module de composant : le balisage des
+ * renvois est produit par `manageFooterNote` (src/lib/footnotes.ts) et peut apparaître
+ * dans n'importe quel composant — un titre, un texte, une mention.
+ *
+ * Les marqueurs ne portent plus d'`id` (une note appelée dix fois en produisait dix
+ * homonymes, cf. `buildMarkerLink` dans lib/footnotes.ts) : l'accroche est donc l'attribut
+ * ou la classe, jamais l'identifiant.
+ *
+ * TROIS SÉLECTEURS, PARCE QU'IL EXISTE TROIS FORMES DE MARQUEUR :
+ *
+ *   .footer-link     — construit par `manageFooterNote` (richtext `<u>…<sup>(n)</sup></u>`),
+ *                      par `FootnoteText` (React) et par la passe client. La majorité.
+ *   [data-footer]    — même population, via l'attribut ; redondant mais il évite qu'une
+ *                      forme future portant l'attribut sans la classe passe à travers.
+ *   a[href^="#footer"] — LE CAS MANQUANT. Un renvoi inséré depuis le menu « Ancres de la
+ *                      page » de jContent n'a QUE son href : la fonction Lien de CKEditor
+ *                      ne gère pas d'autre attribut. C'est la forme produite dans un
+ *                      richtext quand le contributeur entoure un jeton `((n))` d'un lien —
+ *                      exactement ce qu'on trouve dans `sofnt:seoBlock`. Sans cette ligne,
+ *                      le retour ↩ atterrissait DERRIÈRE l'en-tête collant : le défilement
+ *                      était juste, la cible invisible.
+ *
+ * La liste reflète volontairement le sélecteur du gestionnaire délégué de
+ * `footnote-bootstrap.ts` — si l'un gagne une forme, l'autre doit la gagner aussi, sinon
+ * le renvoi devient cliquable sans être correctement révélé.
+ *
+ * `.footer-back-link` est exclu : c'est l'action de retour, jamais une cible de défilement.
+ *
+ * `--footnote-scroll-offset` est mesurée par footnote-bootstrap.ts. Variable DÉDIÉE, et
+ * non `--header-height` : cette dernière pilote aussi la hauteur des Hero, le QrCode et
+ * le tableau comparatif — la renseigner depuis ici aurait déplacé des mises en page sans
+ * rapport avec les notes.
+ */
+.footer-link,
+[data-footer]:not(.footer-back-link),
+a[href^="#footer"]:not(.footer-back-link) {
+	scroll-margin-top: calc(var(--footnote-scroll-offset, 96px) + 1rem);
+}
+
+/*
+ * Le retour ↩ est un `<button>` et non un lien : sa cible dépend du marqueur d'où vient le
+ * lecteur, ce n'est donc pas une destination mais une action (cf. `addIdToParagraph`).
+ *
+ * Ces règles ne font que NEUTRALISER l'habillage natif du bouton pour retrouver exactement
+ * l'apparence du `<a>` précédent — lequel héritait de `a { text-decoration: none; color:
+ * inherit }` (styles/base.css). Rien n'est ajouté, rien ne bouge à l'écran.
+ */
+.footer-back-link {
+	appearance: none;
+	background: none;
+	border: 0;
+	padding: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}

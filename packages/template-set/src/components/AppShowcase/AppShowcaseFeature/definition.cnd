@@ -1,0 +1,4 @@
+[sofnt:appShowcaseFeature] > jnt:content, jmix:editorialContent, mix:title, sofmix:argument
+ - jcr:title (string) mandatory i18n
+ - description (string, textarea) mandatory i18n
+ - icon (weakreference, picker[type='image']) < 'jmix:image'

@@ -1,0 +1,76 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as ReassurancePictosStories from "./ReassurancePictos.stories";
+
+<Meta of={ReassurancePictosStories} />
+
+# ReassurancePictos
+
+Reassurance pictogram block displayed as a grid.
+The component renders **a list of items**, each made of an image and a label.
+
+## Composition
+
+- A root `<section>` landmark with a required `aria-label`.
+- A semantic `<ul>` list containing one `<li>` per item.
+- Each item contains:
+  - a decorative image (`<img alt="">`)
+  - a label (`<p>`)
+
+## Usage
+
+```tsx
+import { ReassurancePictos } from "sofinco-react";
+
+export function MyPage() {
+  return (
+    <ReassurancePictos
+      ariaLabel="Nos engagements"
+      items={[
+        {
+          id: "1",
+          src: "/images/samples/ReassurancePictos/icon-1.webp",
+          label: "Depuis 75 ans à vos côtés",
+        },
+        {
+          id: "2",
+          src: "/images/samples/ReassurancePictos/icon-2.webp",
+          label: "Parcours 100% sécurisé",
+        },
+        {
+          id: "3",
+          src: "/images/samples/ReassurancePictos/icon-3.webp",
+          label: "Simulation sans engagement",
+        },
+        {
+          id: "4",
+          src: "/images/samples/ReassurancePictos/icon-4.webp",
+          label: "Signature électronique",
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Responsive behavior
+
+- **Mobile (< 768px)**: 2-column grid.
+- **Small-up (≥ 768px)**: 4-column grid.
+- Spacing uses design-system tokens (`--sof-sp-*`).
+
+## Accessibility
+
+- Pictograms are treated as decorative (`alt=""`).
+- Useful textual information is provided by the label.
+
+## Props
+
+- `items` (required): array of entries `{ id, src, label }`.
+- `ariaLabel` (required): accessible name for the `<section>` landmark.
+- `className` (optional): CSS class added to the root section.
+
+<ArgTypes of={ReassurancePictosStories} />
+
+## All Stories
+
+<Stories />

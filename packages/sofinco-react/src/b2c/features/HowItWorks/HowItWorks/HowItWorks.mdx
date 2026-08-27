@@ -1,0 +1,123 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+import * as HowItWorksStories from "./HowItWorks.stories";
+
+<Meta of={HowItWorksStories} />
+
+# HowItWorks
+
+`HowItWorks` is a "How it works" assembly block that stacks, top to bottom:
+
+1. a **header** (H2 title + subtitle);
+2. an **animated step journey** (`ScrollSteps`) — hover on desktop / scroll "carousel" on mobile;
+3. an optional **CTA** centered between the steps and the video;
+4. an optional **video block** (`VideoBlock`) carrying its own title and transcript.
+
+All step animation logic lives in `ScrollSteps`; this component only assembles independent DS building blocks.
+
+## Data structure
+
+```ts
+type HowItWorksProps = {
+  title: TitleProps; // H2 title editable in Jahia
+  subtitle?: string; // subtitle
+  steps: ScrollStepsItem[]; // steps passed as-is to <ScrollSteps>
+  cta?: CtaProps; // optional CTA displayed between steps and video
+  video?: VideoBlockProps; // optional video block (B.R. 4)
+  imagePosition?: "left" | "right"; // desktop image column side, defaults to "left"
+};
+
+type ScrollStepsItem = {
+  id: string;
+  badge?: IconKey | number; // numbering badge (e.g. 1, 2, 3… or an icon key)
+  title: string;
+  description: string;
+  imageUrl: string;
+};
+```
+
+## Usage
+
+```tsx
+import { HowItWorks } from "sofinco-react";
+
+<HowItWorks
+  title={{ children: "Ready to take control of your spending?", as: "h2" }}
+  subtitle="A card that's simple to activate and flexible to repay."
+  steps={[
+    {
+      id: "1",
+      badge: 1,
+      title: "Apply online from home",
+      description: "Takes just a few minutes. Instant response, no branch visit required.",
+      imageUrl: "/images/steps/step-1.jpg",
+    },
+    {
+      id: "2",
+      badge: 2,
+      title: "Your card is active as soon as you subscribe",
+      description: "Ready to use online and in-store straight away.",
+      imageUrl: "/images/steps/step-2.jpg",
+    },
+  ]}
+  cta={{ label: "Order my card", variant: "primary", href: "/subscribe" }}
+  video={{
+    title: { children: "Video title", as: "h2" },
+    video: {
+      url: "https://www.youtube-nocookie.com/embed/xxx",
+      title: "Sofinco credit card — how does it work?",
+    },
+    transcription: {
+      title: "Video transcript",
+      content: "<p>Transcript content goes here.</p>",
+    },
+  }}
+/>;
+```
+
+## Image position
+
+`imagePosition` is forwarded as-is to `ScrollSteps` and controls which side the image column
+sits on **on desktop only** (≥ 768 px):
+
+- `"left"` (default) — image column first, step list second;
+- `"right"` — the reverse.
+
+The switch is purely visual: the DOM order never changes (the image column stays first and
+decorative), so reading and keyboard order are identical in both variants. On mobile the
+layout is stacked and the prop has no effect.
+
+## Accessibility
+
+- The `<section>` carries an `aria-labelledby` pointing to the H2 title.
+- Keyboard behavior for steps (buttons, `aria-expanded` / `aria-controls` panels) is handled by `ScrollSteps` and `StepItem`.
+- `@media (prefers-reduced-motion: reduce)`: image layer animations are disabled inside `ScrollSteps`.
+- `imagePosition` flips the layout via CSS `order` only — it never reorders the DOM, so the screen-reader and tab order stay stable.
+
+## Jahia Integration
+
+The component maps from a `sofnt:howItWorks` node:
+
+| Prop             | JCR property                               | Jahia type                       |
+| ---------------- | ------------------------------------------ | -------------------------------- |
+| `title.children` | `jcr:title`                                | Plain text                       |
+| `subtitle`       | `subtitle`                                 | Plain text                       |
+| `steps`          | Ordered child nodes `sofnt:howItWorksStep` | Orderable                        |
+| `video`          | Child node `sofnt:videoBlock`              | Optional                         |
+| `imagePosition`  | `imagePosition`                            | Choicelist `left` \| `right`, autocreated with `left` |
+
+The Jahia edit view mirrors the choice: each contributor step card places its thumbnail on the
+same side as the live rendering, driven by CSS custom properties on the step list container.
+
+## Story Variants
+
+<Canvas of={HowItWorksStories.Default} />
+<Canvas of={HowItWorksStories.SansCtaNiVideo} />
+<Canvas of={HowItWorksStories.ImageADroite} />
+
+## Props
+
+<ArgTypes of={HowItWorksStories} />
+
+## All Stories
+
+<Stories />

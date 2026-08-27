@@ -1,0 +1,20 @@
+const Play = () => {
+	return (
+		<svg
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<circle cx="12" cy="12" r="10" fill="#0AE6DC" />
+			<path
+				d="M15.5 11.134C16.1667 11.5189 16.1667 12.4811 15.5 12.866L11 15.4641C10.3333 15.849 9.5 15.3679 9.5 14.5981L9.5 9.40192C9.5 8.63212 10.3333 8.151 11 8.5359L15.5 11.134Z"
+				fill="#03334D"
+			/>
+		</svg>
+	);
+};
+
+export default Play;

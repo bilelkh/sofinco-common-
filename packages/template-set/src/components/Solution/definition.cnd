@@ -1,0 +1,5 @@
+[sofnt:solution] > jnt:content, sofmix:component orderable
+ - heading (string) mandatory
+ - heading2 (string)
+ - subHeading (string) mandatory
+ + * (sofnt:solutionCard)

@@ -1,0 +1,68 @@
+/* @font-face uniquement — les tailles vivent dans `tokens.css`. */
+
+@font-face {
+	font-family: "Cutta";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("../assets/fonts/cutta/Cutta Medium.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Cutta";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../assets/fonts/cutta/Cutta Semibold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Cutta";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../assets/fonts/cutta/Cutta Bold.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Cutta";
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url("../assets/fonts/cutta/Cutta Black.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Cutta";
+	src: url("../assets/fonts/cutta/Cutta Extrabold.woff2") format("woff2");
+	font-weight: 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Figtree";
+	src: url("../assets/fonts/figtree/Figtree-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Figtree";
+	src: url("../assets/fonts/figtree/Figtree-Medium.woff2") format("woff2");
+	font-weight: 500;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Figtree";
+	src: url("../assets/fonts/figtree/Figtree-SemiBold.woff2") format("woff2");
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Figtree";
+	src: url("../assets/fonts/figtree/Figtree-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-display: swap;
+}

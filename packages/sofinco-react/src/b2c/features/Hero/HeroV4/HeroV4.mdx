@@ -1,0 +1,59 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as HeroV4Stories from "./HeroV4.stories";
+
+<Meta of={HeroV4Stories} />
+
+# HeroV4
+
+Same look and feel as **HeroV2** (title, subtitle, optional sticky simulator), but with a
+**looping HTML5 video background** instead of an image, and a configurable **"Voir la
+campagne" play CTA** overlay. No offer card.
+
+## How It Works
+
+- `video.srcDesktop` / `video.srcMobile` / `video.poster`: responsive `<source>` set for the
+  autoplay/muted/looped background `<video>` (`poster` shown before playback).
+- `title` / `subtitle`: main headline copy.
+- `campaignCta`: the play CTA (`CtaProps`, fully configurable from the outside — `href`,
+  `onClick`, `target`, `tracking`). Rendered **top-left on desktop** and **centered under the
+  text on mobile**. Defaults its label to "Voir la campagne".
+- `qr`: optional QR sticker (`QrCodeProps`) shown **top-right on desktop only** (the `QrCode`
+  component hides itself below 1040px).
+- `simulator`: optional simulator bar + sticky CTA (identical behavior to HeroV2 — appears once
+  the hero scrolls out of view, driven by the `data-hero-root` IntersectionObserver).
+- `tracking`: optional GA promotion identifiers — emits a `view_promotion` event on impression.
+
+## Usage
+
+```tsx
+import { HeroV4 } from "sofinco-react";
+
+<HeroV4
+  variant="v4"
+  title="Gérez vos dépenses. Financez vos projets."
+  subtitle="Prêts, réserve d'argent, paiements flexibles"
+  video={{ srcDesktop: "/video/campaign-d.mp4", srcMobile: "/video/campaign-m.mp4", poster: "/img/poster.jpg" }}
+  campaignCta={{ label: "Voir la campagne", href: "/campagne", ctaSection: "hero-campaign-cta" }}
+  qr={{ src: "/img/qr.png", text: "Télécharger l'app." }}
+  simulator={{
+    simulatorTitle: "Financez vos projets avec le crédit conso Sofinco",
+    amountPlaceholder: "J'ai besoin de",
+    amountMin: 500,
+    amountMax: 75000,
+    cta: { label: "Je simule mon crédit", href: "/simulateur", variant: "accent" },
+  }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={HeroV4Stories.WithSimulator} />
+
+## Props
+
+<ArgTypes of={HeroV4Stories} />
+
+## All Stories
+
+<Stories />

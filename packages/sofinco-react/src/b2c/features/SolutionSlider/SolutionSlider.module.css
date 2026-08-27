@@ -1,0 +1,116 @@
+@import "@styles/tokens.css";
+@import "@styles/breakpoints.css";
+
+.solution-slider {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background: linear-gradient(var(--color-primary-subtle), var(--color-white));
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 4) calc(var(--spacing) * 20)
+		calc(var(--spacing) * 4);
+	width: 100%;
+	overflow: hidden;
+}
+
+.solution-slider__container {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+.solution-slider__header {
+	max-width: 800px;
+	margin-inline: auto;
+}
+
+.solution-slider__carousel-wrapper {
+	margin-bottom: calc(var(--spacing) * 10);
+}
+
+.solution-slider__swiper {
+	overflow: visible !important;
+}
+
+.solution-slider__slide {
+	width: 100%;
+	height: auto;
+	display: flex;
+}
+
+.solution-slider__navigation {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: calc(var(--spacing) * 4);
+	margin-top: calc(var(--spacing) * 8);
+}
+
+.solution-slider__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--spacing) * 2);
+	width: auto;
+	position: static;
+	margin-top: calc(var(--spacing) * 8);
+}
+
+.solution-slider__pagination :global(.swiper-pagination-bullet) {
+	width: 8px;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-primary-light);
+	opacity: 1;
+	transition:
+		background-color 0.2s ease,
+		width 0.2s ease,
+		outline-offset 0.15s ease;
+	cursor: pointer;
+}
+
+.solution-slider__pagination :global(.swiper-pagination-bullet:focus-visible) {
+	outline: 2px solid var(--color-primary-base);
+	outline-offset: 3px;
+}
+
+.solution-slider__pagination :global(.swiper-pagination-bullet-active) {
+	background-color: var(--color-primary-base);
+	width: 24px;
+}
+
+.solution-slider__nav-button {
+	width: 62px;
+	height: 38px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-neutral-10);
+	border: none;
+	color: var(--color-primary-base);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.solution-slider__nav-button:hover {
+	background-color: var(--color-neutral-20);
+}
+
+.solution-slider__nav-button:focus-visible {
+	outline: 2px solid var(--color-primary-base);
+}
+
+.solution-slider__nav-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+@media (--small-up) {
+	.solution-slider__slide {
+		width: 350px;
+	}
+}
+
+@media (--large-up) {
+	.solution-slider {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 26) calc(var(--spacing) * 30)
+			calc(var(--spacing) * 26);
+	}
+}

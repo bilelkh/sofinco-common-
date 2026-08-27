@@ -1,0 +1,64 @@
+@import "@styles/base.css";
+
+.seoblock {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	max-width: 928px;
+	margin: 0 auto;
+	color: var(--color-primary-base);
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+}
+
+.seoblock__title {
+	margin-bottom: calc(var(--spacing) * 10);
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+/* Title-only block (`sections` empty) : no trailing gap under the heading. */
+.seoblock__title:last-child {
+	margin-bottom: 0;
+}
+
+.seoblock__wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+.seoblock__content {
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+.seoblock__content--primary {
+	color: var(--color-primary-base);
+}
+
+.seoblock__content--accent {
+	color: var(--color-accent-strong);
+}
+
+.seoblock__content--green {
+	color: var(--color-success-base);
+}
+
+.seoblock__content--red {
+	color: var(--color-danger-base);
+}
+
+.seoblock p {
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+@media (--medium-up) {
+	.seoblock {
+		padding: calc(var(--spacing) * 20) 0;
+	}
+
+	.seoblock--centered {
+		text-align: center;
+	}
+}

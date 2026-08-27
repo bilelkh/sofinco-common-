@@ -1,0 +1,11 @@
+/*
+ * Edit-mode preview only. Live rendering uses the DS <InsuranceFocus>
+ * component directly (packages/sofinco-react). Banner styles live in the
+ * shared `Shared/MissingFieldsBanner/missingFieldsBanner.module.css` — only the
+ * block-specific layout stays here.
+ */
+.editPreview {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+}

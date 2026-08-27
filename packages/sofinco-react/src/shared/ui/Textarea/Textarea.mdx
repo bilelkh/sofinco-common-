@@ -1,0 +1,72 @@
+import { Meta, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as TextareaStories from "./Textarea.stories";
+
+<Meta of={TextareaStories} />
+
+# Textarea
+
+The multi-line counterpart of [TextField](?path=/docs/shared-ui-textfield--docs).
+Both are built on the same internal `Field` shell, so label, hint, error and the
+four interaction states are shared code rather than parallel implementations.
+
+## Matrix
+
+Four interaction states (`enabled`, `hovered`, `focused`, `disabled`) crossed
+with three content states (`placeholder`, `value`, `error`).
+
+<Canvas of={TextareaStories.Matrix} />
+
+`hovered` and `focused` are frozen here through `Field` modifiers that **share
+their rule** with `:hover` and `:focus-within` — so what you see is the real
+rendering, not a lookalike. The `disabled` column holds a single cell: a
+disabled field is neither hovered nor focused.
+
+## How it works
+
+- `label` is **required** — it carries the `<label for>` link. Pass `hideLabel`
+  to hide it visually while keeping it for screen readers.
+- `errorMessage` switches to the error state *and* renders the message;
+  `invalid` does the same without one.
+- `rows` sets the resting height (defaults to 4). `resize` keeps the native
+  vertical grip by default — the only way a user can read a long answer in full
+  — and `resize="none"` locks it for layouts that cannot absorb the growth.
+- The trailing slot shows an **alert** when in error, aligned to the top of the
+  box. `disabled` shows nothing: the greyed-out field and the `<textarea>`'s own
+  `disabled` attribute already carry the state.
+- Every native `<textarea>` prop passes through: `name`, `maxLength`,
+  `autoComplete`, `onBlur`…
+
+## Counter
+
+`showCounter` renders a `current / max` count under the field. It needs
+`maxLength`: without an upper bound there is nothing to count against, so it is
+skipped rather than rendered half-empty.
+
+It is `aria-hidden` — `maxLength` already conveys the limit natively, and
+announcing a new count on every keystroke would bury the typing in noise.
+
+<Canvas of={TextareaStories.WithCounter} />
+
+## Controlled vs uncontrolled
+
+Without `value`, the component tracks the value internally (`defaultValue` seeds
+it). With `value`, the parent owns it outright.
+
+## Usage
+
+```tsx
+import { Textarea } from "sofinco-react";
+
+<Textarea label="Your message" rows={4} placeholder="placeholder" />
+
+<Textarea label="Your message" maxLength={280} showCounter />
+```
+
+## Playground
+
+<Canvas of={TextareaStories.Playground} />
+
+## Props
+
+<ArgTypes of={TextareaStories} />

@@ -1,0 +1,69 @@
+@import "@styles/base.css";
+
+.offer-rate-display {
+	font-weight: var(--font-weight-black);
+}
+
+.offer-rate-display__rate {
+	display: flex;
+	font-family: var(--font-display);
+
+	@media (--small-up) {
+		align-items: baseline;
+		justify-content: center;
+		white-space: nowrap;
+	}
+}
+
+.offer-rate-display__integer {
+	display: inline-flex;
+	align-items: flex-end;
+	font-size: 10rem;
+	line-height: 7rem;
+
+	@media (--small-up) {
+		font-size: 12.5rem;
+		line-height: 1;
+	}
+}
+
+.offer-rate-display__decimal-cluster {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	@media (--small-up) {
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: flex-start;
+	}
+}
+
+.offer-rate-display__decimal {
+	font-size: 4rem;
+	line-height: 50px;
+
+	@media (--small-up) {
+		font-size: 12.5rem;
+		line-height: 1;
+	}
+}
+
+.offer-rate-display__label {
+	font-size: 1.6rem;
+	line-height: 1;
+	margin-left: calc(var(--spacing) * 2);
+	font-family: var(--font-display);
+	text-transform: uppercase;
+	white-space: nowrap;
+	transform: translateY(-3px);
+
+	@media (--small-up) {
+		display: none;
+		transform: unset;
+	}
+}
+
+.offer-rate-display__cluster {
+	display: flex;
+}

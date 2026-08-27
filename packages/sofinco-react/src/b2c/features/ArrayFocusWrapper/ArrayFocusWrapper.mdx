@@ -1,0 +1,32 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as ArrayFocusWrapperStories from "./ArrayFocusWrapper.stories";
+
+<Meta of={ArrayFocusWrapperStories} />
+
+# ArrayFocusWrapper
+
+Grouping section for the "product in detail" page pattern: a standalone
+`SectionHeading`, the `ProductFocus` spotlight, an editorial `SeoBlock`, and
+the `InsuranceFocus` promo card, sharing a single contributed background
+color. All four blocks are required — this composes a fixed layout, not a
+pick-and-choose one.
+
+## How It Works
+
+- Each child block is driven by a dedicated prop group (`sectionHeading`,
+  `productFocus`, `seoBlock`, `insuranceFocus`) that reuses the component's
+  public type as-is — no duplicated types. `ProductFocus`'s `title`/`subtitle`
+  and `backgroundColor` are omitted from its group: the heading always comes
+  from `sectionHeading`, and the background from the wrapper's own
+  `backgroundColor`.
+- `backgroundColor` is painted once by the wrapper (falling back to the
+  `--color-primary-subtle` token). `ProductFocus`'s own background and
+  `InsuranceFocus`'s (scoped class) are neutralized to read as one
+  continuous surface.
+- `SectionHeading` (centered by default) names the enclosing `<section>` via
+  `aria-labelledby`, with a generated id if none is provided.
+
+<ArgTypes />
+
+<Stories />

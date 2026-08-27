@@ -1,0 +1,115 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as ScrollStepsStories from "./ScrollSteps.stories";
+
+<Meta of={ScrollStepsStories} />
+
+# ScrollSteps
+
+A stepped educational section that presents a process in N stages through a pinned scroll experience. While the user scrolls, step images transition with a smooth slide + fade animation, and the step list highlights the active item in sync. On desktop each list item is a button that scrolls directly to its corresponding step.
+
+## How It Works
+
+`ScrollSteps` orchestrates two zones:
+
+- **Image column** (`StepImageStack`): a stack of superimposed layers animated entirely in CSS via the `--step-progress` custom property (0 → 1). GSAP writes this value directly to the DOM on every frame — no React re-render occurs during the animation.
+- **Step list** (`StepItem`): highlights the active item and opens the corresponding description panel.
+
+The GSAP `ScrollTrigger` pins the section at the viewport center and spreads the scroll over `(N-1) × 100vh`. The continuous progress is carried by the CSS custom property; discrete index changes (N-1 times total) trigger a minimal React re-render for the list and ARIA panels.
+
+On **mobile**, the section is not interactive: a single step is visible at a time, driven by scroll, and headings are plain `<span>` elements (no button). On **desktop (≥ 768 px)**, each item is a `<button>` that scrolls to the matching step.
+
+### Data structure
+
+```ts
+type ScrollStepsProps = {
+  items: ScrollStepsItem[];
+  imagePosition?: "left" | "right"; // desktop image column side, defaults to "left"
+};
+
+type ScrollStepsItem = {
+  id: string;
+  badge?: IconKey | number; // SVG icon or number displayed in the badge chip
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageAlt?: string; // only consumed by edit views — the live stack is decorative
+};
+```
+
+Field notes:
+
+- `id`: stable identifier used as the React key. In Jahia this is the JCR node identifier of the child node.
+- `badge`: if a `number`, rendered as-is (1, 2, 3…). If an `IconKey`, renders the matching SVG icon (e.g. `"check"`). Omit to hide the badge entirely.
+- `imageUrl`: step image displayed in the animated stack. Target ratio **350 × 428 px** (portrait ~0.82).
+- `imagePosition`: which side the image column sits on **on desktop only** (≥ 768 px). The value lands on the inner wrapper as `data-image-position`, and `"right"` applies `order: 2` to the image column. The DOM order is deliberately left untouched — the image column stays first and `aria-hidden`, so reading order and keyboard traversal are identical in both variants. On mobile the layout is stacked and the prop has no effect.
+
+## Basic Usage
+
+```tsx
+import { ScrollSteps } from "sofinco-react";
+
+<ScrollSteps
+  items={[
+    {
+      id: "1",
+      badge: 1,
+      title: "I simulate and subscribe online",
+      description: "Choose your amount and duration, get an immediate in-principle decision.",
+      imageUrl: "/images/steps/simulation.jpg",
+    },
+    {
+      id: "2",
+      badge: 2,
+      title: "I receive the funds in my account",
+      description: "Funds are disbursed quickly after signing the contract.",
+      imageUrl: "/images/steps/virement.jpg",
+    },
+    {
+      id: "3",
+      badge: 3,
+      title: "I repay in fixed monthly installments",
+      description: "Monthly payments known upfront, from first to last repayment.",
+      imageUrl: "/images/steps/remboursement.jpg",
+    },
+  ]}
+/>;
+```
+
+## Accessibility
+
+- The image block is `aria-hidden="true"` (purely decorative). Images carry `alt=""`.
+- On desktop: each heading is a `<button type="button">` with `aria-expanded` and `aria-controls` pointing to its description panel.
+- On mobile: headings are `<span>` elements — no fake button announcing a toggle that cannot be triggered from the keyboard.
+- Description panels use `aria-hidden={!isActive}` to hide them from screen readers when closed.
+- `@media (prefers-reduced-motion: reduce)`: `transform` transitions on image layers are disabled.
+- `imagePosition="right"` flips the layout through CSS `order` only — the DOM is never reordered, so the announced order stays stable.
+
+## Jahia Integration
+
+In the template-set, the component maps from a `sofnt:scrollSteps` node:
+
+- Ordered child nodes of type `sofnt:scrollStepsItem` → `items`
+
+Each `sofnt:scrollStepsItem` maps to:
+
+- `jcr:title` → `title`
+- `description` → `description`
+- `image` (image picker) → `imageUrl`
+- `badge` (choicelist `IconKey` or integer) → `badge`
+
+Child nodes are `orderable`: contributors can reorder steps via drag-and-drop in Page Composer.
+
+## Story Variants
+
+<Canvas of={ScrollStepsStories.Default} />
+<Canvas of={ScrollStepsStories.NoBadge} />
+<Canvas of={ScrollStepsStories.ImageRight} />
+
+## Props
+
+<ArgTypes of={ScrollStepsStories} />
+
+## All Stories
+
+<Stories />

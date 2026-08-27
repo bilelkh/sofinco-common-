@@ -1,0 +1,176 @@
+@import "@styles/base.css";
+
+.product-advantages {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+	background-color: var(--color-white);
+}
+
+.product-advantages__container {
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6);
+
+	@media (--small-up) {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 26);
+	}
+}
+
+/* Header (title + subtitle) is fully handled by SectionHeading / shared Title + Subtitle. */
+
+/* --- Category tabs --- */
+.product-advantages__tabs {
+	display: flex;
+	gap: calc(var(--spacing) * 2);
+	margin-bottom: calc(var(--spacing) * 8);
+	padding-bottom: calc(var(--spacing) * 1);
+	overflow-x: auto;
+	scrollbar-width: none;
+	margin-inline: calc(calc(var(--spacing) * 6) * -1);
+	padding-inline: calc(var(--spacing) * 6);
+
+	@media (--small-up) {
+		flex-wrap: wrap;
+		justify-content: center;
+		overflow-x: visible;
+		margin-inline: 0;
+		padding-inline: 0;
+	}
+}
+
+.product-advantages__tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.product-advantages__tab {
+	flex-shrink: 0;
+	position: relative;
+	overflow: hidden;
+	isolation: isolate;
+	border: none;
+	cursor: pointer;
+	white-space: nowrap;
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary-base);
+	background-color: var(--color-primary-subtle);
+	padding: calc(var(--spacing) * 3) calc(var(--spacing) * 6);
+	border-radius: var(--radius-full);
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease;
+}
+
+.product-advantages__tab::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: var(--color-primary-strong);
+	transform-origin: left center;
+	transform: scaleX(0);
+	z-index: 0;
+	pointer-events: none;
+}
+
+.product-advantages__tab-label {
+	position: relative;
+	z-index: 1;
+}
+
+.product-advantages__tab:hover {
+	background-color: var(--color-primary-light);
+}
+
+.product-advantages__tab:focus-visible {
+	outline: 2px solid var(--color-accent-base);
+	outline-offset: 2px;
+}
+
+.product-advantages__tab--active {
+	color: var(--color-white);
+	background-color: var(--color-primary-base);
+	font-weight: var(--font-weight-semibold);
+}
+
+.product-advantages__tab--progress-running::after {
+	animation: product-advantages-tab-fill var(--product-advantages-tab-progress-duration, 5000ms)
+		linear forwards;
+}
+
+.product-advantages__tab--active:hover {
+	background-color: var(--color-primary-strong);
+}
+
+/* --- Carousel --- */
+.product-advantages__carousel {
+	width: 100%;
+}
+
+.product-advantages__swiper {
+	overflow: visible;
+}
+
+.product-advantages__slide {
+	display: flex;
+	height: 650px;
+	width: min(100%, 450px);
+	box-sizing: border-box;
+
+	@media (--small-up) {
+		height: 560px;
+		width: min(100%, 1232px);
+	}
+}
+
+.product-advantages__slide > * {
+	width: 100%;
+}
+
+/* --- Navigation arrows (R.G. 6) --- */
+.product-advantages__arrows {
+	display: flex;
+	justify-content: center;
+	gap: calc(var(--spacing) * 4);
+	margin-top: calc(var(--spacing) * 8);
+}
+
+.product-advantages__nav-button {
+	width: 62px;
+	height: 38px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-neutral-10);
+	border: none;
+	color: var(--color-primary-base);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.product-advantages__nav-button:hover {
+	background-color: var(--color-neutral-20);
+}
+
+.product-advantages__nav-button:focus-visible {
+	outline: 2px solid var(--color-accent-base);
+}
+
+.product-advantages__nav-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+@keyframes product-advantages-tab-fill {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}

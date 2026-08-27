@@ -1,0 +1,183 @@
+@import "@styles/base.css";
+
+/* =====================================================================
+   MultiStepForm — maquette « Form Page » du site vitrine B2B
+   (desktop node 3680:6500, mobile node 3689:9635).
+
+   Correspondance jetons Figma → jetons DS :
+
+     xl (rayon carte)        24      → --radius-3xl
+     spacing-8 / 24 / 40     8/24/40 → --sof-sp-2 / -sp-5 / -sp-7
+     body/primary            #212121 → --color-neutral-90
+     White                   #ffffff → --color-white
+
+   La carte fait 660px de large en desktop et 351px en mobile dans la
+   maquette : c'est la même boîte fluide bornée à 660px, la largeur mobile
+   n'étant que la largeur d'écran moins les marges de la page.
+   ===================================================================== */
+
+.form {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 660px;
+	background-color: var(--color-white);
+	border-radius: var(--radius-3xl);
+	/* La barre du Stepper touche les angles de la carte : sans ça ses segments
+	   arrondis dépasseraient du rayon. */
+	overflow: hidden;
+}
+
+.form__stepper {
+	padding-top: calc(var(--spacing) * 6);
+}
+
+.form__body {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 10);
+	padding: calc(var(--spacing) * 6);
+}
+
+@media (--small-up) {
+	.form__body {
+		padding: calc(var(--spacing) * 10);
+	}
+}
+
+.form__heading {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 2);
+
+	/* Cible du focus au changement d'étape : le contour du navigateur n'a pas
+	   lieu d'être ici, l'annonce du lecteur d'écran suffit. */
+	&:focus {
+		outline: none;
+	}
+}
+
+/* Titre d'étape — node 3685:6466 : Figtree SemiBold 24/32 en `body/primary`
+   (#212121), hors échelle Monstera (`.h4` rend 20/30) et hors palette de
+   `Title`, dont la variante `dark` pose le navy de la marque. Le titre partage
+   la couleur de la description : dans une carte de formulaire, c'est du texte
+   de contenu, pas un titre de section.
+
+   Sélecteur à deux classes : `.h4` et `.title--dark`, posées par `Title`, ont
+   la même spécificité et l'emporteraient selon l'ordre de bundling. */
+.form__heading .form__title {
+	font-size: var(--text-2xl);
+	line-height: calc(32 / 24);
+	color: var(--color-neutral-90);
+}
+
+/* Description d'étape — node 3685:6467 : Figtree Regular 18 / 28, interlettrage
+   -0.18px (soit -0.01em sur 18px), en `body/primary` #212121. Mêmes valeurs aux
+   deux paliers : la maquette mobile (node 3689:9651) pose une boîte de 112px pour
+   quatre lignes, soit la même hauteur de ligne.
+
+   ⚠️ Déclarée en toutes lettres, SANS `composes: text-l`. L'utilitaire rend
+   18/27 en graisse 500 : il fallait donc lui reprendre la graisse et la hauteur
+   de ligne, or une classe composée a exactement la même spécificité que la classe
+   locale. Le gagnant ne tenait qu'à l'ordre d'émission des modules — celui du
+   bundle Jahia n'est pas forcément celui du dev, et la description y repassait en
+   18/27 graisse 500 sans interlettrage. C'est la règle déjà posée plus bas pour
+   `.form__back` : ne jamais laisser l'ordre des feuilles trancher. */
+.form__description {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-normal);
+	font-size: var(--text-lg);
+	line-height: calc(28 / 18);
+	letter-spacing: -0.01em;
+	color: var(--color-neutral-90);
+}
+
+.form__step {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+/* Une seule colonne par défaut ; la grille à deux colonnes n'apparaît qu'à
+   partir de la tablette, où un champ « demi-largeur » reste lisible. */
+.form__fields {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: calc(var(--spacing) * 6);
+	align-items: start;
+}
+
+/* Cellule de grille — enveloppe posée par le composant autour de chaque
+   contrôle, jamais le contrôle lui-même (cf. le commentaire de `renderField`).
+   `min-width: 0` sans quoi un contenu insécable (un long e-mail dans un champ
+   en lecture seule) élargirait la colonne au-delà de la carte. */
+.form__field {
+	min-width: 0;
+}
+
+@media (--small-up) {
+	.form__fields {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.form__field {
+		grid-column: span 2;
+	}
+
+	.form__field--half {
+		grid-column: span 1;
+	}
+}
+
+.form__actions {
+	display: flex;
+	gap: calc(var(--spacing) * 6);
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* Sélecteur descendant volontaire : `.cta--medium` du DS pose la même
+   spécificité qu'une classe seule, et l'emporterait selon l'ordre des
+   feuilles. Deux classes tranchent sans dépendre de l'ordre de bundling. */
+.form__actions .form__back {
+	flex-shrink: 0;
+	width: 48px;
+	min-width: 48px;
+	height: 48px;
+	min-height: 48px;
+	padding: 0;
+}
+
+.form__actions .form__next {
+	flex-shrink: 0;
+	min-height: 48px;
+}
+
+.form__submitError {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	font-style: normal;
+	color: var(--color-danger-base);
+}
+
+/* `.sr-only` de `base.css` n'est pas visible depuis un module CSS (les classes
+   y sont hachées) : on le redéclare localement. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.salesforce-form {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	border: 0;
+	clip: rect(0 0 0 0);
+}

@@ -1,0 +1,14 @@
+.argumentItem {
+	background-color: var(--color-primary-base);
+	color: var(--color-neutral-00);
+	padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
+	border-radius: var(--radius-2xl);
+	text-align: left;
+	box-shadow: var(--shadow-md);
+
+	min-height: 150px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 280px;
+}

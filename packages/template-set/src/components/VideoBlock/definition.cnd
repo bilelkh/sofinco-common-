@@ -1,0 +1,15 @@
+// Données structurées `VideoObject` : `uploadDate` est obligatoire côté Google —
+// sans elle le bloc n'est pas balisé du tout, plutôt que balisé de façon invalide.
+// `durationSeconds` est saisie en SECONDES et convertie en ISO 8601 (PT1M54S) ; un
+// champ texte laisserait passer les formats erronés sans que rien ne le signale.
+[sofnt:videoBlock] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle
+ - subtitle (string, textarea) i18n
+ - videoUrl (string) mandatory
+ - videoTitle (string) mandatory i18n
+ - poster (weakreference, picker[type='image']) < jmix:image
+ - posterAlt (string) i18n
+ - transcriptionTitle (string) i18n
+ - transcription (string, richtext[ckeditor.toolbar='Simple']) i18n
+ - uploadDate (date)
+ - durationSeconds (long)
+ - excludeFromStructuredData (boolean) = 'false' autocreated

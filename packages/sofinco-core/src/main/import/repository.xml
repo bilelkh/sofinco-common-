@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+         xmlns:joant="http://www.jahia.org/jahia/joa/nt/1.0">
+   <modules jcr:primaryType="jnt:modules">
+      <sofinco-core j:dependencies="default"
+                    j:modulePriority="0"
+                    j:moduleType="module"
+                    j:title="sofinco-core"
+                    jcr:primaryType="jnt:module">
+         <files j:originWS="default"
+                jcr:created="2026-04-07T12:43:30.126Z"
+                jcr:createdBy="system"
+                jcr:lastModified="2026-04-07T12:43:30.207Z"
+                jcr:lastModifiedBy=""
+                jcr:primaryType="jnt:folder">
+            <menu j:originWS="default"
+                  jcr:created="2026-04-07T13:22:29.041Z"
+                  jcr:createdBy="root"
+                  jcr:lastModified="2026-04-07T13:22:29.053Z"
+                  jcr:lastModifiedBy="root"
+                  jcr:primaryType="jnt:folder">
+                  <sofinco.png j:height="120"
+                              j:originWS="default"
+                              j:width="319"
+                              jcr:created="2026-04-07T13:23:00.920Z"
+                              jcr:createdBy="root"
+                              jcr:lastModified="2026-04-09T09:06:33.871Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mixinTypes="jmix:image"
+                              jcr:primaryType="jnt:file">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-07T13:23:00.947Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="sofinco.png"/>
+                  <jcr:content jcr:lastModified="2026-04-09T09:06:33.846Z"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mimeType="image/png"
+                                 jcr:primaryType="jnt:resource"/>
+                  <thumbnail jcr:lastModified="2026-04-09T09:06:33.871Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  <thumbnail2 jcr:lastModified="2026-04-09T09:06:33.871Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  </sofinco.png>
+                  <financer.png j:height="185"
+                              j:originWS="default"
+                              j:width="319"
+                              jcr:created="2026-04-07T13:23:01.409Z"
+                              jcr:createdBy="root"
+                              jcr:lastModified="2026-04-09T09:06:22.820Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mixinTypes="jmix:image"
+                              jcr:primaryType="jnt:file">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-07T13:23:01.434Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="financer.png"/>
+                  <jcr:content jcr:lastModified="2026-04-09T09:06:22.792Z"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mimeType="image/png"
+                                 jcr:primaryType="jnt:resource"/>
+                  <thumbnail jcr:lastModified="2026-04-09T09:06:22.820Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  <thumbnail2 jcr:lastModified="2026-04-09T09:06:22.820Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  </financer.png>
+                  <payer.png j:height="120"
+                           j:originWS="default"
+                           j:width="319"
+                           jcr:created="2026-04-07T13:23:01.738Z"
+                           jcr:createdBy="root"
+                           jcr:lastModified="2026-04-09T09:06:15.663Z"
+                           jcr:lastModifiedBy="root"
+                           jcr:mixinTypes="jmix:image"
+                           jcr:primaryType="jnt:file">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-07T13:23:01.757Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="payer.png"/>
+                  <jcr:content jcr:lastModified="2026-04-09T09:06:15.636Z"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mimeType="image/png"
+                                 jcr:primaryType="jnt:resource"/>
+                  <thumbnail jcr:lastModified="2026-04-09T09:06:15.663Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  <thumbnail2 jcr:lastModified="2026-04-09T09:06:15.663Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  </payer.png>
+                  <solutions.png j:height="286"
+                              j:originWS="default"
+                              j:width="319"
+                              jcr:created="2026-04-07T13:23:02.054Z"
+                              jcr:createdBy="root"
+                              jcr:lastModified="2026-04-09T09:06:04.368Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mixinTypes="jmix:image"
+                              jcr:primaryType="jnt:file">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-07T13:23:02.070Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="solutions.png"/>
+                  <jcr:content jcr:lastModified="2026-04-09T09:06:04.251Z"
+                                 jcr:lastModifiedBy="root"
+                                 jcr:mimeType="image/png"
+                                 jcr:primaryType="jnt:resource"/>
+                  <thumbnail jcr:lastModified="2026-04-09T09:06:04.368Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  <thumbnail2 jcr:lastModified="2026-04-09T09:06:04.368Z"
+                              jcr:lastModifiedBy="root"
+                              jcr:mimeType="image/png"
+                              jcr:primaryType="jnt:resource"/>
+                  </solutions.png>
+                  <logo.svg j:originWS="default"
+                           jcr:created="2026-04-07T13:36:42.736Z"
+                           jcr:createdBy="root"
+                           jcr:lastModified="2026-04-07T13:36:42.810Z"
+                           jcr:lastModifiedBy=""
+                           jcr:mixinTypes="jmix:image"
+                           jcr:primaryType="jnt:file">
+                  <j:translation_fr jcr:language="fr"
+                                    jcr:lastModified="2026-04-07T13:36:42.756Z"
+                                    jcr:lastModifiedBy="root"
+                                    jcr:primaryType="jnt:translation"
+                                    jcr:title="Logo.svg"/>
+                  <jcr:content j:lastExtractionDate="2026-04-07T13:36:42.807Z"
+                                 jcr:lastModified="2026-04-07T13:36:42.810Z"
+                                 jcr:lastModifiedBy=""
+                                 jcr:mimeType="image/svg+xml"
+                                 jcr:primaryType="jnt:resource"/>
+                  </logo.svg>
+            </menu>
+         </files>
+         <contents jcr:primaryType="jnt:contentFolder"/>
+         <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <!--
+              Hidden content template holding the OAuthView node so the Jahia Authentication settings UI
+              can render the Sofinco connector card.
+            -->
+            <sofinco-oauth-view j:hiddenTemplate="true" jcr:primaryType="jnt:contentTemplate">
+               <pagecontent jcr:primaryType="jnt:contentList">
+                  <sofincooauthview jcr:primaryType="joant:sofincoOAuthView"/>
+               </pagecontent>
+            </sofinco-oauth-view>
+         </templates>
+      </sofinco-core>
+   </modules>
+</content>

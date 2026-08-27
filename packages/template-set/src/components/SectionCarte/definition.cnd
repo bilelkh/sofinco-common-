@@ -1,0 +1,8 @@
+[sofnt:sectionCarte] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle, sofmix:cta orderable
+ - subtitle (string, textarea) i18n
+ - eyebrow (string) i18n
+ - image (weakreference, picker[type='image']) mandatory < jmix:image
+ - imageAlt (string) i18n
+ - contentTitle (string) mandatory i18n
+ - contentText (string, textarea) mandatory i18n
+ - items (string) multiple i18n

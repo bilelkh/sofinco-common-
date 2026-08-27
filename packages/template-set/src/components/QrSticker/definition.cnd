@@ -1,0 +1,12 @@
+[sofnt:qrAppSettings] > jnt:content, mix:title, sofmix:configs
+ - isGlobalAppActive  (boolean) = 'true' autocreated
+ - qrImageRef   (weakreference, picker[type='image']) < jmix:image
+ - qrLabel       (string) i18n
+ - appCtaLabelHeader  (string) i18n
+ - appCtaLabelFooter  (string) i18n
+ - iosUrl       (string)
+ - androidUrl   (string)
+ - fallbackNode (weakreference, picker[type='editoriallink'])
+
+[sofnt:qrSticker] > jnt:content, sofmix:component
+ - isActive (boolean) = 'true' autocreated

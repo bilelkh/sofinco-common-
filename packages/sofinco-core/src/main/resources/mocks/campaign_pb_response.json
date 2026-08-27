@@ -1,0 +1,16 @@
+{
+  "id": "NEOURL41",
+  "type": "loan",
+  "label": "PRÊT PERSONNEL",
+  "minAmount": 3001.0,
+  "maxAmount": 75000.0,
+  "minDuration": 12,
+  "maxDuration": 120,
+  "minAnnualDebitRate": 4.314,
+  "maxAnnualDebitRate": 14.628,
+  "minAnnualGlobalEffectiveRate": 4.4,
+  "maxAnnualGlobalEffectiveRate": 15.65,
+  "promoGlobalEffectiveRate": 4.9,
+  "startDate": "2017-09-25",
+  "endDate": "2026-08-26"
+}

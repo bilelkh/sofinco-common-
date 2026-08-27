@@ -1,0 +1,12 @@
+// One shared list type for both columns — the mapper resolves each wrapper by
+// its child NAME (leftFeatures / rightFeatures), so same-typed siblings are fine.
+[sofnt:comparisonOfferFeatureList] > sofnt:listBase
+ + * (sofnt:comparisonOfferFeature) = sofnt:comparisonOfferFeature
+
+[sofnt:comparisonOffer] > jnt:content, jmix:editorialContent, mix:title, sofmix:cta
+ - jcr:title (string) mandatory i18n
+ - illustration (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ - illustrationAlt (string) i18n
+ - backgroundColor (string, choicelist[resourceBundle]) = '#9FF0EA' indexed=no < '#9FF0EA', '#D8ECF9', '#E7EAEC'
+ + leftFeatures (sofnt:comparisonOfferFeatureList) = sofnt:comparisonOfferFeatureList autocreated mandatory
+ + rightFeatures (sofnt:comparisonOfferFeatureList) = sofnt:comparisonOfferFeatureList autocreated mandatory

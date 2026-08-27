@@ -1,0 +1,87 @@
+@import "@styles/base.css";
+
+/* Product spotlight: a central visual framed by two columns of label pill +
+   description items. Plain lists on a grid — nothing is compared or toggled,
+   so no table semantics involved (unlike OfferComparisonTable, which shares
+   the same visual language).
+   NB: an individual item's styles (label pill + description) are carried by
+   the `<ProductFocusItem>` sub-component — see
+   `ui/ProductFocusItem/ProductFocusItem.module.css`. */
+
+.product-focus {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	width: 100%;
+	box-sizing: border-box;
+	background-color: var(--product-focus-bg, var(--color-primary-subtle));
+	padding-block: calc(var(--spacing) * 20);
+	padding-inline: calc(var(--spacing) * 6);
+
+	@media (--small-up) {
+		padding-block: calc(var(--spacing) * 26);
+		padding-inline: calc(var(--spacing) * 26);
+	}
+}
+
+.product-focus__container {
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+/* --- Items around the image --- */
+
+/* Mobile-first single stack in DOM order (left items, image, right items);
+   3 columns around the centered visual from --medium-up. */
+.product-focus__grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: calc(var(--spacing) * 10);
+	margin-top: calc(var(--spacing) * 14);
+
+	@media (--medium-up) {
+		grid-template-columns: 1fr minmax(0, 1fr) 1fr;
+		gap: calc(var(--spacing) * 14);
+		margin-top: calc(var(--spacing) * 20);
+	}
+}
+
+.product-focus__list {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 8);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* Explicit column assignment so the layout survives an empty column (e.g. a
+   single-item list renders left only, image stays centered). */
+@media (--medium-up) {
+	.product-focus__list--left {
+		grid-column: 1;
+	}
+
+	.product-focus__media {
+		grid-column: 2;
+	}
+
+	.product-focus__list--right {
+		grid-column: 3;
+	}
+}
+
+.product-focus__media {
+	display: flex;
+	justify-content: center;
+}
+
+.product-focus__image {
+	width: 100%;
+	/* Indispensable pour que l'`aspect-ratio` ci-dessous s'applique : sans ça l'attribut
+	   `height` de l'<img> fixe une hauteur définie et le ratio est ignoré. */
+	height: auto;
+	aspect-ratio: 420 / 605;
+	object-fit: cover;
+	border-radius: var(--radius-4xl);
+}

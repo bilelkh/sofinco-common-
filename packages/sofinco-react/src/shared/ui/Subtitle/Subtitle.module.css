@@ -1,0 +1,15 @@
+@import "@styles/base.css";
+
+.subtitle {
+	max-width: 900px;
+	color: var(--subtitle-fg);
+	composes: text-l from "@styles/utilities/typography.module.css";
+}
+
+.subtitle--dark {
+	--subtitle-fg: var(--color-primary-base);
+}
+
+.subtitle--white {
+	--subtitle-fg: var(--color-white);
+}

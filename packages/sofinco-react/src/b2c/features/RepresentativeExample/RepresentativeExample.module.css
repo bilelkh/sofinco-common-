@@ -1,0 +1,240 @@
+@import "@styles/base.css";
+
+/* Representative loan example — mobile-first, responsive table. */
+.representative-example {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+	text-align: center;
+
+	@media (--medium-up) {
+		padding: calc(var(--spacing) * 30) calc(var(--spacing) * 6);
+	}
+}
+
+/* Title & subtitle */
+.representative-example__title {
+	composes: h2 from "@styles/utilities/typography.module.css";
+	max-width: 1232px;
+	margin: 0 auto calc(var(--spacing) * 6);
+	color: var(--color-primary-base);
+	text-wrap: pretty;
+
+	@supports not (text-wrap: pretty) {
+		text-wrap: auto;
+	}
+}
+
+.representative-example__subtitle {
+	max-width: 750px;
+	margin: 0 auto calc(var(--spacing) * 14);
+	composes: text-l from "@styles/utilities/typography.module.css";
+	text-wrap: pretty;
+
+	@supports not (text-wrap: pretty) {
+		text-wrap: auto;
+	}
+}
+
+/* Borrowed-amount card */
+.representative-example__amount-card {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	margin-bottom: calc(var(--spacing) * 14);
+	padding: calc(var(--spacing) * 3) calc(var(--spacing) * 10);
+	background-color: var(--color-white);
+	border: 1px solid var(--color-neutral-30);
+	border-radius: var(--radius-2xl);
+}
+
+.representative-example__amount-label {
+	font-size: var(--text-lg);
+	letter-spacing: -0.02em;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-secondary-base);
+}
+
+.representative-example__amount-value {
+	font-family: var(--font-display);
+	font-size: var(--text-3xl);
+	font-weight: var(--font-weight-extrabold);
+	letter-spacing: 0.5px;
+	color: var(--color-primary-base);
+}
+
+/* Table — mobile: stacked cards · desktop: real table */
+.representative-example__table {
+	display: block;
+	width: 100%;
+	max-width: 420px;
+	margin: 0 auto;
+	overflow: hidden;
+	background-color: var(--color-white);
+	border: 1px solid var(--color-neutral-30);
+	border-radius: var(--radius-3xl);
+
+	@media (--medium-up) {
+		display: table;
+		max-width: 940px;
+		border-collapse: separate;
+		border-spacing: 0;
+	}
+}
+
+.representative-example__table tbody {
+	display: block;
+	width: 100%;
+
+	@media (--medium-up) {
+		display: table-row-group;
+	}
+}
+
+.representative-example__table tr {
+	display: block;
+	width: 100%;
+
+	@media (--medium-up) {
+		display: table-row;
+	}
+}
+
+/* Header row is visually hidden on mobile (labels come from data-label). */
+.representative-example__table thead {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+
+	@media (--medium-up) {
+		position: static;
+		width: auto;
+		height: auto;
+		overflow: visible;
+		clip: auto;
+	}
+}
+
+.representative-example__th,
+.representative-example__td {
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 3);
+	text-align: center;
+}
+
+.representative-example__th {
+	font-family: var(--font-sans);
+	font-size: var(--text-lg);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary-base);
+	letter-spacing: -0.02em;
+	background-color: var(--color-primary-subtle);
+
+	@media (--medium-up) {
+		display: table-cell;
+	}
+}
+
+.representative-example__td {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	font-family: var(--font-display);
+	font-size: var(--text-xl);
+	font-weight: var(--font-weight-extrabold);
+	color: var(--color-primary-base);
+	background-color: var(--color-white);
+
+	@media (--medium-up) {
+		display: table-cell;
+		white-space: nowrap;
+	}
+}
+
+/* Mobile label injected before each value */
+.representative-example__td::before {
+	content: attr(data-label);
+	font-family: var(--font-sans);
+	font-size: var(--text-lg);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-primary-base);
+	letter-spacing: -0.02em;
+
+	@media (--medium-up) {
+		content: none;
+	}
+}
+
+/* Zebra striping on mobile only */
+.representative-example__td:nth-child(odd):not(.representative-example__td--highlighted) {
+	background-color: var(--color-primary-subtle);
+
+	@media (--medium-up) {
+		background-color: var(--color-white);
+	}
+}
+
+/* Rounded outer corners on desktop */
+.representative-example__th:first-child {
+	@media (--medium-up) {
+		border-top-left-radius: var(--radius-3xl);
+	}
+}
+
+.representative-example__td:first-child {
+	@media (--medium-up) {
+		border-bottom-left-radius: var(--radius-3xl);
+	}
+}
+
+/* Highlighted "total due" column */
+.representative-example__th--highlighted {
+	color: var(--color-white);
+	background-color: var(--color-primary-strong);
+}
+
+.representative-example__td--highlighted {
+	color: var(--color-accent-base);
+	font-size: var(--text-xl);
+	background-color: var(--color-primary-base);
+}
+
+.representative-example__td--highlighted::before {
+	color: var(--color-white);
+}
+
+/* Legal mentions */
+.representative-example__insurance-legal {
+	margin: calc(var(--spacing) * 8) auto calc(var(--spacing) * 8) auto;
+	max-width: 800px;
+	font-size: var(--text-xs);
+	line-height: var(--text-xs--line-height);
+	font-weight: var(--font-weight-medium);
+}
+
+/* CTA */
+.representative-example__cta {
+	max-width: fit-content;
+	margin: 0 auto;
+	font-weight: var(--font-weight-bold);
+	text-align: center;
+}
+
+.representative-example__cta-display {
+	display: flex;
+}
+
+/* Visually hidden table caption */
+.representative-example__sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}

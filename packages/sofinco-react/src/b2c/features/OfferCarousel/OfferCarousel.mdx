@@ -1,0 +1,98 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as OfferCarouselStories from "./OfferCarousel.stories";
+
+<Meta of={OfferCarouselStories} />
+
+# OfferCarousel
+
+Carousel showcasing Sofinco offers. Supports 3 slide variants: **glossy** (background image with glass card), **colored** (colored background with illustration), and **rate** (financial rate display).
+
+> **⚠️ Preview note:** The Storybook canvas constrains the iframe width, which affects this component's layout. For a true full-width render, view it in the [HomePage story](http://localhost:6006/iframe.html?id=pages-homepage--default&viewMode=story).
+
+## Composition
+
+- A Swiper carousel with `slidesPerView="auto"` and a fixed 24px gap between slides.
+- Three slide variants discriminated by the `variant` field.
+- Navigation controls: arrow buttons + clickable pagination bullets.
+- A `<section>` + container `<div>` wrapper to handle overflow and centering.
+
+## Variants
+
+### Glossy
+
+Slide with a background image and a glassmorphic card pinned to the bottom.
+Responsive background image: mobile (portrait) and desktop (landscape) versions.
+
+### Colored
+
+Slide with a configurable background color and an illustration.
+Column layout on mobile, reversed row on desktop.
+
+### Rate
+
+Slide for displaying a financial rate in large typography.
+Automatic parsing of the rate value into integer, decimal and symbol parts.
+The suffix (e.g. TAEG FIXE) is hidden on desktop.
+
+## Jahia contribution rules
+
+- All content is contributor-driven (texts, media, links).
+- Optional elements are supported: `eyebrow` and `cta` on the colored variant.
+- The `rate` variant displays the suffix on mobile only.
+- Each slide must have a unique `id`.
+
+## Usage
+
+```tsx
+import { OfferCarousel } from "sofinco-react";
+
+export function MyPage() {
+	return (
+		<OfferCarousel
+			slides={[
+				{
+					id: "offer-rate-1",
+					variant: "rate",
+					rateValue: "4,50%",
+					rateSuffix: "TAEG FIXE",
+					eyebrow: "UNTIL JANUARY 7TH",
+					description: "Get a fixed APR of 4.50% for €15,000 borrowed.",
+					cta: { label: "Take advantage", href: "/" },
+				},
+				{
+					id: "offer-glossy-1",
+					variant: "glossy",
+					title: "Discover Sofinco on TV!",
+					description: "A 100% digital, instant and intelligent loan experience.",
+					imgMobile: "/images/samples/hero-mobile.jpg",
+					imgDesktop: "/images/samples/hero-desktop.jpg",
+					cta: { label: "Watch the campaign", href: "/" },
+				},
+				{
+					id: "offer-colored-1",
+					variant: "colored",
+					title: "Sofinco awarded by the AFRC",
+					description: "An innovative journey recognised for its digital excellence.",
+					backgroundColor: "#FDF0FE",
+					img: "/images/samples/award.png",
+				},
+			]}
+		/>
+	);
+}
+```
+
+## Responsive behavior
+
+- **Mobile (< 768px)**: slide max-width 450px, container padding 20px.
+- **Small-up (≥ 768px)**: slide max-width 1232px, container padding 40px.
+- Gap between slides: 24px (constant).
+- Navigation: arrow buttons + pagination bullets.
+
+## Props
+
+<ArgTypes of={OfferCarouselStories} />
+
+## All Stories
+
+<Stories />

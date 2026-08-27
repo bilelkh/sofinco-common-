@@ -1,0 +1,29 @@
+@import "@styles/base.css";
+
+.reassurance-picto {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: calc(var(--spacing) * 4);
+	text-align: center;
+}
+
+.reassurance-picto__image {
+	width: 50px;
+	/* Neutralise le hint de dimension porté par l'attribut `height` : le picto garde son
+	   ratio propre sous les 50px de large. */
+	height: auto;
+	object-fit: contain;
+	display: block;
+}
+
+.reassurance-picto__label {
+	margin: 0;
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	font-weight: var(--font-weight-medium);
+	letter-spacing: 0;
+	color: var(--color-primary-base);
+}

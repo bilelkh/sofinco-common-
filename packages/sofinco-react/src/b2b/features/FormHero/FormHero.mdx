@@ -1,0 +1,84 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as FormHeroStories from "./FormHero.stories";
+
+<Meta of={FormHeroStories} />
+
+# FormHero
+
+Bandeau d'ouverture des pages formulaire du site vitrine B2B. Titre et accroche viennent
+de Jahia : le composant ne fabrique aucun contenu.
+
+## How It Works
+
+- `title` et `subtitle` sont pilotés par le CMS et rendus par les composants DS `Title` et
+  `Subtitle` — les renvois de notes de bas de page (`⁽¹⁾`) y sont donc pris en charge
+- `titleAs` vaut `h1` par défaut : le bandeau ouvre la page. Le passer à `h2` ne change que
+  la balise, pas l'habillage visuel
+- `children` est rendu **à cheval sur le bas du bandeau**, comme la maquette y place la
+  carte de formulaire. Sans contenu, l'emplacement n'est pas rendu du tout
+
+## Typographie — échelle B2B, pas Monstera
+
+Le fichier Figma B2B et la bibliothèque Monstera ne portent pas la même échelle
+typographique. `Title` et `Subtitle` suivent celle de la bibliothèque, le bandeau
+surcharge donc localement pour tenir la maquette (nodes 3680:6204 en desktop,
+3689:9708 en mobile) :
+
+| Élément  | Maquette B2B                | `Title` / `Subtitle` seuls |
+| -------- | --------------------------- | -------------------------- |
+| Titre    | Cutta **Bold 700**, 70 / 74 | Cutta 800, 60px, `-0.025em` |
+| Titre mobile | Cutta Bold 700, 32 / 1.2 | Cutta 800, 48px            |
+| Accroche | Figtree 500, **20 / 24**    | Figtree 500, 18 / 27       |
+
+La surcharge est locale et assumée : corriger `.h1` / `.text-l` repeindrait tout le
+B2C, qui suit bien Monstera. Elle passe par le `className` de `Title` et de
+`Subtitle` (ajouté pour ce cas), avec des sélecteurs à deux classes — `.h1` et
+`.subtitle` ont la même spécificité qu'une classe seule et l'emporteraient selon
+l'ordre de bundling des modules.
+
+## Alignement
+
+**Aligné à gauche en mobile, centré à partir de la tablette.** Ce n'est pas
+décoratif : sur 375px le titre tient sur trois lignes, qu'un centrage rendrait
+difficiles à parcourir. La maquette mobile pose aussi un rembourrage plus court en
+haut (88px contre 200px) et un espacement titre/accroche de 16px contre 24px.
+
+## Usage
+
+```tsx
+import { FormHero, MultiStepForm } from "sofinco-react";
+
+<FormHero
+	title="Devenez Partenaire Sofinco"
+	subtitle="Proposez le financement Sofinco à vos clients. Plus de 15 000 entreprises l'ont déjà choisi."
+>
+	<MultiStepForm steps={steps} onSubmit={envoyerCandidature} />
+</FormHero>;
+```
+
+## Chevauchement
+
+Le `margin-top` négatif de l'emplacement et le rembourrage bas du bandeau **vont de pair** :
+modifier l'un sans l'autre décolle la carte ou la fait mordre sur le titre. Les deux valeurs
+sont reprises de la maquette à chaque palier (mobile, tablette, desktop).
+
+La carte reste dans le flux : sa hauteur n'a donc pas à être connue, et une étape plus haute
+que les autres ne déborde pas du bandeau.
+
+Le rembourrage haut du bandeau (200px en desktop) réserve la place de la navigation, qui se
+superpose au bandeau dans la maquette.
+
+L'assemblage de la maquette — bandeau + `MultiStepForm` dans l'emplacement :
+
+<Canvas of={FormHeroStories.WithForm} />
+
+L'emplacement n'a rien de spécifique au formulaire : il accueille n'importe quel contenu.
+
+<Canvas of={FormHeroStories.WithOverlappingCard} />
+
+## Props
+
+<ArgTypes of={FormHeroStories.Default} />
+
+<Stories />

@@ -1,0 +1,20 @@
+// ── Bouton de colonne (CTA réutilisable, un par colonne) ────────────────────
+[sofnt:comparativeTableButton] > jnt:content, sofmix:cta
+
+// ── Ligne de comparaison ────────────────────────────────────────────────────
+[sofnt:comparativeTableRow] > jnt:content orderable
+ - label (string) mandatory i18n
+ - leftValueLabel (string) mandatory i18n
+ - leftValueIcon (string, choicelist[resourceBundle]) = 'none' autocreated < 'none', 'check-valid', 'x-invalid'
+ - rightValueLabel (string) mandatory i18n
+ - rightValueIcon (string, choicelist[resourceBundle]) = 'none' autocreated < 'none', 'check-valid', 'x-invalid'
+
+// ── Tableau comparatif ──────────────────────────────────────────────────────
+[sofnt:comparativeTable] > jnt:content, mix:title, sofmix:component orderable
+ - subtitle (string, textarea) i18n
+ - rowHeaderLabel (string) i18n
+ - leftColumnLabel (string) mandatory i18n
+ - rightColumnLabel (string) mandatory i18n
+ + leftColumnButton (sofnt:comparativeTableButton) = sofnt:comparativeTableButton mandatory autocreated
+ + rightColumnButton (sofnt:comparativeTableButton) = sofnt:comparativeTableButton mandatory autocreated
+ + * (sofnt:comparativeTableRow)

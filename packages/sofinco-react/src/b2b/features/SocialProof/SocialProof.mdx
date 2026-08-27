@@ -1,0 +1,64 @@
+import { Meta, Canvas, Controls } from "@storybook/addon-docs/blocks";
+import * as SocialProofStories from "./SocialProof.stories";
+
+<Meta of={SocialProofStories} />
+
+# SocialProof
+
+Bloc de **preuve sociale** du site vitrine B2B (« Ils nous font confiance ») : un titre,
+une accroche, puis un carrousel de témoignages partenaires. Titre, accroche et
+témoignages sont contribués dans Jahia.
+
+<Canvas of={SocialProofStories.Default} />
+
+## Règles portées par la maquette
+
+- **Alternance des teintes.** Une carte sur deux est navy, l'autre blanche. Le calcul se
+  fait sur l'index du témoignage (rang impair → `dark`), jamais en `:nth-child` : Swiper
+  réordonne les slides et le rythme visuel décrocherait de l'ordre des témoignages.
+  `tone` sur l'item permet de forcer une teinte quand l'ordre change côté contribution.
+- **Décalage vertical.** Les cartes claires sont remontées, les navy descendues (64 px sur
+  desktop, 32 px en dessous). C'est un rembourrage asymétrique sur la slide, combiné à un
+  alignement centré du `swiper-wrapper`.
+- **Masqué en mobile.** La maquette ne prévoit pas ce bloc sous 768 px : il est retiré en
+  CSS (`display: none`), ce qui le sort aussi de l'arbre d'accessibilité. Le choix du CSS
+  plutôt que d'un test de largeur en JS est délibéré — le rendu SSR d'une Island Jahia ne
+  connaît pas le viewport.
+- **Sans témoignage, rien n'est rendu.** Un bloc de preuve sociale vide n'a rien à prouver,
+  et le titre seul laisserait un fond de section orphelin.
+- **Le carrousel ne boucle pas.** La maquette montre un état à mi-défilement (cartes
+  rognées des deux côtés), pas une boucle infinie. Depuis Swiper 9, `loop` réordonne les
+  slides réelles au lieu de les cloner : en `slidesPerView: "auto"`, une rangée plus large
+  que le viewport n'a jamais assez de cartes pour habiller les deux côtés, et Swiper
+  s'arrête sur la dernière en laissant un vide à droite. Le nombre de témoignages étant
+  contribué, aucun seuil statique ne met à l'abri — les flèches se désactivent donc aux
+  extrémités.
+
+## Balisage
+
+Chaque carte est une `<figure>` contenant un `<blockquote>` et un `<figcaption>` : c'est
+le balisage qu'un lecteur d'écran annonce comme une citation attribuée. Une suite de
+paragraphes perdrait le lien entre le propos et son auteur.
+
+Le portrait est décoratif par défaut (`alt=""` + `aria-hidden`) : le nom de l'auteur le
+suit immédiatement dans le flux. Renseigner `avatarAlt` bascule la vignette en image de
+contenu.
+
+## Écarts assumés avec la maquette
+
+Le titre et l'accroche passent par `SectionHeading` (donc `Title` / `Subtitle`), qui suit
+l'échelle typographique **Monstera** et non celle du fichier B2B :
+
+| Élément  | Maquette B2B          | Rendu par le DS       |
+| -------- | --------------------- | --------------------- |
+| Titre    | Figtree 600, 52 / 60  | Figtree 600, 48 / 1.25 |
+| Accroche | Figtree 500, 18 / 24  | Figtree 500, 18 / 1.5  |
+
+Corriger l'écart ici créerait de la dérive : c'est une décision de design system, pas un
+correctif de composant.
+
+<Canvas of={SocialProofStories.TwoTestimonials} />
+
+## Props
+
+<Controls />

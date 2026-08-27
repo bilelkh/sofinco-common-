@@ -1,0 +1,129 @@
+import { Meta, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SelectStories from "./Select.stories";
+
+<Meta of={SelectStories} />
+
+# Select
+
+A single-choice dropdown with a fully styled panel, wearing the same `Field`
+shell as [TextField](?path=/docs/shared-ui-textfield--docs) and
+[Textarea](?path=/docs/shared-ui-textarea--docs) — label, hint, error and the
+four interaction states are shared code, not parallel implementations.
+
+The panel is ours: a native `<select>` hands its list to the OS, which will not
+render icons, description lines, or any of our spacing. So the list is a
+`role="listbox"` we draw and control.
+
+## It still submits without JavaScript
+
+The usual cost of a custom dropdown is that the value stops reaching a plain
+form post. It does not here: when `name` is set, a hidden native `<select>`
+mirrors the value **from the very first server render**, so a `method="GET"`
+form works before — and without — hydration. `SimulatorForm` already depends on
+that path, and it is pinned by a test.
+
+That mirror is deliberately sized to zero rather than `display: none`: a
+`required` control the browser cannot focus makes it refuse to validate the form
+at all.
+
+<Canvas of={SelectStories.InAForm} />
+
+## Matrix
+
+The closed trigger: four interaction states crossed with three content states.
+
+<Canvas of={SelectStories.Matrix} />
+
+`hovered` and `focused` are frozen here through `Field` modifiers that **share
+their rule** with `:hover` and `:focus-within`, so what you see is the real
+rendering. The panel only mounts once opened, so it cannot appear in a static
+sheet — see below.
+
+## The panel
+
+<Canvas of={SelectStories.Open} />
+
+Item states are driven by data attributes rather than CSS pseudo-classes:
+
+- `[data-active]` covers hover **and** keyboard navigation in one rule, so the
+  two can never diverge.
+- `[data-selected]` marks the current value, with a check indicator.
+- `[data-disabled]` for unselectable options.
+
+## Keyboard
+
+Follows the WAI-ARIA select-only combobox pattern. Focus never leaves the
+trigger; the active option is pointed at with `aria-activedescendant`. Moving
+focus into the list would mean restoring it on close, and makes screen readers
+announce the container rather than the field.
+
+| Key | Closed | Open |
+| --- | --- | --- |
+| `↓` `↑` | opens at the current value | moves, skipping disabled options |
+| `Home` `End` | — | first / last selectable option |
+| `Enter` `Space` | opens | picks the active option |
+| `Escape` | — | closes, focus stays on the trigger |
+| `Tab` | — | closes, focus moves on normally |
+| letters | changes value in place | moves to the match |
+
+Type-ahead matches the native control: quick keystrokes accumulate (`p`, `r` →
+"Prêt personnel"), and the same letter repeated cycles through options starting
+with it. The buffer resets after 500 ms of silence.
+
+## Options
+
+`options` for the flat case, `groups` for labelled sets. Both may be passed —
+flat options render first. Each option takes an optional `icon` and
+`description`, shown in the panel only so the trigger height never shifts with
+the selection.
+
+<Canvas of={SelectStories.RichOptions} />
+
+<Canvas of={SelectStories.Grouped} />
+
+## Placeholder
+
+Unlike a native `<select>`, the placeholder is **not an option** — it renders
+the empty state, so it can never be picked by accident. A `value` matching no
+option falls back to it rather than showing a blank field.
+
+## Value
+
+`value` / `onValueChange`, not `onChange`: the panel is a listbox, not an
+`<input>`, so there is no `event.target.value` to read. Omit `value` to let the
+component track it internally from `defaultValue`.
+
+## Known limits
+
+- The panel is positioned in-flow (`position: absolute`), not portalled. An
+  ancestor with `overflow: hidden` will clip it. Portalling would fix that at
+  the cost of SSR complexity — worth revisiting if it bites.
+- It always opens downward. There is no collision flip yet; the panel caps its
+  own height and scrolls instead.
+- No mobile OS picker, which is inherent to any styled dropdown.
+
+## Usage
+
+```tsx
+import { Select } from "sofinco-react";
+
+<Select
+	label="Project type"
+	name="project"
+	placeholder="Choose a project"
+	options={[
+		{ value: "perso", label: "Prêt personnel" },
+		{ value: "auto", label: "Crédit auto" },
+	]}
+	onValueChange={(value) => console.log(value)}
+/>
+```
+
+## Playground
+
+<Canvas of={SelectStories.Playground} />
+
+## Props
+
+<ArgTypes of={SelectStories} />

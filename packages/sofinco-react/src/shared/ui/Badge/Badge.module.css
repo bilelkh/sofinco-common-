@@ -1,0 +1,28 @@
+@import "@styles/base.css";
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	padding: calc(calc(var(--spacing) * 3) / 2) calc(var(--spacing) * 2);
+	font-family: var(--font-sans);
+	font-weight: 700;
+	font-size: var(--text-sm);
+	letter-spacing: 0;
+	border-radius: calc(var(--spacing) * 2);
+	white-space: nowrap;
+	background-color: var(--badge-bg);
+	color: var(--badge-fg);
+	line-height: var(--text-sm--line-height);
+}
+
+.badge--accent {
+	--badge-bg: var(--color-accent-base);
+	--badge-fg: var(--color-primary-base);
+}
+
+.badge--primary {
+	--badge-bg: var(--color-primary-base);
+	--badge-fg: var(--color-accent-base);
+}

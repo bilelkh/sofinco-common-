@@ -1,0 +1,37 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as BadgeStories from "./Badge.stories";
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+A compact reusable badge component to highlight short contextual labels.
+
+## How It Works
+
+- `label` defines the displayed content
+- `variant` controls semantic colors
+- `className` allows custom layout from parents
+
+## Usage
+
+```tsx
+import { Badge } from "sofinco-react";
+
+<Badge label="Prêt perso" />
+<Badge label="Nouveau" variant="primary" />
+```
+
+## Variants
+
+<Canvas of={BadgeStories.Accent} />
+<Canvas of={BadgeStories.Primary} />
+
+## Props
+
+<ArgTypes of={BadgeStories} />
+
+## All Stories
+
+<Stories />

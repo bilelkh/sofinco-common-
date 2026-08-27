@@ -1,0 +1,3 @@
+[sofnt:cardArgument] > jnt:content, jmix:editorialContent, mix:title, sofmix:argument
+ - jcr:title (string) mandatory i18n itemtype='content'
+ - description (string, textarea) i18n itemtype='content'

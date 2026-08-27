@@ -1,0 +1,5 @@
+[sofnt:seoMeshWrapper] > jnt:content, mix:title, sofmix:component
+- backgroundColor (string, choicelist[resourceBundle]) = 'cyanClair' indexed=no < 'cyanClair'
+- maxSections (long) = 2 autocreated
+- maxLinksPerSection (long) = 6 autocreated
++ * (spnt:seoLinksBlock) = spnt:seoLinksBlock

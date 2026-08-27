@@ -1,0 +1,130 @@
+@import "@styles/base.css";
+
+.offer-carousel {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background-color: var(--color-primary-base);
+	width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.offer-carousel__container {
+	width: 100%;
+	box-sizing: border-box;
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 6) calc(var(--spacing) * 10)
+		calc(var(--spacing) * 6);
+
+	@media (--large-up) {
+		padding: calc(var(--spacing) * 26) calc(var(--spacing) * 26) calc(var(--spacing) * 10)
+			calc(var(--spacing) * 26);
+	}
+}
+
+.offer-carousel article {
+	padding: calc(var(--spacing) * 4);
+	border-radius: var(--radius-3xl);
+	width: 100%;
+	max-width: 450px;
+
+	@media (--small-up) {
+		max-width: 1232px;
+		padding: calc(var(--spacing) * 10);
+	}
+}
+
+.offer-carousel__swiper {
+	overflow: visible;
+}
+
+.offer-carousel__slide {
+	height: auto;
+	display: flex;
+	box-sizing: border-box;
+	width: min(100%, 450px);
+
+	@media (--small-up) {
+		width: min(100%, 1232px);
+	}
+}
+
+.offer-carousel__slide > * {
+	width: 100%;
+}
+
+.offer-carousel__controls {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: calc(var(--spacing) * 8);
+	padding: 0 calc(var(--spacing) * 4);
+	min-height: 48px;
+	gap: calc(var(--spacing) * 4);
+	box-sizing: border-box;
+}
+
+.offer-carousel__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--spacing) * 2);
+	width: auto;
+	position: static;
+	margin-top: 0;
+}
+
+.offer-carousel__pagination :global(.swiper-pagination-bullet) {
+	width: 8px;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-primary-light);
+	opacity: 1;
+	cursor: pointer;
+	transition:
+		background-color 0.2s ease,
+		width 0.2s ease,
+		outline-offset 0.15s ease;
+}
+
+.offer-carousel__pagination :global(.swiper-pagination-bullet-active) {
+	background-color: var(--color-neutral-00);
+	width: 24px;
+}
+
+.offer-carousel__pagination :global(.swiper-pagination-bullet:focus-visible) {
+	outline: 2px solid var(--color-accent-base);
+	outline-offset: 3px;
+}
+
+.offer-carousel__arrows {
+	display: flex;
+	gap: calc(var(--spacing) * 4);
+}
+
+.offer-carousel__nav-button {
+	width: 62px;
+	height: 38px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-neutral-10);
+	border: none;
+	color: var(--color-primary-base);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	flex-shrink: 0;
+}
+
+.offer-carousel__nav-button:hover {
+	background-color: var(--color-neutral-20);
+}
+
+.offer-carousel__nav-button:focus-visible {
+	outline: 2px solid var(--color-primary-base);
+}
+
+.offer-carousel__nav-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}

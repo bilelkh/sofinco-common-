@@ -1,0 +1,131 @@
+/* -----------------------------------------------------------------------------
+ * Apercu edit-mode d'une carte dans le contexte COMPLEMENTARY.
+ *
+ * Reconstruction statique du visuel <SolutionComplementary> (image de fond +
+ * panneau overlay translucide). Uniquement rendu en edition : le live passe par
+ * l'Island du parent `sofnt:solution`.
+ *
+ * La vue SLIDER n'utilise PAS ce fichier — elle reutilise directement le
+ * composant DS <SolutionCard> et son propre CSS module.
+ * -------------------------------------------------------------------------- */
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	min-height: 450px;
+	padding: 12px;
+	border-radius: 20px;
+	overflow: hidden;
+	box-sizing: border-box;
+	background-color: #00334d;
+}
+
+/* Le <picture> n'existe que pour porter le <source> mobile : `display: contents`
+   le retire du flux flex de `.card` pour que `.cardBg` reste positionne par
+   rapport a `.card` exactement comme avant l'ajout du wrapper. */
+.cardBgPicture {
+	display: contents;
+}
+
+.cardBg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+	user-select: none;
+	pointer-events: none;
+}
+
+/* Etat vide : le champ `image` est mandatory au CND mais peut rester non
+   renseigne pendant la contribution — on le signale plutot que d'afficher
+   un bloc noir muet. */
+.cardBgPlaceholder {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: repeating-linear-gradient(45deg, #0a3d59, #0a3d59 10px, #00334d 10px, #00334d 20px);
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 13px;
+	font-style: italic;
+}
+
+.panel {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px 20px;
+	border-radius: 16px;
+	background: rgba(0, 51, 77, 0.55);
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-sizing: border-box;
+}
+
+.cardTitle {
+	margin: 0;
+	color: #ffffff;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.cardSubtitle {
+	margin: 0;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+}
+
+.chips {
+	list-style: none;
+	margin: 8px 0 4px;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 14px;
+	border-radius: 9999px;
+	background: #ffffff;
+	color: #00334d;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.chipCheck {
+	color: #cc1d49;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.cta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 4px;
+	padding: 10px 24px;
+	border-radius: 9999px;
+	background-color: #0aeadc;
+	color: #00334d;
+	font-size: 14px;
+	font-weight: 700;
+	text-align: center;
+}

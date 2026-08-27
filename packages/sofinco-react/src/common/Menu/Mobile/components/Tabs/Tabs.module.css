@@ -1,0 +1,31 @@
+@import "@styles/base.css";
+
+.menu__tabs__list {
+	overflow: auto;
+	max-width: 100dvw;
+	white-space: nowrap;
+	padding: 0 0 0 calc(var(--spacing) * 6);
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.menu__tabs__trigger {
+	all: unset;
+	font-family: var(--font-sans);
+	display: inline-block;
+	font-size: var(--text-base);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+	cursor: pointer;
+	border-radius: 80px;
+	background-color: transparent;
+
+	&:focus {
+		border: 2px solid var(--color-accent-base);
+	}
+}
+
+.menu__tabs__trigger[data-state="active"] {
+	background-color: var(--color-accent-subtle);
+	font-weight: var(--font-weight-semibold);
+}

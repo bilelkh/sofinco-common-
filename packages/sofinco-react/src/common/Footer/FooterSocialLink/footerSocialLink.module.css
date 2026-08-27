@@ -1,0 +1,17 @@
+.socialLink {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 32px;
+	transition: transform 0.2s ease;
+}
+
+.socialLink:hover {
+	transform: translateY(-3px);
+}
+
+.iconPlaceholder {
+	font-weight: bold;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+}

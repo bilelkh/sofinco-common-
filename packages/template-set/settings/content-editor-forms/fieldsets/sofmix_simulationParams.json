@@ -1,0 +1,11 @@
+{
+	"name": "sofmix:simulationParams",
+	"priority": 1.0,
+	"fields": [
+		{ "name": "simProduct", "rank": "1.0", "mandatory": true },
+		{ "name": "simSourceId", "rank": "2.0", "mandatory": true },
+		{ "name": "simAmount", "rank": "3.0", "mandatory": true },
+		{ "name": "simDuration", "rank": "4.0", "mandatory": true },
+		{ "name": "simScaleCode", "rank": "5.0" }
+	]
+}

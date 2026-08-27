@@ -1,0 +1,89 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as ProductAdvantagesStories from "./ProductAdvantages.stories";
+
+<Meta of={ProductAdvantagesStories} />
+
+# ProductAdvantages
+
+The "Product advantages" section showcases product benefits (for example,
+revolving credit) using a carousel driven by category tabs.
+
+> **⚠️ Preview note:** the Storybook canvas constrains iframe width, which affects
+> full-width layout rendering. For a faithful rendering, open the
+> [HomePage](http://localhost:6006/iframe.html?id=pages-homepage--default&viewMode=story) story.
+
+## Composition
+
+- A **title** (`<h2>`) and a **subtitle** (`<p>`).
+- A row of **category tabs** controlling the carousel.
+- A [Swiper](https://swiperjs.com) **carousel** with one slide per category.
+- **Navigation arrows** below the carousel.
+
+## Jahia contribution rules
+
+- **Title & subtitle**: contributed content, but size and color are fixed (R.G. 2).
+- **Categories**: minimum 3, maximum depends on contribution (R.G. 3). Each
+	category feeds one tab.
+- **Image**: each category is linked to a primary image with **desktop** and
+	**mobile** variants, and **WebP** is required (R.G. 5). The desktop/mobile
+	switch is handled with a `<picture>` element (768px breakpoint).
+- **Slide title & text**: contributed in **HTML** (SEO requirement). Their visual
+	size is fixed; only inline styles (bold, italic...) are rendered. Content is
+	injected with `dangerouslySetInnerHTML`, so sanitization must happen server-side.
+
+## Automatic progression (R.G. 6)
+
+- The carousel advances automatically.
+- **Arrows** and **tabs** let users take manual control: any interaction stops
+	autoplay (`disableOnInteraction`).
+- Autoplay also pauses on hover and respects the
+	`prefers-reduced-motion` system setting.
+
+## Responsive behavior
+
+- **Mobile (< 768px)**: horizontally scrollable tabs, mobile image,
+	top-down gradient overlay.
+- **Desktop (≥ 768px)**: centered tabs, desktop image,
+	left-to-right gradient overlay, and preview of the next slide.
+
+## Accessibility
+
+- The title links the section through `aria-labelledby`.
+- Tabs are buttons with `aria-pressed`, grouped under a label.
+- Arrow buttons include explicit labels and visible focus states.
+- Swiper's A11y module announces slide changes.
+
+## Usage
+
+```tsx
+import { ProductAdvantages } from "sofinco-react";
+
+export function MyPage() {
+	return (
+		<ProductAdvantages
+			title="More than just a card"
+			subtitle="Discover everything your revolving credit can do for you."
+			categories={[
+				{
+					id: "etalement",
+					label: "Installments",
+					title: "Spread payments after checkout",
+					text: "<p>Choose to repay in <strong>3, 12, or 60 installments</strong>.</p>",
+					imageDesktop: "/images/cr/etalement-desktop.webp",
+					imageMobile: "/images/cr/etalement-mobile.webp",
+					imageAlt: "A customer spreading purchases after payment.",
+				},
+				// ... add at least 2 more categories
+			]}
+		/>
+	);
+}
+```
+
+## Props
+
+<ArgTypes of={ProductAdvantagesStories} />
+
+## All Stories
+
+<Stories />

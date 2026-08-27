@@ -1,0 +1,4 @@
+[sofnt:insuranceFocus] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle, sofmix:cta
+ - description (string, textarea) mandatory i18n
+ - image (weakreference, picker[type='image']) mandatory < jmix:image
+ - imageAlt (string) i18n

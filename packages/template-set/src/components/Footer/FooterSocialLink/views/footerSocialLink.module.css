@@ -1,0 +1,25 @@
+.socialLink {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: calc(var(--spacing) * 10);
+	height: calc(var(--spacing) * 10);
+	border-radius: 50%;
+	background-color: var(--color-neutral-00);
+	color: var(--color-primary-contrast);
+	text-decoration: none;
+	transition:
+		transform 0.2s ease,
+		opacity 0.2s ease;
+}
+
+.socialLink:hover {
+	transform: translateY(-3px);
+	opacity: 0.9;
+}
+
+.iconPlaceholder {
+	font-weight: var(--font-weight-bold);
+	font-size: var(--text-sm);
+	text-transform: uppercase;
+}

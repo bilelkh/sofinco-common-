@@ -1,0 +1,45 @@
+[sofmix:ctaLink] mixin
+
+[sofmix:ctaInternal] > jmix:dynamicFieldset mixin
+extends = sofmix:ctaLink
+ - ctaLabel (string) mandatory i18n
+ - ctaInternalNode (weakreference, picker[type='editoriallink']) mandatory
+ - ctaTarget (string, choicelist[resourceBundle]) = '_self' autocreated < '_self', '_blank'
+
+[sofmix:ctaExternal] > jmix:dynamicFieldset mixin
+extends = sofmix:ctaLink
+ - ctaLabel (string) mandatory i18n 
+ - ctaExternalUrl (string) mandatory
+ - ctaTarget (string, choicelist[resourceBundle]) = '_self' autocreated < '_self', '_blank'
+
+/*
+ * Troisième nature de CTA : déclencher un comportement au lieu de naviguer. Aujourd'hui
+ * un seul cas, la réouverture du panneau de préférences cookies du CMP, exigée par le
+ * RGPD au même titre que le recueil du consentement.
+ */
+[sofmix:ctaConsent] > jmix:dynamicFieldset mixin
+extends = sofnt:footerLink
+ - ctaLabel (string) = 'Gérer mes cookies' i18n autocreated
+
+[sofmix:cta] > sofmix:ctaLink mixin
+ - ctaType (string, choicelist) = 'internal' autocreated
+
+[sofmix:ctaOptional] > sofmix:ctaLink mixin
+ - ctaType (string, choicelist) = 'none' autocreated
+
+// ============================================================================
+// SimulatorCta — contrat partagé pour TOUS les CTAs qui pointent vers le
+// simulateur Vue.js Sofinco. Cf. lib/simulatorCta.ts pour le helper.
+// ============================================================================
+[sofmix:simulatorCta] mixin
+ - ctaLabel          (string) i18n
+ - product           (string, choicelist[resourceBundle]) indexed=no  < '','PB','CR','RAC','CR_S'
+ - sourceId          (string)
+ - simProject        (string, choicelist[resourceBundle]) indexed=no  < '','AUTO','FAMILY','WORKS','MISCELLANEOUS','RAC'
+ - simSubProject     (string, choicelist[resourceBundle]) indexed=no <  '','ALL','FAMILY_MOVING','FAMILY_WEDDING','FAMILY_HEALTH','FAMILY_RECREATION','FAMILY_TRAVEL','FAMILY_OTHER','AUTO_COMBUSTION','AUTO_ELECTRIC_HYBRID','WORK_ENERGY_RENOVATION','WORK_DECORATION','MISC_FURNITURE','MISC_MOTORCYCLE','MISC_UNEXPECTED','MISC_ELECTRONIC_DEVICE','MISC_OTHER','RAC_RAC'
+ - simLoa            (string, choicelist[resourceBundle]) indexed=no  < '','true','false'
+ - simIdcatorigin    (string)
+ - simHashFragment   (string)
+
+[sofnt:simulatorCta] > jnt:content, sofmix:component, sofmix:simulatorCta
+orderable

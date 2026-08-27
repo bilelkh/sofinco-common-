@@ -1,0 +1,8 @@
+[sofnt:solutionCard] > jnt:content orderable
+ - title (string) mandatory
+ - subtitle (string) mandatory
+ - features (string) multiple mandatory
+ - ctaLabel (string) mandatory
+ - image (weakreference, picker[type='image']) mandatory < jmix:image
+ - imageMobile (weakreference, picker[type='image']) < jmix:image
+ - linkType (string, choicelist[linkTypeInitializer,resourceBundle]) = 'none' mandatory

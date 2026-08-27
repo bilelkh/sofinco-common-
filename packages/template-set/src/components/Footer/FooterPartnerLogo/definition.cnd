@@ -1,0 +1,6 @@
+[sofnt:partner] > jnt:content, mix:title, sofmix:footerElements
+ - logoImage (weakreference, picker[type='image']) mandatory
+ - logoAlt (string) i18n
+ - linkUrl (string) 
+ - openInNewTab (boolean) = true autocreated
+ - disclaimer (string, textarea) i18n

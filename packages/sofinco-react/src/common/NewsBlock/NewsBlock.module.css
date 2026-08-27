@@ -1,0 +1,47 @@
+@import "@styles/breakpoints.css";
+@import "@styles/tokens.css";
+
+.newsblock {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10)
+		calc(var(--spacing) * 6);
+	background-color: var(--color-white);
+	color: var(--color-primary-base);
+}
+
+.newsblock__container {
+	max-width: 1232px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Header→cards spacing is owned by SectionHeading's margin-bottom.
+   Eyebrow is rendered by SectionHeading (its default style matches). */
+.newsblock__header {
+	max-width: 720px;
+	margin-inline: auto;
+}
+
+.newsblock__cardlist {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+@media (--medium-up) {
+	.newsblock {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 26) calc(var(--spacing) * 30)
+			calc(var(--spacing) * 26);
+	}
+
+	.newsblock__cardlist {
+		flex-direction: row;
+		gap: calc(var(--spacing) * 8);
+	}
+
+	.newsblock__cardlist > * {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+}

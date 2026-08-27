@@ -1,0 +1,9 @@
+[sofnt:productHero] > jnt:content, mix:title, sofmix:component, sofmix:simulatorCta, sofmix:headingStyle, sofmix:promotionTracking orderable
+ - productLabel    (string) mandatory i18n
+ - description     (string, richtext[ckeditor.toolbar='Description']) i18n
+ - rateValue       (string) i18n
+ - rateLabel       (string) i18n
+ - characteristics (string, richtext[ckeditor.toolbar='Simple']) i18n
+ - imageDesktop    (weakreference, picker[type='image']) mandatory < jmix:image
+ - imageMobile     (weakreference, picker[type='image']) < jmix:image
+ + avisClients (sofnt:avisClientsSticker) = sofnt:avisClientsSticker autocreated

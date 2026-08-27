@@ -1,0 +1,5 @@
+[sofnt:newsBlock] > jnt:content, sofmix:component
+ - header (string) i18n mandatory
+ - title (string) i18n mandatory
+ - subtitle (string, textarea) i18n mandatory
+ - rootPath (weakreference, picker[type='editoriallink'])

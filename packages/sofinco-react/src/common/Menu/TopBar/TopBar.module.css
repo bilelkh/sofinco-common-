@@ -1,0 +1,56 @@
+@import "@styles/breakpoints.css";
+
+.top-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	width: 100%;
+	min-height: 40px;
+	background-color: var(--color-primary-base);
+}
+
+.top-bar__tabs {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.top-bar__tab {
+	display: flex;
+}
+
+.top-bar__tab a {
+	display: inline-flex;
+	align-items: center;
+	height: 33px;
+	padding: 0 20px;
+	color: var(--color-alpha-neutral-00-60);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	text-decoration: none;
+	border-radius: 6px 6px 0 0;
+}
+
+.top-bar__tab--active a,
+.top-bar__tab:first-child a {
+	color: #003a5c;
+	background-color: white;
+}
+
+.top-bar__search {
+	flex: 0 0 456px;
+	align-self: center;
+	width: 456px;
+	margin-left: auto;
+	padding: 0 24px;
+}
+
+@media (--medium-down) {
+	/* The top bar (tabs + search) is desktop-only. */
+	.top-bar {
+		display: none;
+	}
+}

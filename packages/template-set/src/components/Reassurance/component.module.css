@@ -1,0 +1,88 @@
+.editPreview {
+	padding: calc(var(--spacing) * 6);
+	border: 1px dashed #c0c0c0;
+	border-radius: 8px;
+	background-color: #fafafa;
+}
+
+.editTitle {
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.editSubtitle {
+	color: #555;
+	margin-bottom: 12px;
+}
+
+.editList {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 12px;
+}
+
+.editItem {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 10px;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	background: #fff;
+	list-style: none;
+}
+
+.editItemIcon {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+}
+
+.editItemTitle {
+	margin: 0;
+	font-weight: 600;
+}
+
+.editItemText {
+	margin: 0;
+	font-size: 0.875rem;
+	color: #555;
+}
+
+.editItemLink {
+	font-size: 0.8125rem;
+	text-decoration: underline;
+	color: #0070c0;
+}
+
+.editItemLinkSlot {
+	margin-top: 4px;
+	padding: 4px;
+	border: 1px dashed #c0d8e8;
+	border-radius: 4px;
+	min-height: 28px;
+}
+
+/*
+ * Project-side override for the sofinco-react <Reassurance> Link.
+ *
+ * `:global()` keeps the class name unhashed so it actually targets the
+ * stable hook the DS exposes. These rules are unlayered, so they win over
+ * the design-system's `@layer sof.base` defaults (notably Link's
+ * `all: unset`) regardless of source order.
+ */
+
+:global(.sof-reassurance__item-link) {
+	color: var(--color-primary-base);
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+}
+
+:global(.sof-reassurance__item-link):hover,
+:global(.sof-reassurance__item-link):focus-visible {
+	color: var(--color-primary-contrast);
+	text-decoration: underline;
+}

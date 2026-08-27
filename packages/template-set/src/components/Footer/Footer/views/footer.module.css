@@ -1,0 +1,239 @@
+.footer {
+	background-color: var(--color-primary-contrast);
+	color: var(--color-neutral-00);
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6);
+	font-family: var(--font-sans);
+}
+
+.container {
+	max-width: 100%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.mainLogoWrapper {
+	margin-bottom: calc(var(--spacing) * 10);
+	text-align: center;
+}
+
+.mainLogo {
+	height: calc(var(--spacing) * 10);
+}
+
+.mainGrid {
+	display: grid;
+	grid-template-columns: 180px 1fr 250px;
+	gap: calc(var(--spacing) * 10);
+	margin-bottom: calc(var(--spacing) * 14);
+}
+
+.partnersCol {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+.categoriesCol {
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+	gap: calc(var(--spacing) * 8);
+}
+
+.socialCol {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: calc(var(--spacing) * 8);
+}
+
+.qrCode {
+	width: 100px;
+	display: block;
+}
+
+.socialLabel {
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-bold);
+	margin-bottom: calc(var(--spacing) * 4);
+	display: block;
+}
+
+.socialIcons {
+	display: flex;
+	gap: calc(var(--spacing) * 3);
+}
+
+.ratingSection {
+	text-align: right;
+}
+
+.bottomBar {
+	border-top: 1px solid var(--color-primary-strong);
+	padding-top: calc(var(--spacing) * 8);
+}
+
+.bottomSubtitle {
+	font-size: var(--text-sm);
+	margin-bottom: calc(var(--spacing) * 6);
+	text-transform: uppercase;
+}
+
+.legalLinks {
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 4);
+	margin-bottom: calc(var(--spacing) * 6);
+}
+
+.legalText {
+	font-size: var(--text-xs);
+	color: var(--color-white);
+	line-height: var(--text-xs--line-height);
+}
+
+.isEdit .partnersCol,
+.isEdit .categoriesCol,
+.isEdit .socialCol,
+.isEdit .socialLinksWrapper,
+.isEdit .ratingSection,
+.isEdit .legalLinks {
+	position: relative;
+	padding-top: calc(var(--spacing) * 10);
+	border: 1px solid var(--color-neutral-00);
+	min-height: 150px;
+	padding-left: calc(var(--spacing) * 4);
+	padding-right: calc(var(--spacing) * 4);
+}
+
+.isEdit .socialLinksWrapper,
+.isEdit .ratingSection {
+	border-style: dashed;
+}
+
+.isEdit .partnersCol,
+.isEdit .categoriesCol,
+.isEdit .socialCol {
+	min-height: 400px;
+}
+
+.isEdit .socialCol {
+	align-items: stretch;
+}
+
+.isEdit .socialCol > div {
+	margin-bottom: calc(var(--spacing) * 6);
+}
+
+.editLabel {
+	display: none;
+}
+
+.isEdit .editLabel {
+	display: block;
+	position: absolute;
+	top: -20px;
+	left: 0;
+	width: 100%;
+	background-color: var(--color-neutral-00);
+	color: var(--color-neutral-100);
+	padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-extrabold);
+	text-align: center;
+	z-index: 10;
+	border: 1px solid var(--color-neutral-00);
+	box-sizing: border-box;
+}
+
+.socialLinksWrapper .editLabel,
+.ratingSection .editLabel {
+	background-color: var(--color-primary-strong);
+	color: var(--color-neutral-00);
+	border: 0;
+	border-bottom: 1px dashed var(--color-neutral-00);
+}
+
+.isEdit .socialLabel {
+	display: none;
+}
+
+.isEdit .ratingSection {
+	display: flex !important;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.isEdit .qrCode {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* 1. On supprime les bordures du conteneur parent (généré par Jahia) */
+.isEdit .partnersCol > *,
+.isEdit .categoriesCol > *,
+.isEdit .socialIcons > *,
+.isEdit .legalLinks > * {
+	border: none !important;
+}
+
+/* 2. On applique les bordures en pointillés aux vrais enfants React à l'intérieur */
+.isEdit .partnersCol > div > div,
+.isEdit .socialIcons > div > div,
+.isEdit .legalLinks > div > div {
+	border: 1px dashed var(--color-neutral-00);
+	padding: calc(var(--spacing) * 2);
+}
+
+.isEdit .categoriesCol > div > div {
+	border: 1px dashed var(--color-neutral-00);
+}
+
+/* 3. Catégories : Flexbox vertical forcé */
+.isEdit .categoriesCol > div {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+	width: 100%;
+}
+
+/* 4. Mentions Légales : Forcer 6 colonnes sur le conteneur injecté */
+.isEdit .legalLinks {
+	display: block !important;
+}
+
+.isEdit .legalLinks > div {
+	display: grid !important;
+	grid-template-columns: repeat(6, 1fr);
+	gap: calc(var(--spacing) * 4);
+	align-items: start;
+	width: 100%;
+}
+
+.isEdit .legalLinks > div > div {
+	display: flex;
+	align-items: center;
+	word-break: break-word;
+}
+
+/* 5. Réseaux Sociaux : Forcer 3 colonnes max sur le conteneur injecté */
+.isEdit .socialIcons {
+	display: block !important;
+	width: 100%;
+}
+
+.isEdit .socialIcons > div {
+	display: grid !important;
+	grid-template-columns: repeat(3, max-content);
+	justify-content: center;
+	gap: calc(var(--spacing) * 4);
+	width: 100%;
+}
+
+.isEdit .socialIcons > div > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

@@ -1,0 +1,61 @@
+@import "sofinco-react/styles/breakpoints.css";
+
+.heroSection {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.simContainer {
+	position: absolute;
+	z-index: 20;
+	padding: 0 calc(var(--spacing) * 6);
+	width: 100%;
+	box-sizing: border-box;
+	bottom: calc(var(--spacing) * 3);
+}
+
+.heroQrWrapper {
+	position: absolute;
+	top: calc(var(--spacing) * 4);
+	right: calc(var(--spacing) * 4);
+	z-index: 10;
+}
+
+@media (--small-down) {
+	.simContainer {
+		order: 2;
+	}
+}
+
+.editSection {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: #052139;
+}
+
+.editHeader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 12px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px dashed rgba(255, 255, 255, 0.4);
+	border-radius: 2px;
+	text-align: center;
+}
+
+.editHeaderLabel {
+	font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+	font-size: 15px;
+	font-weight: 800;
+	letter-spacing: 1.4px;
+	text-transform: uppercase;
+	color: #ffffff;
+}
+
+.editZones {
+	position: relative;
+	min-height: 400px;
+}

@@ -1,0 +1,43 @@
+@import "@styles/base.css";
+
+/* Desktop only — R.G. 2 */
+.simulator-block {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	display: none;
+}
+
+@media (--medium-up) {
+	/* Root */
+	.simulator-block {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		background: var(--color-primary-base);
+		padding: calc(var(--spacing) * 10) calc(var(--spacing) * 26);
+	}
+
+	/* Bar */
+	.simulator-block__bar {
+		width: 100%;
+		max-width: 1232px;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: calc(var(--spacing) * 8);
+		padding: calc(var(--spacing) * 8) calc(var(--spacing) * 10);
+	}
+
+	/* Title */
+	.simulator-block__title {
+		margin: 0;
+		max-width: 330px;
+
+		font-family: var(--font-sans);
+		font-size: var(--text-xl);
+		font-weight: var(--font-weight-semibold);
+		line-height: normal;
+
+		text-align: left;
+		text-wrap: pretty;
+	}
+}

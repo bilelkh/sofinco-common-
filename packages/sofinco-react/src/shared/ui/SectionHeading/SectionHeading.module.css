@@ -1,0 +1,27 @@
+@import "@styles/base.css";
+
+.heading {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	margin-bottom: calc(var(--spacing) * 20);
+}
+
+.heading--start {
+	align-items: flex-start;
+	text-align: left;
+}
+
+.heading--center {
+	align-items: center;
+	text-align: center;
+}
+
+.heading__eyebrow {
+	font-family: var(--font-display);
+	color: var(--color-secondary-base);
+	font-size: var(--text-xs);
+	line-height: var(--text-sm--line-height);
+	font-weight: var(--font-weight-black);
+	text-transform: uppercase;
+}

@@ -1,0 +1,312 @@
+@import "@styles/base.css";
+
+/* =====================================================================
+   Stepper — maquette Figma « Progress » (node 12184:6789, variante `line`
+   node 13595:1152).
+
+   Correspondance jetons Figma → jetons DS, toutes les valeurs exactes :
+
+     progress/active-primary-dark  #002437 → --color-primary-strong
+     progress/background-neutral   #b0c0c8 → --color-primary-light
+     progress/active-primary       #00334d → --color-primary-base
+     icon/brand/primary            #00334d → --color-primary-base
+     body/primary                  #212121 → --color-neutral-90
+     body/on                       #ffffff → --color-white
+     spacing-4 / 8 / 24            4/8/24  → calc(var(--spacing) * 1 / 2 / 6)
+     xl (rayon)                    24      → --radius-3xl
+     FontSize/Sm                   14      → --text-sm
+
+   ⚠︎ Deux pièges de la migration des jetons :
+   - le cran « Xl » de Figma vaut 24px, soit `--radius-3xl` ici. `--radius-xl`
+     ne vaut que 12px et arrondirait les segments de moitié.
+   - `--spacing` est un MULTIPLICATEUR (4px), là où `--sof-sp-N` était un
+     INDICE : `--sof-sp-5` valait 24px, soit `* 6` et non `* 5`.
+
+   `LineHeight/Sm` (18px) n'a pas d'équivalent : l'échelle Monstera associe
+   20px à `--text-sm`. La valeur reste donc littérale, comme la maquette.
+   ===================================================================== */
+
+.stepper {
+	--stepper-bullet-size: 32px;
+	/* Gouttières latérales de la variante `line` : réservées même sans bouton,
+	   sinon la barre se décale entre un écran avec retour et un écran sans. */
+	--stepper-gutter: 80px;
+	/* Hauteur de ligne 18px de `Body/Sm/Regular` — pas de jeton, l'échelle
+	   Monstera posant 20px sur `--text-sm`. */
+	--stepper-line-height: 18px;
+
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding-inline: calc(var(--spacing) * 6);
+	font-family: var(--font-sans);
+
+	/* Chiffres tabulaires : le compteur « 1/6 » → « 6/6 » et les pastilles ne
+	   doivent pas changer de largeur d'une étape à l'autre. */
+	font-feature-settings:
+		"lnum" 1,
+		"tnum" 1;
+}
+
+/* ---------------------------------------------------------------------
+   Variante `line`
+   --------------------------------------------------------------------- */
+
+.stepper--line {
+	height: 40px;
+}
+
+.stepper__back {
+	display: flex;
+	flex: 0 0 var(--stepper-gutter);
+	align-items: center;
+	width: var(--stepper-gutter);
+}
+
+.stepper__backButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: var(--radius-full);
+	background-color: transparent;
+	color: var(--color-primary-base);
+	cursor: pointer;
+	transition: background-color 0.3s;
+
+	& svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	&:hover {
+		background-color: var(--color-primary-subtle);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--color-accent-base);
+		outline-offset: 2px;
+	}
+}
+
+.stepper__bar {
+	display: flex;
+	flex: 1 0 0;
+	gap: calc(var(--spacing) * 1);
+	align-items: flex-start;
+	min-width: 0;
+}
+
+.stepper__segment {
+	flex: 1 0 0;
+	min-width: 0;
+	height: 4px;
+	border-radius: var(--radius-3xl);
+	background-color: var(--color-primary-light);
+}
+
+.stepper__segment--filled {
+	background-color: var(--color-primary-strong);
+}
+
+.stepper__counter {
+	display: flex;
+	flex: 0 0 var(--stepper-gutter);
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: center;
+	width: var(--stepper-gutter);
+}
+
+.stepper__counterValue {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 24px;
+	padding-inline: calc(var(--spacing) * 1);
+	border-radius: var(--radius-3xl);
+	color: var(--color-neutral-90);
+	font-weight: var(--font-weight-normal);
+	font-size: var(--text-sm);
+	line-height: var(--stepper-line-height);
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* Rendu socle : le compteur n'est que du texte. Classe déclarée bien que vide,
+   pour que les deux valeurs de `counterVariant` existent côté CSS. */
+.stepper__counterValue--plain {
+	background-color: transparent;
+}
+
+/* Maquette du site vitrine B2B (node 4210:1953) : pastille noire pleine.
+   `body/on #ffffff` → --color-white, fond `#000000` → --color-neutral-100. */
+.stepper__counterValue--badge {
+	height: 32px;
+	padding-inline: calc(var(--spacing) * 4);
+	background-color: var(--color-neutral-100);
+	color: var(--color-white);
+}
+
+/* ---------------------------------------------------------------------
+   Habillage B2B (node 4210:1943) — solidaire de `counterVariant="badge"`
+
+   La maquette B2B inverse la répartition du socle : là où « Progress »
+   fige les gouttières à 80px et laisse la barre s'étirer, le formulaire
+   B2B fige la barre à 240px et laisse les gouttières respirer, ce qui
+   centre la barre dans la carte (170 | 240 | 170 sur 580px de contenu).
+   Elle remplit aussi les segments en `progress/active-primary` (#00334d)
+   plutôt qu'en `…-dark` (#002437).
+   --------------------------------------------------------------------- */
+
+.stepper--badge .stepper__bar {
+	/* `0 1 240px` et non `0 0` : sur un écran étroit la barre cède plutôt
+	   que de pousser la pastille hors de la carte. */
+	flex: 0 1 240px;
+}
+
+/* Gouttières symétriques : la barre reste centrée dans la carte, y compris
+	quand aucun bouton retour n'est rendu dans le Stepper B2B. */
+.stepper--badge .stepper__back {
+	flex: 1 0 0;
+	width: auto;
+}
+
+.stepper--badge .stepper__counter {
+	flex: 1 0 0;
+	width: auto;
+}
+
+.stepper--badge .stepper__segment--filled {
+	background-color: var(--color-primary-base);
+}
+
+@media (--small-up) {
+	/* Aligné sur le rembourrage du corps de carte (`.form__body`). */
+	.stepper--badge {
+		padding-inline: calc(var(--spacing) * 10);
+	}
+
+}
+
+/* ---------------------------------------------------------------------
+   Variante `number`
+   --------------------------------------------------------------------- */
+
+/* 58px = 18px (ligne du libellé) + 8px (gap) + 32px (pastille). La hauteur est
+   donc réservée en permanence : les étapes sans libellé ne remontent pas. */
+.stepper--number {
+	height: 58px;
+}
+
+.stepper__list {
+	display: flex;
+	gap: calc(var(--spacing) * 1);
+	align-items: stretch;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.stepper__step {
+	display: flex;
+	flex: 0 0 auto;
+	gap: calc(var(--spacing) * 1);
+	align-items: stretch;
+}
+
+/* Toutes les étapes sauf la première embarquent leur trait de liaison ; c'est lui
+   qui porte le `flex: 1`, la pastille gardant sa largeur fixe. */
+.stepper__step--connected {
+	flex: 1 0 0;
+	min-width: 0;
+}
+
+.stepper__connector {
+	display: flex;
+	flex: 1 0 0;
+	flex-direction: column;
+	justify-content: flex-end;
+	min-width: 0;
+	/* Aligne le trait sur l'axe horizontal des pastilles, qui sont collées en bas. */
+	padding-bottom: calc(var(--stepper-bullet-size) / 2);
+}
+
+.stepper__connectorLine {
+	width: 100%;
+	height: 2px;
+	border-radius: 16px;
+	background-color: var(--color-primary-base);
+}
+
+.stepper__stepInner {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	gap: calc(var(--spacing) * 2);
+	align-items: center;
+	justify-content: flex-end;
+	width: var(--stepper-bullet-size);
+	max-width: var(--stepper-bullet-size);
+	height: 100%;
+}
+
+/* Le libellé déborde volontairement la colonne de 32px, centré sur la pastille —
+   c'est le rendu de la maquette (texte non tronqué, pas de retour à la ligne). */
+.stepper__label {
+	color: var(--color-neutral-90);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-sm);
+	line-height: var(--stepper-line-height);
+	text-align: center;
+	white-space: nowrap;
+}
+
+.stepper__bullet {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: var(--stepper-bullet-size);
+	height: var(--stepper-bullet-size);
+	border-radius: var(--radius-full);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-sm);
+	line-height: var(--stepper-line-height);
+}
+
+.stepper__bullet--upcoming {
+	border: 1px solid var(--color-primary-base);
+	color: var(--color-primary-base);
+}
+
+.stepper__bullet--current,
+.stepper__bullet--done {
+	background-color: var(--color-primary-base);
+	color: var(--color-white);
+}
+
+.stepper__bullet--done svg {
+	width: 24px;
+	height: 24px;
+}
+
+/* `.sr-only` de `base.css` n'est pas visible depuis un module CSS (les classes
+   y sont hachées) : on le redéclare localement. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}

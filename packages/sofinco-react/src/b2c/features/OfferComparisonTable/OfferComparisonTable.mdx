@@ -1,0 +1,54 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as OfferComparisonTableStories from "./OfferComparisonTable.stories";
+
+<Meta of={OfferComparisonTableStories} />
+
+# OfferComparisonTable
+
+SEO/LLMEO-friendly offer comparison section: title, offer tabs, floating
+central visual, left/right arguments, per-offer CTA. The comparison is a real HTML
+`<table>` — one column per offer (`<th scope="col">` = offer name, cells =
+visual + arguments). **Every offer is present in the initial HTML**; only the
+active offer's cells are displayed, the other columns are hidden in CSS.
+Crawlers and LLMs therefore read the full comparison without any interaction.
+
+## How It Works
+
+- `offers` (`ComparisonOffer[]`) — 2 or 3 offers to compare. Each offer carries
+  its own `cta`, displayed below the table and swapped along with the rest of
+  the content when the active offer changes.
+- The `<thead>` buttons toggle which column is displayed (`aria-pressed`).
+- On mobile, the offer-selector row is sticky and pins at the viewport top
+  (`top: 0`) — never earlier. The sticky `<thead>` is a bare sensor marked
+  `data-stuck` by `useStuckAttribute` (native `:stuck` support isn't broad
+  enough yet); the visuals live on the inner row. While pinned, the row swaps
+  its offer-tinted background for a plain white bar with a shadow, and when
+  the headroom header is visible it shifts below it (`--header-height`,
+  `useHeaderHeightVar`) with a `transform` matching the header's own slide —
+  gated on `[data-stuck]`, so a row still in normal flow never moves. Static
+  (non-sticky) from `--small-up` up.
+- The table rows are argument "slots" (left then right); an offer with fewer
+  arguments than another produces empty, hidden cells (`featureAt`).
+- The card layout (3-column grid on desktop, stacked on mobile) is achieved
+  purely in CSS (`display: grid/flex/contents`) without touching the markup;
+  table ARIA roles are set explicitly because these `display` overrides can
+  strip the implicit roles from the accessibility tree.
+- Visually hidden `<caption>` (`.sr-only`) mirroring `title`, to name the
+  table independently of the H2 (useful when navigating directly by table).
+- Offer switch is animated: `document.startViewTransition` on browsers that
+  support it (Chrome/Edge, Safari 18+, native cross-fade of the whole block),
+  falling back to a directional CSS slide + fade per cell
+  (`opacity`/`transform` only, driven by `--offer-comparison-table-offset`),
+  automatically disabled once the native transition takes over
+  (`@supports (view-transition-name: none)`).
+- The active card's visual has a continuous floating animation (translation +
+  drop shadow that spreads/lightens), disabled under `prefers-reduced-motion`.
+- Vertical section spacing: 80px (`--sof-sp-9`) on mobile, 104px
+  (`--sof-sp-10`) from `--small-up` up.
+
+<Stories />
+
+## Props
+
+<ArgTypes of={OfferComparisonTableStories} />

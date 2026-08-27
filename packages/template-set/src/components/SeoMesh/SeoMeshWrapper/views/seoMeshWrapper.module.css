@@ -1,0 +1,7 @@
+.seoBlockWrapper {
+	padding: calc(var(--spacing) * 8) calc(var(--spacing) * 4);
+}
+
+.cyanClair {
+	background-color: var(--color-accent-subtle);
+}

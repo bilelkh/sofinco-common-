@@ -1,0 +1,25 @@
+@import "@styles/base.css";
+
+.title--h1 {
+	composes: h1 from "@styles/utilities/typography.module.css";
+}
+
+.title--h2 {
+	composes: h2 from "@styles/utilities/typography.module.css";
+}
+
+.title--h3 {
+	composes: h3 from "@styles/utilities/typography.module.css";
+}
+
+.title--h4 {
+	composes: h4 from "@styles/utilities/typography.module.css";
+}
+
+.title--dark {
+	color: var(--color-primary-base);
+}
+
+.title--white {
+	color: var(--color-white);
+}

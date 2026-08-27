@@ -1,0 +1,6 @@
+[sofnt:chatBotLeaf] > jnt:content
+ - label (string) mandatory
+ - conclusion (string) mandatory
+ - features (string) multiple mandatory
+ - ctaLabel (string) mandatory
+ - linkType (string, choicelist[linkTypeInitializer,resourceBundle]) = 'none' mandatory

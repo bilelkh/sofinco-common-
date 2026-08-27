@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./src/*"],
+			"@shared/*": ["./src/shared/*"],
+			"@common/*": ["./src/common/*"],
+			"@b2c/*": ["./src/b2c/*"],
+			"@b2b/*": ["./src/b2b/*"],
+			"@styles/*": ["./src/styles/*"],
+			"@assets/*": ["./src/assets/*"],
+			"@utils/*": ["./src/utils/*"]
+		}
+	}
+}

@@ -1,0 +1,101 @@
+@import "@styles/breakpoints.css";
+@import "@styles/tokens.css";
+
+/* =========================================
+   📱 MOBILE (Accordéon via Checkbox Hack)
+   ========================================= */
+.footerCategory {
+	padding: calc(var(--spacing) * 4) 0;
+
+	a {
+		color: var(--color-white);
+	}
+}
+
+/* 1. On cache complètement la vraie checkbox */
+.footerCategory__toggle {
+	display: none;
+}
+
+/* 2. Le label ressemble à un titre cliquable */
+.footerCategory__title {
+	font-family: var(--font-display);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0;
+	font-weight: var(--font-weight-extrabold);
+	font-size: var(--text-xs);
+	text-transform: uppercase;
+	color: var(--color-white);
+	cursor: pointer;
+}
+
+/* 3. Animation de la flèche */
+.footerCategory__icon {
+	color: var(--color-accent-base);
+	transition: transform 0.3s ease;
+	transform: rotate(180deg);
+
+	svg {
+		width: 20px;
+	}
+}
+
+.footerCategory__toggle:checked + .footerCategory__title .footerCategory__icon {
+	transform: rotate(0deg);
+}
+
+/* 4. On cache la liste par défaut sur mobile... */
+.footerCategory__linkList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: none;
+	/* CACHÉ */
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	align-items: flex-start;
+}
+
+.footerCategory__linkList li {
+	line-height: normal;
+	display: flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+}
+
+/* 5. ...et on l'affiche UNIQUEMENT si la checkbox précédente est cochée */
+.footerCategory__toggle:checked ~ .footerCategory__linkList {
+	display: flex;
+	padding-top: calc(var(--spacing) * 4);
+}
+
+/* =========================================
+   💻 DESKTOP (Affichage forcé)
+   ========================================= */
+@media (--medium-up) {
+	.footerCategory {
+		border-bottom: none;
+		padding: 0;
+	}
+
+	/* On affiche la liste en permanence sur grand écran, peu importe la checkbox ! */
+	.footerCategory__linkList {
+		display: flex !important;
+		max-width: 220px;
+	}
+
+	/* On désactive le clic sur le titre */
+	.footerCategory__title {
+		pointer-events: none;
+		cursor: default;
+		margin-bottom: calc(var(--spacing) * 4);
+	}
+
+	/* On cache la petite flèche verte puisqu'on ne peut plus cliquer */
+	.footerCategory__icon {
+		display: none;
+	}
+}

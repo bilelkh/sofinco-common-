@@ -1,0 +1,51 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as CardStories from "./Card.stories";
+
+<Meta of={CardStories} />
+
+# Card
+
+A promotional card used inside desktop menu sections with optional CTA.
+
+## How It Works
+
+The card supports two display variants:
+
+- `default`: standard card layout with image, title, and optional CTA
+- `fullbg`: full background visual treatment while preserving the same content structure
+
+Props:
+
+- `image`: card image URL
+- `title`: heading content
+- `cta`: optional CTA props rendered with the shared Cta component
+- `className`: optional wrapper class for custom layout behavior
+
+## Basic Usage
+
+```tsx
+import Card from "@common/Menu/Desktop/components/Card/Card";
+
+<Card
+  variant="default"
+  title="Financez vos projets"
+  image="/images/card.jpg"
+  cta={{ label: "Découvrir", type: "button", variant: "primary" }}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={CardStories.DefaultVariant} />
+<Canvas of={CardStories.FullBackgroundVariant} />
+<Canvas of={CardStories.WithCtaLink} />
+<Canvas of={CardStories.WithoutCta} />
+
+## Props
+
+<ArgTypes of={CardStories} />
+
+## All Stories
+
+<Stories />

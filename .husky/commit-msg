@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+
+# Validate commit message follows Conventional Commits format
+# Format: type(scope): description or type: description
+# Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+
+commit_msg_file=$1
+commit_msg=$(cat "$commit_msg_file")
+
+# Conventional commit regex pattern
+# Matches: type(scope): description OR type: description
+# Also allows for breaking change indicator (!)
+pattern="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?: .{1,}"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+  echo "🚫 Invalid commit message format!"
+  echo ""
+  echo "Your commit message:"
+  echo "  $commit_msg"
+  echo ""
+  echo "Expected format: <type>(<scope>): <description>"
+  echo "  or: <type>: <description>"
+  echo ""
+  echo "Allowed types:"
+  echo "  feat     - A new feature"
+  echo "  fix      - A bug fix"
+  echo "  docs     - Documentation only changes"
+  echo "  style    - Code style changes (formatting, semicolons, etc)"
+  echo "  refactor - Code refactoring (no feature or bug fix)"
+  echo "  perf     - Performance improvements"
+  echo "  test     - Adding or updating tests"
+  echo "  build    - Build system or external dependencies"
+  echo "  ci       - CI configuration changes"
+  echo "  chore    - Other changes (maintenance tasks)"
+  echo "  revert   - Reverting a previous commit"
+  echo ""
+  echo "Examples:"
+  echo "  feat(auth): add login functionality"
+  echo "  fix: resolve memory leak issue"
+  echo "  docs(readme): update installation guide"
+  exit 1
+fi
+
+exit 0

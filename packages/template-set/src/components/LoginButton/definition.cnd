@@ -1,0 +1,8 @@
+// Sofinco OAuth login button (React Island).
+// Fires the jahia-oauth flow: popup -> .connectToSofincoAction.do -> postMessage -> reload with ?site=.
+// The OAuth connector backend (SofincoApi + the actions-sofinco.cfg) lives in packages/sofinco-core.
+// Namespaces (sofnt:, sofmix:) are declared in settings/definitions.cnd — do not re-declare here.
+[sofnt:loginButton] > jnt:content, mix:title, sofmix:component
+ - buttonLabel (string) i18n
+ - redirectUrl (string)
+ - variant (string, choicelist[resourceBundle]) = 'primary' autocreated < 'primary', 'secondary', 'accent'

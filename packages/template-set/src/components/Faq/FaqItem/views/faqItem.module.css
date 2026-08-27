@@ -1,0 +1,15 @@
+.faqItem {
+	padding: 12px 16px;
+	border: 1px dashed var(--color-primary-light, #b0c0c8);
+	border-radius: 8px;
+}
+
+.question {
+	margin: 0 0 4px;
+	font-weight: 600;
+}
+
+.answer {
+	margin: 0;
+	color: var(--color-text-muted, #475467);
+}

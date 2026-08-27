@@ -1,0 +1,31 @@
+[sofnt:navMenu] > jnt:content, sofmix:loan, sofmix:downloadApp orderable
+ - logo (weakreference, picker[type='image']) < jmix:image
+ - logoUrl (weakreference, picker[type='editoriallink'])
+ + mySpace (sofnt:mySpace) = sofnt:mySpace autocreated
+ + tabMenu (sofnt:tabMenu) = sofnt:tabMenu autocreated
+ + * (sofnt:navSection)
+
+[sofmix:loan] mixin
+ - loanLinkType (string, choicelist) = 'none' autocreated
+
+// ── CTA « Télécharger l'app » ───────────────────────────────────────────────
+// AUCUNE destination n'est contribuée ici : les URLs stores ET la page de repli
+// viennent toutes de la config de site `sofnt:qrAppSettings` (nœud
+// `qr-app-settings`), source unique déjà partagée avec le QrSticker, le bouton
+// app du Header et le bloc AppShowcase. Ce mixin ne porte donc plus que le
+// libellé du bouton ; le laisser vide masque le bouton du menu.
+[sofmix:downloadApp] mixin
+ - downloadAppLabel (string)
+
+// ── CTA « Crédit » : interne XOR externe via jmix:dynamicFieldset ───────────
+[sofmix:loanInternal] > jmix:dynamicFieldset mixin
+extends = sofmix:loan
+ - loanLabel (string)
+ - loanInternalNode (weakreference, picker[type='editoriallink']) < 'jnt:page', jmix:mainResource
+ - loanTarget (string, choicelist[resourceBundle]) = '_self' autocreated < '_self', '_blank'
+
+[sofmix:loanExternal] > jmix:dynamicFieldset mixin
+extends = sofmix:loan
+ - loanLabel (string)
+ - loanExternalUrl (string)
+ - loanTarget (string, choicelist[resourceBundle]) = '_self' autocreated < '_self', '_blank'

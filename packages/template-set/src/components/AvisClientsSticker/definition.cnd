@@ -1,0 +1,7 @@
+[sofnt:avisClientsSettings] > jnt:content, mix:title, sofmix:configs
+ - isGlobalActive (boolean) = 'true' autocreated
+ - verifiedLogo (weakreference,picker[type='image']) < jmix:image
+ - avisTitle (string) i18n
+
+[sofnt:avisClientsSticker] > jnt:content, sofmix:component
+ - isActive (boolean) = 'true' autocreated

@@ -1,0 +1,86 @@
+{
+    "id": "1a345455c611bd1a56fe95d42d66d5f7d374b295",
+    "amountRequested": 3000.0,
+    "label": "CRÉDIT RENOUVELABLE",
+    "productCode": "RESERVE ",
+    "campaignCode": "NEOURL02",
+    "proposals": [
+        {
+            "creditDuration": 36,
+            "dueNumber": 36,
+            "deferralMonthNumber": 0,
+            "dueDay": 10,
+            "scaleCode": null,
+            "firstPaymentDate": null,
+            "annualGlobalEffectiveRate": 23.5,
+            "annualDebitRate": 21.294,
+            "annualInsuranceEffectiveRate": 10.123,
+            "cumulativeInsuranceRate": null,
+            "borrowerMonthlyInsuranceRate": null,
+            "coBorrowerMonthlyInsuranceRate": null,
+            "totalCostWithInsurance": 1533.93,
+            "totalCostWithoutInsurance": 1079.92,
+            "totalDueAmountWithInsurance": 4533.93,
+            "totalDueAmountWithoutInsurance": 4079.92,
+            "isFixedRate": false,
+            "priceListCodeData": [
+                {
+                    "annualGlobalEffectiveRate": 23.5,
+                    "annualDebitRate": 21.294,
+                    "minCreditAmount": 0.0,
+                    "maxCreditAmount": 3000.0
+                },
+                {
+                    "annualGlobalEffectiveRate": 15.7,
+                    "annualDebitRate": 14.672,
+                    "minCreditAmount": 3000.01,
+                    "maxCreditAmount": 6000.0
+                },
+                {
+                    "annualGlobalEffectiveRate": 8.6,
+                    "annualDebitRate": 8.279,
+                    "minCreditAmount": 6000.01,
+                    "maxCreditAmount": 9.9999999999E8
+                }
+            ],
+            "contractFees": 0.0,
+            "installmentWithoutInsurance": {
+                "amount": 114.0,
+                "firstAmount": 114.0,
+                "lastAmount": 89.92,
+                "totalDueNumber": null,
+                "dueNumber": null
+            },
+            "installmentWithInsurance": {
+                "amount": 127.0,
+                "firstAmount": 127.0,
+                "lastAmount": 88.93,
+                "totalDueNumber": null,
+                "dueNumber": null
+            },
+            "borrowerInsurance": {
+                "insuranceCode": "01",
+                "insuranceInstallment": {
+                    "amount": 20.14,
+                    "firstAmount": 20.14,
+                    "lastAmount": 20.14,
+                    "totalDueNumber": null,
+                    "dueNumber": null
+                },
+                "totalInsuranceCost": 420.6,
+                "insuranceProducts": [
+                    "00001008",
+                    "00001010"
+                ]
+            },
+            "coBorrowerInsurance": null,
+            "alternativeBorrowerInsurance": null,
+            "alternativeCoBorrowerInsurance": null,
+            "initialContributionAmount": null,
+            "calculatedContributionAmount": null,
+            "totalContributionAmount": null,
+            "excludedCreditAmount": null,
+            "fixedRate": false
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+[sofnt:avisClient] > jnt:content, sofmix:component
+ - title (string) = 'Rejoignez plus de 6 000 000 de clients Sofinco' i18n
+ - subtitle (string, textarea) i18n
+ - linkLabel (string) = 'Voir tous les avis clients' i18n
+ - linkHref (string) = '#'
+ - productId (string, choicelist) indexed=no < 'PB_PERSO','PB_AUTO','PB_TRAVAUX','CREDIT_RENOUVELABLE','RACHAT_DE_CREDIT','CREDIT_BATEAUX','CREDIT_CARAVANE','CREDIT_MOBILE_HOME','CREDIT_MOTO','CREDIT_CAMPING_CAR'
+ - minNote (long) mandatory
+ - verifiedLogo (weakreference,picker[type='image']) < jmix:image

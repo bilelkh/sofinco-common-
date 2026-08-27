@@ -1,0 +1,7 @@
+{
+	"name": "sofnt:representativeExampleConfig",
+	"fields": [
+		{ "name": "simulatorLoanUrl", "hide": true },
+		{ "name": "simulatorRacUrl", "hide": true }
+	]
+}

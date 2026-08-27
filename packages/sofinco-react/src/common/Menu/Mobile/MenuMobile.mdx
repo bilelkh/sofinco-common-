@@ -1,0 +1,74 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as MenuMobileStories from "./MenuMobile.stories";
+
+<Meta of={MenuMobileStories} />
+
+# MenuMobile
+
+The mobile navigation panel for the site header. It renders its own hamburger
+trigger and opens a full-height modal containing the navigation, quick-action
+links and CTAs.
+
+It is normally composed by the parent [`Menu`](?path=/docs/features-menu-menu--docs)
+component, which mounts it below the `1092px` breakpoint and feeds it the header
+chrome. You rarely render `MenuMobile` directly.
+
+## How It Works
+
+`MenuMobile` is **self-contained** — it is not externally controlled. The
+internal `Modal` provides its own hamburger trigger (a `menu` icon button) and
+owns the open/closed state, so there is no `isOpen` / `onOpenChange` prop.
+
+- `sections` are transformed into `Tabs` (one tab per section title) whose panels
+  render an `Accordion` of that section's `subsections`.
+- `links` are rendered as quick-action `Link`s (icon + label) below the tabs.
+- `ctaProps` renders an optional CTA pinned at the bottom of the panel
+  (e.g. "Simuler mon crédit").
+- `children` are injected into the **modal header** (the `slotCtaMobile` slot).
+  The parent `Menu` uses this to surface the search, download-app and login CTAs
+  alongside the close button.
+- `className` is merged onto the inner `<nav>`.
+
+## Basic Usage
+
+```tsx
+import MenuMobile from "@common/Menu/Mobile/MenuMobile";
+import { Cta } from "sofinco-react";
+
+<MenuMobile
+  sections={sections}
+  links={links}
+  ctaProps={{ label: "Simuler mon crédit", variant: "accent", type: "button" }}
+>
+  {/* Optional header chrome, injected next to the close button */}
+  <>
+    <Cta iconOnly iconLeft="search" variant="outlined" label="Rechercher" />
+    <Cta iconLeft="download" variant="accent" label="App" href="#" />
+    <Cta label="Se connecter" type="button" />
+  </>
+</MenuMobile>;
+```
+
+## Props
+
+- `sections` — required array of section definitions (`title` + `subsections`),
+  turned into tabs and accordions.
+- `links` — required array of quick-action links rendered under the tabs.
+- `ctaProps` — optional CTA pinned at the bottom of the panel.
+- `children` — optional nodes injected into the modal header (search /
+  download-app / login CTAs when composed by `Menu`).
+- `className` — optional extra class on the inner `<nav>`.
+
+<ArgTypes of={MenuMobileStories} />
+
+## Story Variants
+
+<Canvas of={MenuMobileStories.Default} />
+<Canvas of={MenuMobileStories.WithCta} />
+<Canvas of={MenuMobileStories.WithHeaderCtas} />
+<Canvas of={MenuMobileStories.SingleSection} />
+
+## All Stories
+
+<Stories />

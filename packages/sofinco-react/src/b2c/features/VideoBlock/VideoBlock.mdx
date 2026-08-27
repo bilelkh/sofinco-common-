@@ -1,0 +1,147 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as VideoBlockStories from "./VideoBlock.stories";
+
+<Meta of={VideoBlockStories} />
+
+# VideoBlock
+
+The `VideoBlock` component displays an embedded video with optional heading content, an optional preview image, and a collapsible transcript section.
+
+When a preview image is provided, the video iframe is loaded only after user interaction, improving performance and reducing the initial page load cost.
+
+## Composition
+
+* An optional **title**.
+* An optional **subtitle**.
+* A responsive **video area** maintaining a 16:9 aspect ratio.
+* An optional **preview image** with a play button overlay.
+* An embedded **iframe video player**.
+* A required **transcript section** containing HTML content.
+
+## Jahia contribution rules
+
+* **Title**: optional.
+* **Subtitle**: optional.
+* **Video URL**: must be provided as an embeddable URL (YouTube embed, Vimeo embed, etc.).
+* **Video title**: required and used as the iframe title for accessibility.
+* **Preview image**: optional. When present, it is displayed until the user starts playback.
+* **Transcript title**: required.
+* **Transcript content**: required and contributed in HTML.
+* Transcript content is rendered using `dangerouslySetInnerHTML`; sanitization must be performed server-side before rendering.
+
+## Video behavior
+
+* When no preview image is provided, the iframe is displayed immediately.
+* When a preview image is provided:
+	* the iframe is not loaded initially;
+	* a play button is displayed over the image;
+	* clicking the button replaces the image with the iframe;
+	* autoplay is enabled when supported by the video provider.
+
+This approach improves loading performance and reduces third-party requests before user interaction.
+
+## Responsive behavior
+
+* The video container maintains a fixed **16:9 aspect ratio** on all screen sizes.
+* The component scales to the available width while respecting its maximum width.
+* Optional heading content remains centered and constrained for readability.
+* Transcript spacing and typography adapt between mobile and desktop breakpoints.
+
+## Tracking analytics
+
+The component emits two events through the project-wide tracking bootstrap (`#lib/tracking-bootstrap` in `template-set`), which auto-merges the page context (`env_work`, `platform_mode`, `page_title`, `page_url`, `page_type`, etc.) before pushing to `window.dataLayer`.
+
+### `launch_video` — click on the preview button
+
+Fired when the user clicks the preview image to launch playback. Carried by the `data-tracking` attribute on the `<button>` of the preview overlay.
+
+**Payload pushed to `dataLayer`:**
+
+```json
+{
+    "event": "launch_video",
+    "env_work": "Production",
+    "platform_mode": "legacy",
+    "page_title": "<auto>",
+    "page_url": "<auto>",
+    "page_type": "<auto>",
+    "video_label": "<video.title>"
+}
+```
+
+> ⚠️ **Limitation** — the click on the preview button is the only trackable interaction. If `previewImg` is absent, the iframe loads directly on page load (no click → no event). To guarantee tracking, contributors must provide a preview image (also recommended for RGPD compliance — see *Video behavior*).
+
+### `video_impression` — root section enters viewport (≥ 25% visible)
+
+Fired once per page-load when the component becomes visible. Carried by the `data-tracking-view` attribute on the root `<div>`. Useful to measure the impression / launch ratio.
+
+```json
+{
+    "event": "video_impression",
+    "env_work": "Production",
+    "platform_mode": "legacy",
+    "page_title": "<auto>",
+    "page_url": "<auto>",
+    "page_type": "<auto>",
+    "video_label": "<video.title>"
+}
+```
+
+### How to verify (post-deploy QA)
+
+1. Open a page containing a `VideoBlock` with a preview image.
+2. DevTools → Console → `window.dataLayer = []`.
+3. Scroll to the component → an event `{ event: "video_impression", ... }` lands in `dataLayer`.
+4. Click the preview → an event `{ event: "launch_video", ... }` lands in `dataLayer`.
+
+## Accessibility
+
+* The video iframe includes a descriptive `title`.
+* The preview image is wrapped in a native `<button>` element.
+* The play button exposes an accessible label through `aria-label`.
+* Decorative icons are hidden from assistive technologies using `aria-hidden="true"`.
+* The transcript toggle uses:
+	* `aria-expanded`
+	* `aria-controls`
+* The transcript panel is associated with its trigger through `aria-labelledby`.
+* The transcript can be expanded and collapsed using a keyboard.
+* Focus states are visible for keyboard users.
+* Motion-sensitive users are respected through the `prefers-reduced-motion` media query.
+
+## Usage
+
+```tsx
+import { VideoBlock } from "sofinco-react";
+
+export function MyPage() {
+	return (
+		<VideoBlock
+			title={{
+				text: "Comprendre le prêt personnel",
+				as: "h2",
+			}}
+			subtitle="Découvrez en quelques minutes le fonctionnement d'un prêt personnel."
+			video={{
+				url: "https://www.youtube-nocookie.com/embed/QfSm9j6KFNw",
+				title: "How a personal loan works",
+			}}
+			previewImg={{
+				url: "/images/video-preview.webp",
+				alt: "",
+			}}
+			transcription={{
+				title: "Video transcript",
+				content: "<p>This video explains how a personal loan works.</p>",
+			}}
+		/>
+	);
+}
+```
+
+## Props
+
+<ArgTypes of={VideoBlockStories} />
+
+## All Stories
+
+<Stories />

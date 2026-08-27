@@ -1,0 +1,54 @@
+.hero__bg {
+	--hero-ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--hero-bg-delay: 0.25s;
+	--hero-bg-scale-duration: 1.2s;
+	--hero-bg-radius-duration: 2s;
+}
+
+.hero__bg,
+.hero__bg-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+	pointer-events: none;
+	user-select: none;
+}
+
+.hero__bg {
+	background-position: center;
+	background-size: 10%;
+	background-repeat: no-repeat;
+}
+
+.hero__bg-img {
+	object-fit: cover;
+	object-position: center;
+	z-index: 0;
+	transform: scale(0.1);
+	border-radius: 50px;
+	will-change: transform, border-radius;
+	animation:
+		hero-bg-scale-in var(--hero-bg-scale-duration) var(--hero-ease) var(--hero-bg-delay) forwards,
+		hero-bg-radius-in var(--hero-bg-radius-duration) var(--hero-ease) var(--hero-bg-delay) forwards;
+}
+@keyframes hero-bg-scale-in {
+	to {
+		transform: scale(1);
+	}
+}
+
+@keyframes hero-bg-radius-in {
+	to {
+		border-radius: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero__bg-img {
+		animation: none;
+		transform: none;
+		border-radius: 0;
+	}
+}

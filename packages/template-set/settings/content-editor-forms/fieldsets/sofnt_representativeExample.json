@@ -1,0 +1,43 @@
+{
+	"name": "sofnt:representativeExample",
+	"priority": 1.0,
+	"fields": [
+		{
+			"name": "jcr:title",
+			"rank": "1.0"
+		},
+		{
+			"name": "product",
+			"rank": "2.0",
+			"hide": true
+		},
+		{
+			"name": "sourceId",
+			"rank": "3.0",
+			"hide": true
+		},
+		{
+			"name": "amount",
+			"rank": "4.0",
+			"hide": true
+		},
+		{
+			"name": "dueNumber",
+			"rank": "5.0",
+			"hide": true
+		},
+		{
+			"name": "scaleCode",
+			"rank": "6.0",
+			"hide": true
+		},
+		{
+			"name": "subtitle",
+			"rank": "7.0"
+		},
+		{
+			"name": "mention",
+			"rank": "8.0"
+		}
+	]
+}

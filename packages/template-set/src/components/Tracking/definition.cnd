@@ -1,0 +1,89 @@
+[sofnt:trackingSettings] > jnt:content, mix:title, sofmix:configs
+ + ga (sofnt:trackingGa)
+ + numberly (sofnt:trackingNumberly)
+ + didomi (sofnt:trackingDidomi)
+
+/*
+ * CMP Didomi. Le notice id est propre à l'environnement (recette / production) :
+ * le poser ici plutôt qu'en dur dans le code évite de faire remonter du
+ * consentement de recette sur le périmètre de production.
+ *
+ * Sans id valide (format UUID), aucun loader n'est émis : le site tourne sans CMP,
+ * et les boutons « Gérer mes cookies » restent inertes.
+ */
+/*
+ * AUCUN mapping vendor/finalite ici, volontairement. La console Didomi porte deja les
+ * deux integrations qui alimentent GTM - Google Consent Mode (`gtag consent update`) et
+ * GTM (evenements `didomi-ready` / `didomi-consent`, variables `didomiVendorsConsent` et
+ * `didomiPurposesConsent`). C'est verifiable dans le dataLayer de la production.
+ *
+ * Le module n'ajoute que l'etat INITIAL, qui manque - cf. consent-mode-bootstrap.ts. Il
+ * n'a donc besoin d'aucun id de vendor Google : les finalites custom `sWeb` et
+ * `cookie-conv-iadvize` transitent deja par `didomiPurposesConsent`, et se conditionnent
+ * cote conteneur GTM avec une condition « contient ».
+ */
+[sofnt:trackingDidomi] > jnt:content, mix:title
+ - noticeId (string)
+
+[sofnt:trackingGa] > jnt:content, mix:title
+ - gtmContainerId (string)
+ - env_template (string) = 'Site vitrine' autocreated
+ - env_work (string) = 'Integration' autocreated
+ - canal_origin (string) = 'K' autocreated
+ - code_apporteur (string) = '' autocreated
+ - partner (string) = 'web_sofinco' autocreated
+ - platform_mode (string) = 'legacy' autocreated
+
+/*
+ * `didomiVendorId` : id du vendor Eulerian DANS LA NOTICE Didomi du site. Il conditionne
+ * le chargement du tag au consentement (cf. `window.__SOFINCO_ON_CONSENT__`).
+ *
+ * VALEUR A SAISIR : `413`. Releve sur la notice de PRODUCTION :
+ *
+ *   Didomi.getVendors().find(v => v.didomiId === 'eulerian')
+ *   -> { id: 413, didomiId: "eulerian", namespace: "iab", legIntPurposeIds: [] }
+ *
+ * Id BRUT, jamais `iab:413` : le prefixe n'existe que dans la variable GTM
+ * `didomiVendorsConsent`. La forme chaine est acceptee par le SDK
+ * (`Didomi.getUserConsentStatusForVendor('413')` rend un booleen une fois le choix fait).
+ *
+ * ⚠ AVANT tout choix de l'utilisateur, cette meme lecture rend `undefined` : le SDK ne
+ * distingue pas « en attente » de « id inconnu ». Ne pas conclure a une erreur de
+ * configuration sur un simple `undefined` releve banniere ouverte - la garde, elle, fait la
+ * difference (cf. `pendingChoice`).
+ *
+ * `legIntPurposeIds` est vide : Eulerian ne declare aucune finalite en interet legitime,
+ * donc aucune voie de repli ne ferait partir le tag malgre un refus.
+ *
+ * PAS DE VALEUR PAR DEFAUT malgre tout, et c'est un choix, pas un oubli.
+ *
+ * `413` identifie bien Eulerian dans le referentiel IAB, partout. Mais un vendor IAB doit
+ * encore etre ACTIVE dans chaque notice, et cela n'a ete verifie que sur la production.
+ * Poser `413` en `autocreated` reviendrait a propager une valeur relevee en prod vers tout
+ * environnement fraichement provisionne - exactement le geste que l'on vient de retirer du
+ * script Groovy pour le `noticeId`. Sur une notice ou le vendor n'est pas active, le
+ * consentement serait indetermine, donc refuse, et Eulerian muet.
+ *
+ * VIDE = tag emis SANS condition de consentement, et ce n'est PAS silencieux :
+ * `window.__SOFINCO_CONSENT_UNGATED__` contient alors `'eulerian'`. Un id SAISI mais
+ * inconnu de la notice se signale symetriquement dans
+ * `window.__SOFINCO_CONSENT_UNRESOLVED__`. Les deux doivent rester vides une fois la
+ * configuration correcte - c'est le seul controle a faire apres saisie.
+ */
+[sofnt:trackingNumberly] > jnt:content, mix:title
+ - eaTrackerHost (string) = 'mm.eulerian.net' autocreated
+ - rtgsite (string) = 'prospect' autocreated
+ - didomiVendorId (string)
+
+/*
+ * spmix:eaPageOptions is provided by portal-common-sofinco.
+ *
+ * [spmix:eaPageOptions] mixin
+ *  extends = jnt:page
+ *  itemtype = metadata
+ *  - pg (string)
+ *  - idmetacat (string)
+ *  - idcat (string)
+ *  - idsubcat (string)
+ *  - pagename (string)
+ */

@@ -1,0 +1,57 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as AlertBandStories from "./AlertBand.stories";
+
+<Meta of={AlertBandStories} />
+
+# AlertBand
+
+A compact message band used to display contextual information with optional left and right icons.
+
+> **Warning**
+> This component is intended for sanitary mention and alert messages in the header.
+
+## How It Works
+
+The component renders a single line message with optional icons:
+
+- `message` is displayed as the main content
+- `variant` selects semantic color styles (`error`, `success`, `sanitary`...)
+- `iconLeft` and `iconRight` render optional visual cues
+- `className` allows custom layout and spacing from parent containers
+- `style` overrides the variant colors via the `--alert-band-bg` and `--alert-band-fg` CSS variables (useful when a back-office allows authors to pick custom colors)
+
+## Usage
+
+```tsx
+import { AlertBand } from "sofinco-react";
+
+<AlertBand message="Your profile was updated." variant="success" />
+<AlertBand message="Please review this warning." variant="warning" />
+
+<AlertBand
+  message="Custom colors from the CMS"
+  variant="info"
+  style={{ "--alert-band-bg": "#EEF8EA", "--alert-band-fg": "#477935" } as React.CSSProperties}
+/>
+```
+
+## Variants
+
+<Canvas of={AlertBandStories.Error} />
+<Canvas of={AlertBandStories.Success} />
+<Canvas of={AlertBandStories.Sanitary} />
+
+## With Icons
+
+<Canvas of={AlertBandStories.WithIconLeft} />
+<Canvas of={AlertBandStories.WithIconRight} />
+<Canvas of={AlertBandStories.WithBothIcons} />
+
+## Props
+
+<ArgTypes of={AlertBandStories} />
+
+## All Stories
+
+<Stories />

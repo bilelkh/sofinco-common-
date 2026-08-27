@@ -1,0 +1,16 @@
+{
+  "id": "NEOURL02",
+  "type": "revolving",
+  "label": "CRÉDIT RENOUVELABLE",
+  "minAmount": 150.0,
+  "maxAmount": 10000.0,
+  "minDuration": 10,
+  "maxDuration": 60,
+  "minAnnualDebitRate": 8.232,
+  "maxAnnualDebitRate": 21.294,
+  "minAnnualGlobalEffectiveRate": 8.55,
+  "maxAnnualGlobalEffectiveRate": 23.5,
+  "promoGlobalEffectiveRate": 8.55,
+  "startDate": "2007-06-04",
+  "endDate": "2026-12-31"
+}

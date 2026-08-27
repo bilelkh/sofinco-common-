@@ -1,0 +1,4 @@
+[sofnt:heroSection] > jnt:content, sofmix:component
+ + hero      (sofnt:hero)                = sofnt:hero                mandatory autocreated
+ + simulator (sofnt:simulatorCredit)     = sofnt:simulatorCredit     mandatory autocreated
+ + heroQr    (sofnt:qrSticker)           = sofnt:qrSticker           mandatory autocreated

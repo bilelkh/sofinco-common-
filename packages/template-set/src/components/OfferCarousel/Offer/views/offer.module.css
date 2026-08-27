@@ -1,0 +1,38 @@
+.editPreview {
+	border: 2px dashed var(--color-info-base);
+	padding: calc(var(--spacing) * 10);
+	margin: calc(var(--spacing) * 3) 0;
+	border-radius: var(--radius-lg);
+	background: color-mix(in srgb, var(--color-info-base) 4%, transparent);
+}
+
+.editPreview article {
+	padding: calc(var(--spacing) * 10);
+	min-height: 450px;
+	border-radius: var(--radius-3xl);
+	margin: calc(var(--spacing) * 8) 0;
+}
+
+.editTitle {
+	margin: 0 0 calc(var(--spacing) * 2);
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-lg);
+	line-height: var(--text-lg--line-height);
+	color: var(--color-primary-base);
+}
+
+.editHint {
+	font-size: var(--text-xs);
+	font-weight: var(--font-weight-medium);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	color: var(--color-text-muted);
+	margin-bottom: calc(var(--spacing) * 3);
+}
+
+.editSlides {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+}

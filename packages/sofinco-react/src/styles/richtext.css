@@ -1,0 +1,41 @@
+/*
+ * Classes de texte enrichi posées par le CONTRIBUTEUR depuis CKEditor
+ * (dropdown « Taille », cf. template-set/javascript/ckeditor_config.js).
+ *
+ * POURQUOI ICI, ET PAS DANS `utilities/typography.module.css`
+ * ----------------------------------------------------------
+ * Les CSS Modules hachent leurs noms de classes (`.text-l` → `._text-l_a4hxp`).
+ * Une classe écrite à la main dans du HTML contributeur ne peut donc jamais
+ * viser une classe de module : elle doit vivre dans une feuille GLOBALE. C'est
+ * la même raison qui met `.sr-only` dans `base.css`, et `.footer-ref` /
+ * `.footer-link` sous le dispositif de notes.
+ *
+ * Préfixe `rt-` (rich text) : ces noms voyagent dans le contenu JCR, ils
+ * survivent aux refontes CSS et doivent rester reconnaissables — un
+ * `.text-l` nu se confondrait avec l'utilitaire de module homonyme.
+ *
+ * Les valeurs sont des TOKENS, pas des pixels : le texte contributeur suit
+ * ainsi le même redimensionnement au breakpoint que le reste du DS.
+ * `font-size` seul, sans `line-height`, laisserait l'interligne du parent
+ * écraser une taille plus grande.
+ */
+
+.rt-text-s {
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+}
+
+.rt-text-base {
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+}
+
+.rt-text-l {
+	font-size: var(--text-lg);
+	line-height: var(--leading-snug);
+}
+
+.rt-text-xl {
+	font-size: var(--text-xl);
+	line-height: var(--leading-normal);
+}

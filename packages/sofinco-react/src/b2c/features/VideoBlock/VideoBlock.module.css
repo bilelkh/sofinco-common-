@@ -1,0 +1,265 @@
+@import "@styles/base.css";
+
+.videoBlock {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	width: 100%;
+	padding: calc(var(--spacing) * 14) calc(var(--spacing) * 6);
+	background: var(--color-white);
+	color: var(--color-primary-base);
+	font-family: var(--font-sans);
+
+	@media (--small-up) {
+		padding: calc(var(--spacing) * 26) calc(var(--spacing) * 6);
+	}
+}
+
+/* Layout, internal gap and bottom spacing are owned by SectionHeading.
+   The subtitle uses the shared Subtitle typography. */
+.videoBlock__header {
+	max-width: 1232px;
+	margin-inline: auto;
+
+	@media (--small-up) {
+		margin-bottom: calc(var(--spacing) * 20);
+	}
+}
+
+.videoBlock__title {
+	color: var(--color-primary-base);
+	white-space: pre-line;
+}
+
+.videoBlock__media {
+	position: relative;
+	width: min(100%, 800px);
+	aspect-ratio: 16 / 9;
+	margin: 0 auto;
+	overflow: hidden;
+	border-radius: var(--radius-4xl);
+	background: var(--color-primary-contrast);
+	box-shadow: var(--shadow-xs);
+}
+
+.videoBlock__iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.videoBlock__previewButton {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+	background: var(--color-primary-contrast);
+	color: var(--color-primary-base);
+	cursor: pointer;
+}
+
+.videoBlock__previewButton::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--color-alpha-neutral-100-30);
+	transition: background-color 0.2s ease;
+}
+
+.videoBlock__previewButton:hover::after {
+	background: var(--color-alpha-neutral-100-40);
+}
+
+.videoBlock__previewButton:focus-visible {
+	outline: 3px solid var(--color-accent-base);
+	outline-offset: -3px;
+}
+
+.videoBlock__previewImage {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.35s ease;
+}
+
+.videoBlock__previewButton:hover .videoBlock__previewImage {
+	transform: scale(1.03);
+}
+
+.videoBlock__previewPlay {
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+	left: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+	border-radius: var(--radius-full);
+	color: var(--color-neutral-00);
+	transform: translate(-50%, -50%);
+	box-shadow: var(--shadow-md);
+	transition:
+		background-color 0.2s ease,
+		transform 0.2s ease;
+}
+
+.videoBlock__previewPlay svg {
+	width: 60px;
+	height: 60px;
+}
+
+.videoBlock__previewButton:hover .videoBlock__previewPlay {
+	background: var(--color-primary-base);
+	transform: translate(-50%, -50%) scale(1.04);
+}
+
+.videoBlock__transcription {
+	margin-top: calc(var(--spacing) * 6);
+	margin-inline: auto;
+	width: 100%;
+	max-width: 800px;
+	overflow: hidden;
+	border: 1px solid var(--color-primary-light);
+	border-radius: var(--radius-2xl);
+	background: var(--color-primary-subtle);
+	box-shadow: var(--shadow-xs);
+	transition:
+		width 0.24s ease,
+		background-color 0.24s ease,
+		border-radius 0.24s ease;
+}
+
+@media (--small-up) {
+	.videoBlock__transcription {
+		margin-top: calc(var(--spacing) * 20);
+	}
+}
+
+.videoBlock__transcription--open {
+	background: var(--color-neutral-05);
+}
+
+.videoBlock__transcriptionToggle {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
+	border: 0;
+	background: transparent;
+	color: var(--color-primary-base);
+	font: inherit;
+	cursor: pointer;
+	text-align: left;
+}
+
+.videoBlock__transcriptionToggle:focus-visible {
+	outline: 2px solid var(--color-accent-strong);
+	outline-offset: -2px;
+}
+
+.videoBlock__transcription--open .videoBlock__transcriptionToggle {
+	border-bottom: 1px solid var(--color-primary-light);
+}
+
+.videoBlock__transcriptionIcon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: var(--radius-full);
+	background: var(--color-primary-base);
+	color: var(--color-accent-base);
+}
+
+.videoBlock__transcriptionIcon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.videoBlock__transcriptionTitle {
+	composes: h4 from "@styles/utilities/typography.module.css";
+}
+
+.videoBlock__transcriptionPanel {
+	display: grid;
+	grid-template-rows: 0fr;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		grid-template-rows 0.35s ease,
+		opacity 0.25s ease,
+		visibility 0.35s;
+}
+
+.videoBlock__transcription--open .videoBlock__transcriptionPanel {
+	grid-template-rows: 1fr;
+	opacity: 1;
+	visibility: visible;
+}
+
+.videoBlock__transcriptionText {
+	min-height: 0;
+	overflow: hidden;
+	padding-inline: calc(var(--spacing) * 4);
+	padding-block: 0;
+	color: var(--color-primary-base);
+	font-size: var(--text-sm);
+	line-height: 1.6;
+	transition: padding 0.35s ease;
+}
+
+.videoBlock__transcriptionText p {
+	text-wrap: pretty;
+
+	@supports not (text-wrap: pretty) {
+		text-wrap: auto;
+	}
+}
+
+.videoBlock__transcription--open .videoBlock__transcriptionText {
+	padding-block: calc(var(--spacing) * 4);
+}
+
+.videoBlock__transcriptionText p,
+.videoBlock__transcriptionText ul,
+.videoBlock__transcriptionText ol {
+	margin: 0 0 calc(var(--spacing) * 4);
+}
+
+.videoBlock__transcriptionText strong {
+	font-weight: var(--font-weight-bold);
+}
+
+.videoBlock__transcriptionText ul,
+.videoBlock__transcriptionText ol {
+	padding-left: calc(var(--spacing) * 6);
+}
+
+.videoBlock__transcriptionText ul {
+	list-style: disc;
+}
+
+.videoBlock__transcriptionText ol {
+	list-style: decimal;
+}
+
+.videoBlock__transcriptionText > :last-child {
+	margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.videoBlock__transcription,
+	.videoBlock__transcriptionPanel,
+	.videoBlock__previewImage,
+	.videoBlock__previewPlay {
+		transition: none;
+	}
+}

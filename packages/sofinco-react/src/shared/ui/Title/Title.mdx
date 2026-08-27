@@ -1,0 +1,112 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as TitleStories from "./Title.stories";
+
+<Meta of={TitleStories} />
+
+# Title
+
+A semantic heading component that separates document structure from visual presentation.
+
+The rendered HTML heading level is controlled by the `as` prop, while the visual appearance can be customized independently through the `visualStyle` prop.
+
+## How It Works
+
+`Title` renders the heading tag defined by the `as` prop.
+
+* `as` defines the semantic heading level (`h1` to `h4`)
+* `visualStyle` defines the visual appearance (`h1` to `h4`, or `"none"` to suppress all heading styles)
+* `children` contains the heading content
+* `className` allows additional custom styling
+* `id` can be used for linking and accessibility purposes
+
+If `visualStyle` is not provided, the component uses the value of `as`.
+
+By default, the component renders an `h2`.
+
+## Semantic vs Visual Style
+
+The semantic structure of the page and the visual appearance are intentionally separated.
+
+For example:
+
+```tsx
+<Title as="h2" visualStyle="h3">
+	Product benefits
+</Title>
+```
+
+renders:
+
+```html
+<h2 class="title title--h3">
+	Product benefits
+</h2>
+```
+
+This is useful when a heading must remain an `h2` for accessibility and SEO reasons while visually matching a smaller heading style.
+
+### Suppressing all heading styles — `visualStyle="none"`
+
+Passing `"none"` removes every heading visual class, leaving the element unstyled (apart from any `className` passed in):
+
+```tsx
+<Title as="h1" visualStyle="none" className={styles.myTitle}>
+	Financez vos projets
+</Title>
+```
+
+renders:
+
+```html
+<h1 class="title myTitle">
+	Financez vos projets
+</h1>
+```
+
+This is intended for cases where a component already applies its own typographic styles to the heading and only needs the correct semantic tag for SEO or accessibility — for example `SimulatorBlock`, which contributes an `h1` for SEO while controlling the visual appearance entirely through its own CSS.
+
+## Basic Usage
+
+```tsx
+import { Title } from "sofinco-react";
+
+<Title as="h1">
+	Welcome
+</Title>
+
+<Title as="h2">
+	Section title
+</Title>
+
+<Title as="h2" visualStyle="h3">
+	Smaller visual title
+</Title>
+
+<Title as="h1" visualStyle="none" className={styles.myTitle}>
+	SEO heading styled by the parent component
+</Title>
+```
+
+## Story Variants
+
+<Canvas of={TitleStories.H1} />
+<Canvas of={TitleStories.H2} />
+<Canvas of={TitleStories.H3} />
+<Canvas of={TitleStories.H4} />
+<Canvas of={TitleStories.NoVisualStyle} />
+
+## Accessibility
+
+* Uses native HTML heading elements (`h1`–`h4`)
+* Preserves a meaningful heading hierarchy
+* Supports `id` for linking and `aria-labelledby` relationships
+* Allows visual customization without affecting document semantics
+
+## Props
+
+<ArgTypes of={TitleStories} />
+
+## All Stories
+
+<Stories />

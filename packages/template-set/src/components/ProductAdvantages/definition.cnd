@@ -1,0 +1,6 @@
+[sofnt:productAdvantageCategoryList] > sofnt:listBase
+ + * (sofnt:productAdvantageCategory) = sofnt:productAdvantageCategory
+
+[sofnt:productAdvantages] > jnt:content, jmix:editorialContent, mix:title, sofmix:component orderable
+ - subtitle (string, textarea) i18n
+ + categories (sofnt:productAdvantageCategoryList) = sofnt:productAdvantageCategoryList autocreated mandatory

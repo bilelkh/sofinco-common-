@@ -1,0 +1,148 @@
+@import "@styles/base.css";
+
+/* =====================================================================
+   FormHero — maquette « Form Page » du site vitrine B2B (node 3680:6202).
+
+   Correspondance jetons Figma → jetons DS :
+
+     primary/base              #00334d → --color-primary-base    (exact)
+     background/primary light  #e5f4ff → --color-primary-surface (exact)
+     text/body/white           #ffffff → --color-white
+     spacing-12 / 24 / 40      12/24/40 → calc(var(--spacing) * 3 / 6 / 10)
+
+   Les deux écarts de couleur assumés dans la version précédente ont disparu :
+   la migration des jetons a aligné le navy sur #00334d exactement, et #e5f4ff
+   a été ajouté à `tokens.css` (`--color-primary-surface`) plutôt qu'approché
+   par le bleu pâle le plus proche.
+
+   ⚠︎ `--spacing` est un MULTIPLICATEUR (4px), alors que l'ancien `--sof-sp-N`
+   était un INDICE dans une échelle irrégulière (4/8/12/16/24/32/40/48/80/104/
+   120). Les deux ne coïncident que jusqu'à 12px : `--sof-sp-5` valait 24px,
+   soit `calc(var(--spacing) * 6)` et non `* 5`.
+
+   Le rembourrage haut du bandeau (200px en desktop) réserve la place de la
+   navigation, qui se superpose au bandeau dans la maquette. Il reste correct
+   sans navigation rendue : c'est la respiration voulue par la maquette.
+   ===================================================================== */
+
+.form-hero {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background-color: var(--color-primary-surface);
+}
+
+.form-hero__band {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	/* Mobile (node 3689:9708) : 88 / 24 / 200. */
+	padding: 88px calc(var(--spacing) * 6) 200px;
+	background-color: var(--color-primary-base);
+	/* Le titre est déjà tronqué par la largeur : on coupe dans le mot plutôt que
+	   de laisser déborder un mot long du bandeau. */
+	overflow: hidden;
+}
+
+/* Aligné à GAUCHE en mobile, centré à partir de la tablette — c'est l'écart le
+   plus visible entre les deux maquettes (nodes 3689:9708 et 3680:6204), et il
+   n'est pas décoratif : sur 375px, un titre de trois lignes centré se lit mal. */
+.form-hero__heading {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	align-items: flex-start;
+	width: 100%;
+	color: var(--color-white);
+	text-align: left;
+	word-break: break-word;
+}
+
+/* ---------------------------------------------------------------------------
+   Typographie du bandeau — échelle du fichier B2B, pas celle de Monstera.
+
+   `Title` et `Subtitle` suivent l'échelle de la bibliothèque, qui ne coïncide
+   pas avec le site vitrine B2B (cf. le tableau du .mdx). La surcharge est donc
+   locale et assumée, plutôt qu'un changement de `.h1` / `.text-l` qui
+   repeindrait tout le B2C.
+
+   Sélecteurs à DEUX classes : `.h1` (via `composes`) et `.subtitle` posent la
+   même spécificité qu'une classe seule et l'emporteraient selon l'ordre de
+   bundling des modules.
+   --------------------------------------------------------------------------- */
+
+/* `Heading/xl` — Cutta Bold 700, 70/74 en desktop, 32/1.2 en mobile.
+   `.h1` rend Cutta 800 avec un interlettrage serré : les trois propriétés sont
+   donc remises, l'`extrabold` et le `tracking` compris. */
+.form-hero__heading .form-hero__title {
+	font-weight: var(--font-weight-bold);
+	font-size: 2rem;
+	line-height: 1.2;
+	letter-spacing: var(--tracking-normal);
+}
+
+/* `Body/Lg/Medium` — Figtree Medium 20/24 aux deux paliers, là où `.text-l`
+   rend 18/27. */
+.form-hero__heading .form-hero__subtitle {
+	font-size: var(--text-xl);
+	line-height: calc(24 / 20);
+}
+
+/* Chevauchement : la carte remonte sur le bandeau, dont le rembourrage bas a
+   été gonflé d'autant. Les deux valeurs vont donc de pair — modifier l'une
+   sans l'autre décolle la carte ou la fait mordre sur le titre. */
+.form-hero__slot {
+	display: flex;
+	justify-content: center;
+	margin-top: -160px;
+	padding: 0 calc(var(--spacing) * 3) calc(var(--spacing) * 12);
+}
+
+/* Le slot impose le gabarit Figma à toute carte fournie par le CMS. */
+.form-hero__slot > * {
+	width: 100%;
+	max-width: 660px;
+}
+
+@media (--small-up) {
+	.form-hero__band {
+		padding: 160px calc(var(--spacing) * 10) 240px;
+	}
+
+	.form-hero__heading {
+		gap: calc(var(--spacing) * 6);
+		align-items: center;
+		text-align: center;
+	}
+
+	/* Palier intermédiaire : la maquette ne chiffre que 375 et 1440, et sauter de
+	   32px à 70px d'un coup laisserait la tablette sans cran lisible. */
+	.form-hero__heading .form-hero__title {
+		font-size: var(--text-5xl);
+	}
+
+	.form-hero__slot {
+		margin-top: -180px;
+		padding: 0 calc(var(--spacing) * 10) calc(var(--spacing) * 20);
+	}
+}
+
+/* Palier desktop — celui que la maquette chiffre explicitement :
+   bandeau 200/40/280, carte remontée de 200px, 120px de bleu sous la carte
+   (hero de 1262px, bas de carte à 1142px). */
+@media (--medium-up) {
+	.form-hero__band {
+		padding: 200px calc(var(--spacing) * 10) 280px;
+	}
+
+	.form-hero__heading .form-hero__title {
+		font-size: 4.375rem;
+		line-height: calc(74 / 70);
+	}
+
+	.form-hero__slot {
+		margin-top: -200px;
+		padding: 0 calc(var(--spacing) * 10) calc(var(--spacing) * 30);
+	}
+}

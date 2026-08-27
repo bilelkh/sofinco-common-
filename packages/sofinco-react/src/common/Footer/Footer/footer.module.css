@@ -1,0 +1,165 @@
+@import "@styles/breakpoints.css";
+@import "@styles/tokens.css";
+
+.footer {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background-color: var(--color-primary-contrast);
+	color: var(--color-white);
+	padding: calc(var(--spacing) * 20);
+	font-family: var(--font-sans);
+}
+
+.footer__container {
+	max-width: 1440px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.footer__mainLogoWrapper {
+	text-align: center;
+	border-bottom: 1px solid var(--color-primary-strong);
+	margin-bottom: calc(var(--spacing) * 14);
+	padding-bottom: calc(var(--spacing) * 14);
+	margin-top: calc(var(--spacing) * 10);
+}
+
+.footer__mainLogo {
+	height: 54px;
+	max-width: 244px;
+}
+
+/* --- GRILLE DESKTOP --- */
+.footer__mainGrid {
+	display: grid;
+	grid-template-columns: 150px 1fr 150px;
+	gap: calc(var(--spacing) * 10);
+	margin-bottom: calc(var(--spacing) * 14);
+}
+
+.footer__partnersCol {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 6);
+}
+
+.footer__categoriesCol {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: calc(var(--spacing) * 10);
+}
+
+.footer__socialCol {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: calc(var(--spacing) * 10);
+}
+
+.footer__socialLinksWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.footer__appSection {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	font-size: var(--text-xs);
+}
+
+.footer__socialLabel {
+	font-family: var(--font-display);
+	font-weight: var(--font-weight-extrabold);
+	font-size: var(--text-xs);
+	line-height: normal;
+	text-align: center;
+	margin-bottom: calc(var(--spacing) * 4);
+	display: block;
+	text-transform: uppercase;
+}
+
+.footer__socialIcons {
+	display: flex;
+	gap: 6px;
+}
+
+.footer__ratingSection {
+	text-align: right;
+}
+
+.footer__bottomBar {
+	border-top: 1px solid var(--color-primary-strong);
+	padding-top: calc(var(--spacing) * 14);
+}
+
+.footer__bottomSubtitle {
+	color: var(--color-accent-base);
+	font-size: var(--text-xs);
+	margin-bottom: calc(var(--spacing) * 5);
+	text-transform: uppercase;
+	font-weight: var(--font-weight-black);
+	font-family: var(--font-display);
+	letter-spacing: 0.02em;
+}
+
+.footer__legalLinks {
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--spacing) * 4);
+}
+
+.footer__legalText {
+	font-size: 0.65rem;
+	color: var(--color-alpha-neutral-00-80);
+	line-height: var(--text-xs--line-height);
+	border-top: 1px solid var(--color-primary-strong);
+	margin-top: calc(var(--spacing) * 14);
+	padding-top: calc(var(--spacing) * 14);
+}
+
+/* =========================================
+   📱 RESPONSIVE MOBILE
+   ========================================= */
+@media (--medium-down) {
+	.footer {
+		padding: calc(var(--spacing) * 10);
+		padding-bottom: calc(var(--spacing) * 20);
+	}
+
+	.footer__mainGrid {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--spacing) * 20);
+	}
+
+	/* 1. L'appel à l'action et réseaux remontent */
+	.footer__socialCol {
+		order: 1;
+		align-items: center;
+		text-align: center;
+	}
+
+	.footer__ratingSection {
+		text-align: center;
+	}
+
+	/* 2. Partenaires en ligne */
+	.footer__partnersCol {
+		order: 2;
+		flex-direction: row;
+		justify-content: center;
+		align-items: baseline;
+		margin-bottom: calc(var(--spacing) * 6);
+	}
+
+	/* 3. Catégories en accordéon */
+	.footer__categoriesCol {
+		order: 3;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+}

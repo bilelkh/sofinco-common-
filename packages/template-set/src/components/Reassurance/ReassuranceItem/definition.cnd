@@ -1,0 +1,5 @@
+[sofnt:reassuranceItem] > jnt:content, mix:title, jmix:editorialContent
+ - text (string, textarea) i18n
+ - icon (weakreference, picker[type='image']) < jmix:image
+ - iconAlt (string) i18n
+ + link (sofnt:link)

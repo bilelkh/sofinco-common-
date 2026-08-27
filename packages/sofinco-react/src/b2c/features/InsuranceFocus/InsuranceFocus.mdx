@@ -1,0 +1,118 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as InsuranceFocusStories from "./InsuranceFocus.stories";
+
+<Meta of={InsuranceFocusStories} />
+
+# InsuranceFocus
+
+The `InsuranceFocus` component highlights an **insurance offer** (protected
+loan, borrower insurance…) via a framed navy card: title + description + CTA
+on the left, image on the right on desktop, all stacked on mobile.
+
+It sits between other sections of a product page with a soft blue page-wash
+background (`--color-primary-subtle`, resolved to `--color-primary-subtle`) that spans edge
+to edge of the viewport, while the navy card stays capped at 1232&nbsp;px.
+
+## Composition
+
+- A **required title** rendered via `<Title variant="white">` (shared DS) —
+  H2 configurable via `sofmix:headingStyle`, white text on the navy background.
+- A **required descriptive paragraph** (`<p>`), rendered below the title.
+- A **required CTA** — accent turquoise button. The component receives a full
+  `CtaProps` (via the `cta` prop) and applies `variant="accent"` +
+  `size="large"` + `ctaSection="insurance-focus"` as an override to lock the
+  visual style. JCR mixin `sofmix:cta`.
+- A **required illustrative image** (lifebuoy, safe, app screen…) — rounded
+  corners, framed to portrait ~1:1 on mobile (279×293) and landscape ~1.75:1
+  on desktop (494×282). Lazy-loaded.
+
+## Jahia contribution rules
+
+- **Title** (`jcr:title`): required on both the CND and DS side — always rendered.
+- **Description** (`description`): required — short to medium paragraph
+  (ideally 3-5 lines).
+- **Image** (`image`): required on the CND side. Ideal source ratios : ~1:1
+  portrait for mobile (279×293), ~1.75:1 landscape for desktop (494×282).
+  A generic mid-ratio source will be **auto-cropped** via `object-fit: cover`
+  — provide the widest / tallest safe area you can to avoid unwanted crops.
+- **Image alt** (`imageAlt`): optional — leave empty if the image is
+  decorative (recommended when the informative message is carried by the text).
+- **CTA** (`sofmix:cta`): label + target required. The DS enforces the
+  `variant="accent"` + `ctaSection="insurance-focus"` style.
+
+## Heading configuration
+
+The main title uses the `sofmix:headingStyle` mixin:
+
+- `titleLevel` — semantic level (`h1`…`h6`, default `h2`).
+- `titleStyle` — visual style independent from the level (default `h2`).
+
+`Title` receives `variant="white"` to adapt the title color to the dark navy
+background.
+
+## Responsive behavior
+
+- **Mobile** (default): 1 stacked column — title → description → CTA →
+  image. Card padding `--sof-sp-7 --sof-sp-5 --sof-sp-5 --sof-sp-5`.
+- **Desktop** (≥ `--medium-up`): 55/45 grid — content on the left, image on
+  the right, vertically centered. Card padding `--sof-sp-8`, gap `--sof-sp-8`.
+- The `--color-primary-subtle` background (soft blue page wash) spans the full width;
+  the navy card is capped and centered via the inner container
+  `max-width: 1232px`.
+
+## Tracking analytics
+
+The CTA is a shared `Cta` with `ctaSection="insurance-focus"`. Pass the
+tracking payload directly in `cta.tracking` (`{ event, ...customData }`) — it
+is carried by `data-tracking` on the link and then pushed to
+`window.dataLayer` by the project-wide tracking bootstrap
+(`#lib/tracking-bootstrap` in `template-set`), which auto-merges the page context.
+
+## Accessibility
+
+- `<section>` landmark **always labeled** (WCAG 2.4.6): `aria-labelledby`
+  points to the visible `<Title>` (id generated via `React.useId()`).
+- Heading hierarchy: `<h2>` by default (configurable via `sofmix:headingStyle`).
+- Image: contributed `alt`. Empty (`""`) allowed for decorative visuals.
+- CTA: real `<a href>`, focus visibility handled by the DS `Cta`.
+- Contrast: white text on navy `--color-primary-base` background — verified
+  WCAG AA for body text (ratio ≥ 4.5:1).
+- Perf: `loading="lazy"` + `decoding="async"` — image is usually mid-page,
+  outside the LCP.
+
+## Usage
+
+```tsx
+import { InsuranceFocus } from "sofinco-react";
+
+export function CreditRenouvelablePage() {
+  return (
+    <InsuranceFocus
+      title={{
+        children: "Je protège mes projets en toutes circonstances",
+        as: "h2",
+        visualStyle: "h2",
+      }}
+      description="En cas d'accident de la vie, soyez rassuré : votre assurance Sofinco⁽⁸⁾ prend le relais sur vos mensualités."
+      imageSrc="/images/samples/InsuranceFocus/lifebuoy.webp"
+      imageAlt=""
+      cta={{
+        label: "Je découvre l'assurance",
+        href: "/assurance",
+        target: "_self",
+        variant: "accent",
+        ctaSection: "insurance-focus",
+        tracking: { event: "click_cta", cta_name: "Je découvre l'assurance" },
+      }}
+    />
+  );
+}
+```
+
+## Props
+
+<ArgTypes of={InsuranceFocusStories} />
+
+## All Stories
+
+<Stories />

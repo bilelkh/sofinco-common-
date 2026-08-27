@@ -1,0 +1,3 @@
+[sofnt:mentionLegal] > jnt:content, mix:title, sofmix:component orderable
+ - initiallyOpen (boolean) = 'false' autocreated
+ + * (sofnt:mentionLegalItem)

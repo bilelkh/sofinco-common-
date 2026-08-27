@@ -1,0 +1,88 @@
+.guide {
+	display: block;
+}
+
+/* Edit-mode mirror of the production Guide block (sofinco-react). Visuals
+   replicated locally so editors get a representative preview while the
+   markup stays free of `@jahia/javascript-modules-library` imports inside
+   the design system. */
+
+.guide__container {
+	background-color: var(--color-primary-base);
+	border-radius: var(--radius-3xl);
+	padding: calc(var(--spacing) * 6);
+	border: 1px dashed rgba(255, 255, 255, 0.25);
+	color: var(--color-white);
+	font-family: var(--font-sans);
+}
+
+.guide__grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: calc(var(--spacing) * 10);
+}
+
+.guide__intro {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: calc(var(--spacing) * 6);
+}
+
+.guide__title {
+	margin: 0;
+	color: var(--color-white);
+	font-weight: var(--font-weight-bold);
+	letter-spacing: -0.01em;
+}
+
+.guide__title--h2 {
+	font-family: var(--font-display);
+	font-size: var(--text-3xl);
+	line-height: var(--text-3xl--line-height);
+}
+
+.guide__title--h3 {
+	font-family: var(--font-display);
+	font-size: var(--text-xl);
+	line-height: var(--leading-normal);
+}
+
+.guide__cta-preview {
+	display: inline-flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	background: var(--color-accent-base);
+	color: var(--color-primary-base);
+	padding: calc(var(--spacing) * 3) calc(var(--spacing) * 6);
+	border-radius: var(--radius-full);
+	font-weight: var(--font-weight-bold);
+	font-size: var(--text-sm);
+	line-height: 1;
+}
+
+.guide__edit-controls {
+	display: flex;
+	justify-content: flex-start;
+	padding-top: calc(var(--spacing) * 4);
+}
+
+@media (min-width: 768px) {
+	.guide__container {
+		padding: calc(var(--spacing) * 14);
+	}
+
+	.guide__grid {
+		grid-template-columns: 1fr 1.4fr;
+		gap: calc(var(--spacing) * 14);
+	}
+
+	.guide__intro {
+		gap: calc(var(--spacing) * 8);
+	}
+
+	.guide__categories {
+		gap: calc(var(--spacing) * 10);
+	}
+}

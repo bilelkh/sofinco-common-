@@ -1,0 +1,6 @@
+.editPlaceholder {
+	color: #c0c0c0;
+	font-style: italic;
+	cursor: not-allowed;
+	pointer-events: none;
+}

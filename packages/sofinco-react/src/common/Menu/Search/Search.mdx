@@ -1,0 +1,79 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as SearchStories from "./Search.stories";
+
+<Meta of={SearchStories} />
+
+# Search
+
+The header search field used in the desktop `TopBar`. A capsule input on the navy header that,
+once focused, reveals a dropdown panel with quick search-term suggestions and/or rich result
+entries, plus a "see all results" CTA.
+
+## How It Works
+
+- The field is a plain `GET` form posting `query` to `action` — it works without JavaScript.
+- On focus/click the panel opens; it closes on outside click or `Escape`.
+- The panel only appears when there is content to show (`suggestions` or `results`).
+- Submitting the form, clicking a suggestion, or the "see all results" CTA fires a
+  `search_event` analytics event via the shared tracking pipeline (`data-tracking` / `trackEvent`).
+
+## Scope
+
+Desktop only for now — it is rendered inside `TopBar`, which is hidden below the `medium` breakpoint.
+
+## Data Model
+
+- `action` — form submit URL (required)
+- `placeholder` — input placeholder + accessible label
+- `allResultsLabel` / `allResultsHref` — the bottom CTA label and target (href falls back to `action`)
+- `suggestions` — `{ label, termDisplayTitle }[]` quick search terms
+- `results` — `{ title, description, href }[]` rich result entries
+
+## Usage
+
+```tsx
+import { Search } from "sofinco-react";
+
+<Search
+  action="/recherche"
+  placeholder="Rechercher"
+  allResultsLabel="Voir tous les résultats"
+  allResultsHref="/recherche"
+  suggestions={[{ label: "Prêt personnel", termDisplayTitle: "/recherche?query=pret-personnel" }]}
+  results={[
+    {
+      title: "Le prêt personnel Sofinco",
+      description: "Financez tous vos projets.",
+      href: "/pret-personnel",
+    },
+  ]}
+/>;
+```
+
+In Jahia, `Search` is mounted as an `<Island>` (it owns `useState`/`useEffect`) and injected into
+`TopBar` through the `slotSearch` slot via `<RenderChild>`.
+
+## Story Variants
+
+### Default
+
+<Canvas of={SearchStories.Default} />
+
+### With Suggestions And Results
+
+<Canvas of={SearchStories.WithSuggestionsAndResults} />
+
+## Props
+
+<ArgTypes of={SearchStories} />
+
+## Integration Notes
+
+- Initial `useState` is a constant (`false`) so the SSR and first client paint match — required for
+  the component to hydrate cleanly as a Jahia Island.
+- Keep suggestion/result lists short; the panel is not internally scrollable.
+
+## All Stories
+
+<Stories />

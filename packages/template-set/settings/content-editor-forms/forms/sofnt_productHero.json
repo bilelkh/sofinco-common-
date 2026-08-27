@@ -1,0 +1,51 @@
+{
+	"nodeType": "sofnt:productHero",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "sofnt:productHero",
+					"fields": [
+						{ "name": "jcr:title", "rank": "1.0" },
+						{ "name": "productLabel", "rank": "2.0" },
+						{ "name": "description", "rank": "3.0" },
+						{ "name": "rateValue", "rank": "4.0" },
+						{ "name": "rateLabel", "rank": "5.0" },
+						{ "name": "characteristics", "rank": "6.0" },
+						{ "name": "imageDesktop", "rank": "7.0" }
+					]
+				},
+				{
+					"name": "sofmix:headingStyle",
+					"fields": [
+						{
+							"name": "titleLevel",
+							"rank": "1.0",
+							"defaultValues": [{ "value": "h1" }]
+						},
+						{
+							"name": "titleStyle",
+							"rank": "2.0",
+							"defaultValues": [{ "value": "h1" }]
+						}
+					]
+				},
+				{
+					"name": "sofmix:simulatorCta",
+					"fields": [
+						{ "name": "ctaLabel", "rank": "1.0" },
+						{ "name": "product", "rank": "2.0" },
+						{ "name": "sourceId", "rank": "3.0" },
+						{ "name": "simProject", "rank": "4.0" },
+						{ "name": "simSubProject", "rank": "5.0" },
+						{ "name": "simLoa", "rank": "6.0" },
+						{ "name": "simIdcatorigin", "rank": "7.0" },
+						{ "name": "simHashFragment", "rank": "8.0" }
+					]
+				}
+			]
+		}
+	]
+}

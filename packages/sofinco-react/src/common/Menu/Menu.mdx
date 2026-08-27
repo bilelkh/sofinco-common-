@@ -1,0 +1,119 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as MenuStories from "./Menu.stories";
+
+<Meta of={MenuStories} />
+
+# Menu
+
+A responsive navigation component for the main site header.
+
+The component automatically switches between desktop and mobile navigation based on viewport width, while keeping a consistent data model for sections, links, and logo metadata.
+
+## How It Works
+
+The component chooses its rendering mode from viewport width:
+
+- under `1092px`, it renders the mobile header and `MenuMobile` modal
+- at `1092px` and above, it renders desktop sections and actions inline
+
+It also accepts optional `children` to extend header content in mobile mode.
+
+## Purpose
+
+Use this component for the primary header navigation only.
+
+It supports:
+
+- Multi-level navigation sections
+- Optional highlighted section cards
+- Dedicated desktop and mobile quick links
+- Login, search, download-app and loan CTAs (the last three surface in the mobile chrome)
+
+## Responsive Behavior
+
+The component uses a width threshold of 1092px.
+
+- Under 1092px: mobile layout with a modal-driven menu
+- 1092px and above: desktop mega-menu layout with inline actions
+
+## Composition
+
+Internally, the component is composed of:
+
+- Logo block and structural header wrapper
+- Desktop sections renderer (`Sections`)
+- Mobile modal menu (`MenuMobile`) — receives the search / download-app / login CTAs as header chrome and `ctaLoan` as its bottom CTA
+- Optional desktop quick links (`linksPropsDesktop`) + login CTA in the desktop actions area
+- Optional children content injected into the header container
+
+## Data Model
+
+The required and optional props are based on a structured model:
+
+- logo: object containing src, alt, label, href
+- sections: array of section definitions with subsections and optional card
+- linksPropsDesktop: optional array of quick links shown on desktop
+- linksPropsMobile: optional array of quick links shown in the mobile menu
+- ctaLogin: optional login CTA — shown in the desktop actions area, the mobile chrome, and (when set) auto-rendered to the right of the mobile top bar
+- ctaSearch: optional search CTA (icon-only, mobile chrome)
+- ctaDownloadApp: optional "download the app" CTA (mobile chrome)
+- ctaLoan: optional CTA pinned at the bottom of the mobile menu
+- children / slotCtaMobile: optional custom content rendered in the header container
+
+## Usage
+
+```tsx
+import { Menu } from "sofinco-react";
+
+const sections = [
+  {
+    title: "Nos Solutions",
+    subsections: [
+      {
+        title: "Prêt personnel",
+        links: [{ label: "Le prêt personnel", href: "/pret-personnel" }],
+      },
+    ],
+  },
+];
+
+const logo = {
+  src: "/images/logo/logos_sofinco_large.min.svg",
+  alt: "Sofinco",
+  label: "Accueil Sofinco",
+  href: "/",
+};
+
+<Menu
+  logo={logo}
+  sections={sections}
+  linksPropsDesktop={[{ href: "/aide", label: "Aide et contact" }]}
+  linksPropsMobile={[{ href: "/aide", label: "Aide et contact" }]}
+/>;
+```
+
+## Story Variants
+
+### Default
+
+<Canvas of={MenuStories.Default} />
+
+### With Global CTA
+
+<Canvas of={MenuStories.WithGlobalCta} />
+
+## Props
+
+<ArgTypes of={MenuStories} />
+
+## Integration Notes
+
+- Keep section titles concise to avoid overflow in desktop navigation.
+- Prefer meaningful logo alt and label values for accessibility.
+- Pass stable link href values to prevent unnecessary re-renders in list mapping.
+- When using children, ensure content does not conflict with mobile modal trigger placement.
+
+## All Stories
+
+<Stories />

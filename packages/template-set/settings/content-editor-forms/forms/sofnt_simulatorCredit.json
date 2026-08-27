@@ -1,0 +1,31 @@
+{
+	"nodeType": "sofnt:simulatorCredit",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "sofnt:simulatorCredit",
+					"fields": [
+						{ "name": "jcr:title", "rank": "1.0" },
+						{ "name": "amountPlaceholder", "rank": "2.0" }
+					]
+				},
+				{
+					"name": "sofmix:simulatorCta",
+					"fields": [
+						{ "name": "ctaLabel", "rank": "1.0" },
+						{ "name": "product", "rank": "2.0" },
+						{ "name": "sourceId", "rank": "3.0" },
+						{ "name": "simProject", "rank": "4.0" },
+						{ "name": "simSubProject", "rank": "5.0" },
+						{ "name": "simLoa", "rank": "6.0" },
+						{ "name": "simIdcatorigin", "rank": "7.0" },
+						{ "name": "simHashFragment", "rank": "8.0" }
+					]
+				}
+			]
+		}
+	]
+}

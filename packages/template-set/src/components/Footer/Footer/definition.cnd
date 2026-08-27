@@ -1,0 +1,28 @@
+[sofnt:partnerList] > sofnt:listBase
+ + * (sofnt:partner) = sofnt:partner
+
+[sofnt:categoryLinkList] > sofnt:listBase
+ + * (sofnt:categoryLink) = sofnt:categoryLink
+
+[sofnt:linkList] > sofnt:listBase
+ + * (sofnt:footerLink) = sofnt:footerLink
+
+[sofnt:socialLinkList] > sofnt:listBase
+ + * (sofnt:socialLink) = sofnt:socialLink
+
+[sofnt:footer] > jnt:content, mix:title, sofmix:component
+ - mainLogo (weakreference, picker[type='image']) mandatory
+ - mainLogoAlt (string) i18n
+ - mainLogoLink (weakreference, picker[type='editoriallink'])
+ 
+ + qrCode (sofnt:qrSticker) = sofnt:qrSticker mandatory autocreated
+ + avisClients (sofnt:avisClientsSticker) = sofnt:avisClientsSticker mandatory autocreated
+ 
+ - socialTitle (string) = 'SUIVEZ-NOUS' i18n autocreated
+ - bottomSubtitle (string) i18n
+ - legalMention (string, richtext[ckeditor.toolbar='Simple']) i18n
+
+ + partners (sofnt:partnerList) = sofnt:partnerList mandatory autocreated
+ + categories (sofnt:categoryLinkList) = sofnt:categoryLinkList mandatory autocreated
+ + bottomLinks (sofnt:linkList) = sofnt:linkList mandatory autocreated
+ + socialLinks (sofnt:socialLinkList) = sofnt:socialLinkList mandatory autocreated

@@ -1,0 +1,118 @@
+@import "@styles/base.css";
+
+.social-proof {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	/* Décalage vertical alterné des cartes (maquette : 64 px sur desktop). */
+	--social-proof-stagger: calc(var(--spacing) * 8);
+	width: 100%;
+	/* Les slides débordent volontairement du conteneur (`overflow: visible` sur le
+	   Swiper) : c'est la section qui recadre. */
+	overflow: hidden;
+	background-color: var(--color-primary-surface);
+	padding-block: calc(var(--spacing) * 20);
+}
+
+/* Le bloc n'est pas prévu en mobile par la maquette B2B. Masqué en CSS : `display: none`
+   le retire aussi de l'arbre d'accessibilité, et le rendu SSR reste identique côté
+   serveur et côté client (une Island Jahia ne connaît pas le viewport). */
+@media (--small-down) {
+	.social-proof {
+		display: none;
+	}
+}
+
+@media (--medium-up) {
+	.social-proof {
+		--social-proof-stagger: calc(var(--spacing) * 16);
+		padding-block: calc(var(--spacing) * 30);
+	}
+}
+
+.social-proof__container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 10);
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	padding-inline: calc(var(--spacing) * 6);
+}
+
+/* Sélecteur à deux classes : `SectionHeading.module.css` pose `gap: 16px` et
+   `margin-bottom: 80px` avec une spécificité identique. L'espacement vertical est ici
+   celui du conteneur (40 px), et la maquette veut 24 px entre titre et accroche. */
+.social-proof__container .social-proof__header {
+	max-width: 656px;
+	gap: calc(var(--spacing) * 6);
+	margin-bottom: 0;
+}
+
+.social-proof__carousel {
+	width: 100%;
+}
+
+/* Idem : `.swiper` déclare `overflow: hidden` à la même spécificité. */
+.social-proof__carousel .social-proof__swiper {
+	overflow: visible;
+}
+
+/* Les cartes sont alignées sur leur milieu, comme la rangée de la maquette : c'est ce
+   qui transforme le rembourrage asymétrique des slides en décalage vertical. */
+.social-proof__swiper :global(.swiper-wrapper) {
+	align-items: center;
+}
+
+.social-proof__slide {
+	display: flex;
+	width: min(100%, 427px);
+	height: auto;
+}
+
+.social-proof__slide--raised {
+	padding-bottom: var(--social-proof-stagger);
+}
+
+.social-proof__slide--lowered {
+	padding-top: var(--social-proof-stagger);
+}
+
+.social-proof__navigation {
+	display: flex;
+	justify-content: center;
+	gap: calc(var(--spacing) * 4);
+}
+
+.social-proof__nav-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 40px;
+	border: none;
+	border-radius: var(--radius-full);
+	background-color: var(--color-primary-contrast);
+	color: var(--color-blue-50);
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.social-proof__nav-button:hover {
+	background-color: var(--color-primary-strong);
+}
+
+.social-proof__nav-button:focus-visible {
+	outline: 2px solid var(--color-accent-base);
+	outline-offset: 2px;
+}
+
+.social-proof__nav-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* La maquette réutilise `arrow_forward` pivoté pour le bouton « précédent ». */
+.social-proof__nav-icon--prev {
+	display: inline-flex;
+	rotate: 180deg;
+}

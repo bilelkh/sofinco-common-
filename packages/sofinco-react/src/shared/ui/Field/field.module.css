@@ -1,0 +1,242 @@
+@import "@styles/base.css";
+
+/* Coquille commune à TextField, Textarea et Select : libellé, boîte bordée,
+   texte d'aide et message d'erreur. Les trois composants partagent ce module
+   plutôt que d'en recopier les états — c'est la seule façon de garantir qu'un
+   ajustement de la maquette les touche tous les trois d'un coup.
+
+   Référence Figma : « Form / Textfield » (node 12232:3748). Les commentaires
+   `form/fields/*` rappellent la variable Figma d'origine de chaque valeur. */
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+	color: var(--color-primary-base);
+}
+
+/* `_FormLabel` (node 12232:3509) : `form/label/text` #212121 et `Body/Md/Medium`
+   (Figtree 500, 16/24) — et non le navy en 14px hérité d'avant la migration.
+   Les trois propriétés sont posées à la main plutôt que `composes: text` :
+   celui-ci fixe déjà `font-weight`, et l'emporterait ou non selon l'ordre de
+   bundling des deux modules. */
+.field__label {
+	display: inline-flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 1);
+	color: var(--color-neutral-90);
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+}
+
+.field__required {
+	color: var(--color-danger-base);
+}
+
+/* `.sr-only` de `base.css` n'est pas visible depuis un module CSS (les classes
+   y sont hachées) : on le redéclare localement pour `hideLabel`. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Chaque état ne réécrit que ces cinq variables — la géométrie de la boîte,
+   elle, n'est déclarée qu'une fois. C'est ce qui permet aux modificateurs
+   `--hovered` et `--focused` (matrice d'états) de produire exactement le même
+   rendu que les pseudo-classes, sans dupliquer une seule règle. */
+.field__box {
+	--field-bg: var(--color-neutral-05); /* form/fields/background  #fafafa */
+	--field-border: var(--color-neutral-30); /* form/fields/border      #e0e0e0 */
+	--field-fg: var(--color-neutral-90); /* form/fields/text        #212121 */
+	--field-icon: var(--color-neutral-60); /* form/fields/icon        #757575 */
+	/* Couleur de l'anneau de focus, distincte de la bordure : au repos focalisé
+	   la maquette pose `effect/focus` (#00334d) sur une bordure `#002437`. */
+	--field-focus-ring: var(--color-primary-base); /* effect/focus */
+	--field-ring: 0 0 0 0 transparent;
+
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+	/* `min-height` et non `height` : la maquette fixe 48px, mais un `<textarea>`
+	   doit pouvoir grandir avec ses lignes. */
+	min-height: 3rem;
+	/* Asymétrique dans la maquette : l'icône de fin est plus près du bord. */
+	padding-inline: calc(var(--spacing) * 3) calc(var(--spacing) * 2);
+
+	background: var(--field-bg);
+	border: 1px solid var(--field-border);
+	/* Le cran `Sm` de Figma vaut 8px, soit `--radius-lg` ici — surtout pas
+	   `--radius-sm`, qui vaut 4px. */
+	border-radius: var(--radius-lg);
+	box-shadow: var(--field-ring);
+	color: var(--field-fg);
+
+	transition:
+		border-color 0.15s ease,
+		box-shadow 0.15s ease,
+		background-color 0.15s ease;
+}
+
+/* Les pseudo-classes sont enveloppées dans `:where()` pour ne rien peser : le
+   sélecteur reste à la spécificité de `.field__box` seul, et ce sont donc les
+   états déclarés plus bas (erreur, désactivé) qui l'emportent. Sans ça,
+   `:focus-within` (0,2,0) battrait `--error` (0,1,0) et repeindrait en navy la
+   bordure d'un champ en erreur dès qu'on y entre. */
+.field__box:where(:hover):where(:not(.field__box--disabled, .field__box--readonly)),
+.field__box--hovered {
+	--field-border: var(--color-primary-strong); /* form/fields/border-hovered */
+	--field-icon: var(--color-primary-strong); /* form/fields/icon-hovered   */
+}
+
+.field__box:where(:focus-within):where(:not(.field__box--disabled, .field__box--readonly)),
+.field__box--focused {
+	--field-border: var(--color-primary-strong);
+	--field-icon: var(--color-primary-strong);
+	/* Anneau extérieur, pas `inset` : le liseré blanc de 1px sépare la bordure
+	   de l'anneau de 3px. `box-shadow` ne participant pas au flux, la boîte ne
+	   se décale pas pour autant. `--field-focus-ring` est résolu à l'usage :
+	   sur un champ en erreur l'anneau reprend donc le rouge posé plus bas. */
+	--field-ring: 0 0 0 1px var(--color-white), 0 0 0 3px var(--field-focus-ring);
+}
+
+/* L'icône de tête ne rougit pas en erreur — la maquette ne teinte que le
+   pictogramme d'alerte de fin de champ (`.field__icon--alert`). */
+.field__box--error {
+	--field-bg: var(--color-danger-subtle); /* form/fields/background-errored */
+	--field-border: var(--color-danger-base); /* form/fields/border-errored     */
+	--field-focus-ring: var(--color-danger-base); /* effect/focus-danger            */
+}
+
+.field__box--disabled {
+	--field-bg: var(--color-neutral-20); /* form/fields/background-disabled #eee    */
+	--field-border: var(--color-neutral-20); /* form/fields/border-disabled     #eee    */
+	--field-fg: var(--color-neutral-80); /* form/fields/text-disabled       #424242 */
+	--field-icon: var(--color-neutral-80);
+	--field-ring: 0 0 0 0 transparent;
+
+	cursor: not-allowed;
+}
+
+/* Pas de pendant dans la maquette : état propre au code, calé sur les neutres
+   pour rester lisible sans inventer de couleur. */
+.field__box--readonly {
+	--field-bg: var(--color-primary-subtle);
+	--field-border: var(--color-neutral-30);
+}
+
+/* Une zone de saisie multiligne s'aligne en haut de boîte, pas au centre, et
+   respire verticalement — sans quoi la première ligne colle à la bordure.
+   12px de part et d'autre d'une ligne de 24px reconstituent les 48px. */
+.field__box--multiline {
+	align-items: flex-start;
+	padding-block: calc(var(--spacing) * 3);
+}
+
+.field__control {
+	composes: text from "@styles/utilities/typography.module.css";
+	flex: 1 1 auto;
+	/* `width: 100%` seul ne suffit pas : la largeur par défaut d'un `<input>`
+	   (attribut `size`) sert de base flex et déborderait des icônes. */
+	min-width: 0;
+	padding: 0;
+
+	background: transparent;
+	border: none;
+	outline: none;
+	color: inherit;
+	font: inherit;
+	/* Chiffres alignés et de hauteur constante, comme dans la maquette. */
+	font-feature-settings: "lnum" 1, "tnum" 1;
+
+	&::placeholder {
+		color: var(--color-neutral-60); /* form/fields/placeholder #757575 */
+		opacity: 1;
+	}
+
+	&:disabled {
+		color: inherit;
+		cursor: not-allowed;
+		/* Safari force sa propre couleur de texte sur un champ désactivé. */
+		-webkit-text-fill-color: currentcolor;
+		opacity: 1;
+	}
+}
+
+.field__icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	color: var(--field-icon);
+
+	& svg {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+}
+
+/* Le pictogramme d'alerte garde le rouge quel que soit l'état de la boîte. */
+.field__icon--alert {
+	color: var(--color-danger-base); /* form/fields/icon-errored #d82e2d */
+}
+
+.field__clear {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	/* Navy constant dans la maquette, sans lien avec la couleur du texte. */
+	color: var(--color-primary-strong);
+
+	&:hover {
+		color: var(--color-primary-base);
+	}
+
+	& svg {
+		width: 1rem;
+		height: 1rem;
+	}
+}
+
+.field__footer {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: calc(var(--spacing) * 3);
+}
+
+.field__hint {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	color: var(--color-text-muted);
+}
+
+.field__error {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	/* Le message est porté par un `<em>` (role="alert") : on neutralise
+	   l'italique du UA, la couleur danger suffit à le signaler. */
+	font-style: normal;
+	color: var(--color-danger-base);
+}
+
+.field__counter {
+	composes: text-s from "@styles/utilities/typography.module.css";
+	flex-shrink: 0;
+	margin-left: auto;
+	color: var(--color-text-muted);
+	font-variant-numeric: tabular-nums;
+}

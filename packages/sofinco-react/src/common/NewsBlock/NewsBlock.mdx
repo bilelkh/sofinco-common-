@@ -1,0 +1,100 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as NewsBlockStories from "./NewsBlock.stories";
+
+<Meta of={NewsBlockStories} />
+
+# NewsBlock
+
+A content section that displays a list of news article cards with a header, title, and subtitle.
+
+## How It Works
+
+NewsBlock composes several elements:
+
+- `header`: small uppercase label displayed above the title (e.g. "Actualités")
+- `title`: main section heading rendered via the `Title` component as `h2`
+- `subtitle`: supporting paragraph below the title
+- `cards`: array of `CardProps` objects — each rendered as a `Card` component
+- `className`: optional extra class for layout overrides
+
+Cards are laid out in a horizontal row on desktop and stack vertically on mobile (breakpoint: `--medium-up`).
+
+### CardProps Details
+
+Each item in `cards` must match the `CardProps` type:
+
+```ts
+type CardProps = {
+  img: {
+    src: string;
+    alt: string;
+  };
+  title: string;
+  description: string;
+  ctaProps: CtaProps;
+  date: string;
+  tag: string;
+  className?: string;
+};
+```
+
+Field notes:
+
+- `img.src`: image URL used by the card visual
+- `img.alt`: required accessible alternative text for the image
+- `title`: card heading shown as article title
+- `description`: short body preview text
+- `date`: publication date shown in the card header
+- `tag`: category label shown next to date
+- `ctaProps`: CTA configuration — `variant` defaults to `"accent"` and `size` defaults to `"small"`, but both can be overridden. Other fields are forwarded to the shared `Cta` component.
+- `className`: optional class for one-off styling overrides
+
+For `ctaProps`, the most common fields in this context are:
+
+- `href`: target URL for the article
+- `label`: button/link text (for example: `Découvrir l'article`)
+- `type`: generally `button`
+- `variant`: defaults to `"accent"`, override if needed
+- `size`: defaults to `"small"`, override if needed
+
+## Basic Usage
+
+```tsx
+import { NewsBlock } from "sofinco-react";
+
+<NewsBlock
+  header="Actualités"
+  title="Les dernières nouvelles"
+  subtitle="Retrouvez toutes nos actualités financières."
+  cards={[
+    {
+      img: { src: "/images/article.jpg", alt: "Article" },
+      title: "Mon article",
+      description: "Description courte.",
+      date: "12 Avril 2026",
+      tag: "Finance",
+      ctaProps: {
+        href: "/articles/mon-article",
+        label: "Découvrir l'article",
+        type: "button",
+        variant: "accent",
+        size: "small",
+      },
+    },
+  ]}
+/>;
+```
+
+## Story Variants
+
+<Canvas of={NewsBlockStories.Default} />
+<Canvas of={NewsBlockStories.WithTwoCards} />
+
+## Props
+
+<ArgTypes of={NewsBlockStories} />
+
+## All Stories
+
+<Stories />

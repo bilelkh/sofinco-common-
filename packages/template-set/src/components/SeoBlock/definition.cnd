@@ -1,0 +1,6 @@
+[sofnt:seoBlock] > jnt:content, mix:title, sofmix:component
+ - jcr:title (string) mandatory i18n
+ - titleSize (string, choicelist[resourceBundle]) = 'h2' mandatory autocreated indexed=no < 'h2', 'h3'
+ - textColor (string, choicelist[resourceBundle]) = 'primary' autocreated indexed=no < 'primary', 'accent', 'green', 'red'
+ - isCentered (boolean) = false autocreated indexed=no
+ - content (string, richtext[ckeditor.toolbar='Simple']) i18n

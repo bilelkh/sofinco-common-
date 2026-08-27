@@ -1,0 +1,83 @@
+import { Meta, Stories, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as SimulatorBlockStories from "./SimulatorBlock.stories";
+
+<Meta of={SimulatorBlockStories} />
+
+# SimulatorBlock
+
+The `SimulatorBlock` component is a standalone simulator bar that can be placed on any product page, anywhere after the hero section. It allows users to enter a loan amount and navigate directly to the simulator at the amount selection step.
+
+## Composition
+
+- A **heading** (configurable tag and visual style via `TitleProps`).
+- A **numeric amount input** with required min/max bounds and placeholder.
+- A **CTA button** that submits the form.
+
+## Jahia contribution rules
+
+- **Title**: required. Pass a `TitleProps` object — at minimum `{ children, as }`. `visualStyle` is forced to `"none"` so the component's own CSS controls the typography (R.G. 1); a `className` you pass is merged on top of the component's own title class.
+- **Amount placeholder**: required. Label displayed inside the input field (e.g. `"J'ai besoin de"`).
+- **Amount min / max**: required, configurable per product (PB, CR…) — R.G. 5. If `min > max` they are swapped so the input stays submittable.
+- **CTA**: accepts only `cta.label` (required button text, e.g. `"Je simule mon crédit"`) and `cta.tracking` (optional analytics payload). The CTA is always rendered as the form's submit button with a fixed `variant="accent"` and `ctaSection="simulator-block-cta"`; every other `CtaProps` field (`href`/`target`/`isLoading`/`isDisabled`/`onClick`/`type`/`variant`/icons…) is intentionally **not** accepted so a consumer can't break form submission or the visual contract.
+- **`onSimulate`**: required. Function called with the entered amount when the form is submitted. The host (Jahia page template) is responsible for building the redirect URL and navigating — R.G. 5.
+- **Colors**: not configurable — R.G. 6.
+
+## Behavior
+
+- Submitting the form (button click or Enter key) validates the input with native HTML5 constraints (`required`, `min`, `max`).
+- On valid submission, the `onSimulate(amount)` callback is called with the entered value as a `number`.
+- The host is responsible for the redirect — typically building a URL with the amount and navigating:
+  ```ts
+  onSimulate={(amount) => {
+    window.location.href =
+      `https://www.sofinco.fr/parcours-simulateur?idcatorigin=home_page&project=AUTO&amount=${amount}#/auto-recherche`;
+  }}
+  ```
+- The user lands directly on the duration/monthly payment step of the simulator since the amount is pre-filled.
+
+## Responsive behavior
+
+- This component is intended for **desktop only** (R.G. 2). On mobile, a sticky CTA is used instead.
+- Hidden below `--medium-up` (1024px) via `display: none`.
+- At `--medium-up` and above: title on the left, input + CTA in a single row on the right.
+
+## Accessibility
+
+- The amount input is associated with a visually hidden `<label>` via `htmlFor`/`id` (unique per instance via `useId()`).
+- The `<section>` with `aria-label="Simulateur de crédit"` is implicitly a `region` landmark.
+- The CTA is a native `<button type="submit">`, so keyboard Enter submission works out of the box.
+
+## Usage
+
+```tsx
+import { SimulatorBlock } from "sofinco-react";
+
+export function MyPage() {
+  return (
+    <SimulatorBlock
+      title={{
+        children: "Financez vos projets avec le crédit conso Sofinco",
+        as: "h1",
+        visualStyle: "none",
+      }}
+      amountPlaceholder="J'ai besoin de"
+      amountMin={100}
+      amountMax={75000}
+      cta={{
+        label: "Je simule mon crédit",
+      }}
+      onSimulate={(amount) => {
+        window.location.href = `https://www.sofinco.fr/parcours-simulateur?idcatorigin=home_page&project=AUTO&amount=${amount}#/auto-recherche`;
+      }}
+    />
+  );
+}
+```
+
+## Props
+
+<ArgTypes of={SimulatorBlockStories} />
+
+## All Stories
+
+<Stories />

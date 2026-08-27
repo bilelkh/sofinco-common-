@@ -1,0 +1,39 @@
+.navLinkEdit{
+  margin-left: 16px;
+  padding-top: 0px;
+}
+.navLink{
+  padding-bottom: 24px;
+}
+.navLink, .navLinkEdit{
+  display: flex;
+  flex-direction: column;
+}
+.navLink a, .navLinkEdit a {
+  text-decoration: none;
+}
+.titleEdit {
+  background-color: #539a91;
+  padding-left: 16px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+.title {
+  margin-bottom: 24px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title, .titleEdit {
+  font-family: "Cutta", sans-serif;
+  font-weight: 800;
+  font-style: Extra Bold;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -2%;
+  text-transform: uppercase;
+}

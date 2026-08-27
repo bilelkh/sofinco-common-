@@ -1,0 +1,69 @@
+@import "@/styles/base.css";
+
+.offer-slide-colored {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--spacing) * 10);
+	color: var(--color-primary-base);
+	text-align: center;
+	box-sizing: border-box;
+
+	@media (--small-up) {
+		flex-direction: row-reverse;
+	}
+}
+
+.offer-slide-colored__illustration-wrapper {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	max-width: 330px;
+}
+
+.offer-slide-colored__illustration {
+	width: 100%;
+	/* Sans `height: auto`, l'attribut `height` de l'<img> (hint de dimension hérité)
+	   deviendrait la hauteur rendue et écraserait le ratio réel du visuel. */
+	height: auto;
+	border-radius: var(--radius-2xl);
+}
+
+.offer-slide-colored__content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 6);
+}
+
+.offer-slide-colored__content * {
+	text-wrap: auto;
+	text-wrap: pretty;
+}
+
+.offer-slide-colored__title {
+	composes: h3 from "@styles/utilities/typography.module.css";
+	text-align: start;
+}
+
+.offer-slide-colored__description {
+	font-size: var(--text-base);
+	text-align: start;
+}
+
+.offer-slide-colored__eyebrow {
+	font-weight: var(--font-weight-bold);
+	text-align: start;
+	width: 100%;
+}
+
+.offer-slide-colored__cta {
+	margin-top: calc(var(--spacing) * 4);
+	width: fit-content;
+
+	@media (--small-up) {
+		align-self: flex-start;
+	}
+}

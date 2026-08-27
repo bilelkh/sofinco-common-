@@ -1,0 +1,49 @@
+// ── Mixin partagé pour les images (V1, V2, V3) ─────────────────────────────
+[sofmix:heroImage] mixin
+ - imageBeforeAnim (weakreference, picker[type='image']) < jmix:image
+ - imageDesktop    (weakreference, picker[type='image']) < jmix:image
+ - imageTablet     (weakreference, picker[type='image']) < jmix:image
+ - imageMobile     (weakreference, picker[type='image']) < jmix:image
+
+// ── Mixin tracking GA view_promotion (impressions de bannières) ────────────
+[sofmix:promotionTracking] mixin
+ - promotionId    (string)
+ - promotionName  (string) i18n
+ - creativeName   (string)
+ - creativeSlot   (string)
+ - locationId     (string)
+
+// ── Variant mixins ─────────────────────────────────────────────────────────
+
+[sofmix:heroV1] > jmix:dynamicFieldset mixin
+extends = sofnt:hero
+
+[sofmix:heroV2] > jmix:dynamicFieldset mixin
+extends = sofnt:hero
+ - offerTitleBadge (string) i18n
+ - offerLabel      (string) i18n
+ - offerRate       (string) i18n
+ - offerRateLabel  (string) i18n
+ - offerRateLabelBis (string) i18n
+ - offerAmount     (string) i18n
+ - mentionsLegales (string, textarea) i18n
+ - ctaType (string, choicelist[ctaTypeInitializer]) = 'internal' autocreated
+
+[sofmix:heroV3] > jmix:dynamicFieldset mixin
+extends = sofnt:hero
+ - hookValue       (string) i18n
+ - hookDateLabel   (string) i18n
+ - badgeLabel       (string) i18n
+ - ctaType (string, choicelist[ctaTypeInitializer]) = 'internal' autocreated
+
+[sofmix:heroV4] > jmix:dynamicFieldset mixin
+extends = sofnt:hero
+ - videoRef        (weakreference, picker[type='file'])
+ - videoMobileRef  (weakreference, picker[type='file'])
+ - videoPosterRef  (weakreference, picker[type='image']) < jmix:image
+ - ctaType (string, choicelist[ctaTypeInitializer]) = 'internal' autocreated
+
+[sofnt:hero] > jnt:content, mix:title, sofmix:heroImage, sofmix:ctaLink, sofmix:promotionTracking orderable
+ - subtitle (string, textarea) i18n
+ - variant  (string, choicelist) = 'v1' autocreated
+ + * (sofnt:heroArgument)

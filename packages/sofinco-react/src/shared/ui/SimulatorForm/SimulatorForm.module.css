@@ -1,0 +1,153 @@
+@import "@styles/base.css";
+
+.simulator-form {
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: flex-start;
+	gap: calc(var(--spacing) * 8);
+	color: var(--color-primary-base);
+}
+
+.simulator-form__wrapper {
+	position: relative;
+}
+
+.simulator-form__clear-button {
+	display: flex;
+	place-self: center;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	color: var(--color-primary-base);
+
+	&:hover {
+		color: var(--color-primary-strong);
+		cursor: pointer;
+	}
+}
+
+@media (--large-up) {
+	.simulator-form {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.simulator-form__field-group {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+	min-height: 3rem;
+
+	padding: 0 calc(var(--spacing) * 4);
+
+	border: 1px solid var(--color-primary-light);
+	border-radius: var(--radius-full);
+
+	background: white;
+}
+
+.simulator-form__field-wrapper {
+	display: flex;
+	flex-direction: row;
+	/* Le champ (30px accent) et le « € » (18px sans) ont des boîtes de hauteurs
+	   différentes : `center` alignerait les boîtes, pas les textes. `baseline`
+	   pose le « € » sur la ligne de base du champ — celle du placeholder ET de
+	   la valeur saisie, qui coïncident. */
+	align-items: baseline;
+	justify-content: center;
+	gap: calc(var(--spacing) * 2);
+	width: 100%;
+}
+
+.simulator-form__field-group--error {
+	border-color: var(--color-danger-base);
+	background: var(--color-danger-subtle);
+}
+
+.simulator-form__field-group--error .simulator-form__field {
+	color: var(--color-danger-base);
+}
+
+.simulator-form__field {
+	/* Repli pour les navigateurs sans `field-sizing` : largeur fixe assez large
+	   pour le montant max formaté (« 999 999 », 6 chiffres + séparateur) mais
+	   bien plus resserrée que l'ancien `50%`, qui laissait ~150px de vide entre
+	   le texte et le « € ». */
+	width: 12ch;
+	max-width: 100%;
+	font-family: var(--font-display);
+	font-size: var(--text-3xl);
+	font-weight: var(--font-weight-bold);
+
+	border: none;
+	background: transparent;
+	color: var(--color-primary-base);
+
+	line-height: var(--text-base--line-height);
+
+	text-align: center;
+	outline: none;
+}
+
+/* Le champ se dimensionne sur son contenu — le placeholder quand il est vide,
+   puis la valeur saisie. Le « € » colle ainsi au texte au lieu de rester à
+   droite d'une boîte à moitié vide, et la paire reste centrée via le
+   `justify-content: center` du wrapper. */
+@supports (field-sizing: content) {
+	.simulator-form__field {
+		width: auto;
+		field-sizing: content;
+		min-width: 3ch;
+	}
+}
+
+.simulator-form__field::placeholder {
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	font-weight: var(--font-weight-normal);
+	color: var(--color-text-muted);
+	text-align: center;
+}
+
+.simulator-form__error {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin-top: calc(var(--spacing) * 2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--spacing) * 1);
+	/* Le message est porté par un `<em>` (role="alert") : on neutralise l'italique
+	   par défaut du UA, la couleur danger suffit à le signaler. */
+	font-style: normal;
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+}
+.simulator-form__error {
+	color: var(--color-danger-base);
+}
+
+.simulator-form__error svg {
+	width: 1rem;
+	height: 1rem;
+	flex-shrink: 0;
+}
+
+.simulator-form__currency {
+	flex-shrink: 0;
+
+	font-size: var(--text-lg);
+	font-weight: var(--font-weight-extrabold);
+}
+
+.simulator-form__field--error {
+	border-color: var(--color-danger-base);
+	background: var(--color-danger-subtle);
+	color: var(--color-danger-base);
+}

@@ -1,0 +1,8 @@
+[sofnt:comparatorFeatureList] > sofnt:listBase
+ + * (sofnt:comparatorFeature) = sofnt:comparatorFeature
+
+[sofnt:comparatorCard] > jnt:content, mix:title, sofmix:component, sofmix:cta orderable
+ - description (string, textarea) mandatory i18n
+ - image (weakreference, picker[type='image']) mandatory < jmix:image
+ - badgeLabel (string) i18n
+ + features (sofnt:comparatorFeatureList) = sofnt:comparatorFeatureList autocreated mandatory

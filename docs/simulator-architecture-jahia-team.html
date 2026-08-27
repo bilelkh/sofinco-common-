@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Architecture Simulateur — Équipe Jahia</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1a202c;
+    background: #f7fafc;
+    padding: 40px 20px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  header h1 { font-size: 2.2em; margin-bottom: 10px; }
+  header p { font-size: 1.1em; opacity: 0.95; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px; margin-top: 8px; }
+  section { background: white; border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  h2 { color: #2c5282; font-size: 1.6em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #ebf4ff; }
+  h3 { color: #2d3748; margin: 20px 0 10px; font-size: 1.2em; }
+  .intro { font-size: 1.1em; color: #4a5568; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th { background: #2c5282; color: white; padding: 12px; text-align: left; }
+  td { padding: 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) { background: #f7fafc; }
+  code { background: #edf2f7; padding: 2px 6px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 0.9em; color: #2c5282; }
+  pre { background: #1a202c; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.85em; line-height: 1.5; margin: 15px 0; }
+  pre .keyword { color: #f687b3; }
+  pre .string { color: #68d391; }
+  pre .comment { color: #718096; font-style: italic; }
+  pre .type { color: #f6ad55; }
+  .arch-diagram { background: #f7fafc; border: 2px solid #cbd5e0; border-radius: 12px; padding: 30px; margin: 20px 0; text-align: center; font-family: "Consolas", monospace; font-size: 0.9em; line-height: 1.8; }
+  .arch-diagram .node { display: inline-block; background: white; border: 2px solid #2c5282; border-radius: 8px; padding: 10px 18px; margin: 5px; color: #2c5282; font-weight: 600; }
+  .arch-diagram .settings { border-color: #d69e2e; color: #d69e2e; background: #fffaf0; }
+  .arch-diagram .mixin { border-color: #38a169; color: #38a169; background: #f0fff4; }
+  .arch-diagram .arrow { color: #718096; font-size: 1.5em; margin: 10px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .card { background: #ebf8ff; border-left: 5px solid #2c5282; padding: 18px; border-radius: 8px; }
+  .card h4 { color: #2c5282; margin-bottom: 8px; }
+  .card.warning { background: #fffaf0; border-left-color: #d69e2e; }
+  .card.warning h4 { color: #d69e2e; }
+  .card.success { background: #f0fff4; border-left-color: #38a169; }
+  .card.success h4 { color: #38a169; }
+  .note { background: #fef5e7; border-left: 4px solid #d69e2e; padding: 15px; margin: 15px 0; border-radius: 4px; }
+  .check::before { content: "✅ "; }
+  .warn::before { content: "⚠️ "; }
+  .info::before { content: "ℹ️ "; }
+  ul { margin: 10px 0 10px 25px; }
+  li { margin-bottom: 6px; }
+  .flow-step { display: flex; align-items: center; gap: 15px; margin: 12px 0; padding: 12px; background: #f7fafc; border-radius: 8px; border-left: 4px solid #4299e1; }
+  .flow-step .num { background: #2c5282; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+  .field-detail { background: #f7fafc; border-left: 4px solid #2c5282; border-radius: 8px; padding: 20px; margin: 15px 0; }
+  .field-detail .field-name { font-family: "Consolas", monospace; font-size: 1.15em; font-weight: 700; color: #2c5282; margin-bottom: 6px; }
+  .field-detail .field-type { display: inline-block; background: #edf2f7; color: #4a5568; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-left: 8px; font-family: "Consolas", monospace; }
+  .field-detail .field-purpose { margin: 8px 0; }
+  .field-detail .field-example { background: white; border: 1px dashed #cbd5e0; border-radius: 6px; padding: 10px 12px; margin-top: 10px; font-family: "Consolas", monospace; font-size: 0.88em; }
+  .field-detail .field-example strong { color: #38a169; }
+  .field-detail .field-tip { margin-top: 8px; font-size: 0.9em; color: #718096; font-style: italic; }
+  .url-trace { background: #edf2f7; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-family: "Consolas", monospace; font-size: 0.85em; word-break: break-all; }
+  .url-trace .key { color: #2c5282; font-weight: 600; }
+  .url-trace .val { color: #c05621; }
+  .gain-cell { font-weight: 700; color: #38a169; font-size: 1.05em; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🏛️ Architecture Simulateur Sofinco — Équipe Jahia</h1>
+  <p>Comment fonctionnent <strong>RepresentativeExample</strong>, <strong>SimulatorCredit</strong> et <strong>SimulatorBlock</strong> côté CMS</p>
+  <div>
+    <span class="badge">Jahia 8.2</span>
+    <span class="badge">CND / JCR</span>
+    <span class="badge">Mixin sofmix:simulatorCta</span>
+    <span class="badge">Settings node central</span>
+  </div>
+</header>
+
+<section>
+  <h2>🎯 Vue d'ensemble</h2>
+  <p class="intro">Les 3 composants partagent une <strong>infrastructure commune</strong> reposant sur :</p>
+  <ul>
+    <li><strong>1 settings node global</strong> <code>sofnt:simulatorConfig</code> (sous <code>/sites/sofinco/contents/site-settings/simulator-config</code>) — source unique pour les URLs cibles et les bornes amount</li>
+    <li><strong>1 mixin partagé</strong> <code>sofmix:simulatorCta</code> — fournit tous les champs CTA simulateur (label, project, sourceId, etc.)</li>
+    <li><strong>1 helper TS central</strong> <code>lib/simulatorCta.ts</code> — construit l'URL du simulateur Vue.js depuis les données mixin + settings</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🏗️ Diagramme architectural</h2>
+  <div class="arch-diagram">
+    <div class="node settings">sofnt:simulatorConfig<br><small>(settings node global)</small></div>
+    <div>simulatorBasePage · simulatorRacBasePage · amountMin · amountMax</div>
+    <div class="arrow">↓ lu par le helper ↓</div>
+    <div class="node">lib/simulatorCta.ts</div>
+    <div><small>buildSimulatorCtaFromNode · resolveAmountBounds · resolveSimulatorBasePath</small></div>
+    <div class="arrow">↑ consommé par les 3 mappers ↑</div>
+    <div>
+      <div class="node">RepresentativeExample.mapping.ts</div>
+      <div class="node">SimulatorCredit.mapper.ts</div>
+      <div class="node">SimulatorBlock.mapping.ts</div>
+    </div>
+    <div class="arrow">↓ chacun porte le mixin ↓</div>
+    <div>
+      <div class="mixin">sofmix:simulatorCta</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>📊 Comparatif des 3 composants</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Aspect</th>
+        <th>RepresentativeExample</th>
+        <th>SimulatorCredit</th>
+        <th>SimulatorBlock</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Type JCR</strong></td>
+        <td><code>sofnt:representativeExampleV2</code></td>
+        <td><code>sofnt:simulatorCredit</code></td>
+        <td><code>sofnt:simulatorBlockV2</code></td>
+      </tr>
+      <tr>
+        <td><strong>Mixins</strong></td>
+        <td>sofmix:component<br>sofmix:simulatorCta</td>
+        <td>sofmix:cta (legacy)<br>sofmix:simulatorCta</td>
+        <td>sofmix:component<br>sofmix:simulatorCta</td>
+      </tr>
+      <tr>
+        <td><strong>Props locales</strong></td>
+        <td>subtitle, amount, dueNumber, scaleCode, mention</td>
+        <td>jcr:title, amountPlaceholder<br><small>(amountMin/Max masqués via JSON form, lus depuis le settings global)</small></td>
+        <td>titleLevel, amountPlaceholder<br><small>(amountMin/Max lus depuis le settings global)</small></td>
+      </tr>
+      <tr>
+        <td><strong>UX éditeur</strong></td>
+        <td>Affiche un exemple de remboursement (label + valeurs Java OSGi)</td>
+        <td>Form avec champ montant + bouton submit</td>
+        <td>Bandeau form avec montant + bouton</td>
+      </tr>
+      <tr>
+        <td><strong>Bornes amount</strong></td>
+        <td>Locales (amount/dueNumber par exemple)</td>
+        <td>Globales (settings node)</td>
+        <td>Globales (settings node)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🧩 Mixin partagé <code>sofmix:simulatorCta</code></h2>
+  <p>Mutualise tous les champs nécessaires pour construire un CTA pointant vers le simulateur Vue.js Sofinco.</p>
+  <pre><span class="keyword">[sofmix:simulatorCta] mixin</span>
+ - ctaLabel          <span class="type">(string)</span> i18n
+ - product           <span class="type">(string, choicelist[resourceBundle])</span> &lt; <span class="string">'','PB','CR','RAC','CR_S'</span>
+ - sourceId          <span class="type">(string)</span>
+ - simProject        <span class="type">(string, choicelist[resourceBundle])</span> &lt; <span class="string">'','AUTO','FAMILY','WORKS','MISCELLANEOUS','RAC'</span>
+ - simSubProject     <span class="type">(string, choicelist[resourceBundle])</span> &lt; <span class="string">...</span>
+ - simLoa            <span class="type">(string, choicelist[resourceBundle])</span> &lt; <span class="string">'','true','false'</span>
+ - simIdcatorigin    <span class="type">(string)</span>
+ - simHashFragment   <span class="type">(string)</span></pre>
+</section>
+
+<section>
+  <h2>🚀 Bénéfices de ce refactor (mixin <code>sofmix:simulatorCta</code>)</h2>
+  <p class="intro">Avant ce refactor, chaque composant simulateur redéfinissait ses propres champs (<code>project</code>, <code>subProject</code>, <code>creditType</code>, <code>sourceId</code>…) avec des conventions divergentes. Voici ce qu'apporte la mutualisation.</p>
+
+  <h3>🎯 Bénéfices côté architecture</h3>
+  <div class="grid-3">
+    <div class="card success">
+      <h4 class="check">DRY total</h4>
+      Les 8 champs CTA simulateur sont déclarés <strong>une seule fois</strong> dans le CND. Un nouveau composant simulateur n'a qu'à ajouter <code>&gt; sofmix:simulatorCta</code> pour hériter de tout l'outillage.
+    </div>
+    <div class="card success">
+      <h4 class="check">Source de vérité unique</h4>
+      L'URL du simulateur est construite par <strong>une seule fonction</strong> : <code>buildSimulatorCtaFromNode</code>. Un bug ou une évolution = 1 endroit à patcher, propagation automatique aux 3 composants.
+    </div>
+    <div class="card success">
+      <h4 class="check">Cohérence garantie</h4>
+      Tous les CTAs simulateur produisent la <strong>même structure d'URL</strong> (mêmes clés params, même ordre, même contrat). Plus de divergence accidentelle entre composants.
+    </div>
+  </div>
+
+  <h3>🎨 Bénéfices côté éditeur Jahia</h3>
+  <div class="grid-3">
+    <div class="card">
+      <h4>📝 UX uniforme</h4>
+      Quel que soit le composant (ProductHero, SimulatorCredit, SimulatorBlock…), l'éditeur voit <strong>les mêmes champs</strong> avec les <strong>mêmes labels FR</strong>. Pas de surprise au passage d'un composant à l'autre.
+    </div>
+    <div class="card">
+      <h4>🌍 i18n centralisée</h4>
+      Les labels et descriptions sont définis <strong>une fois</strong> dans <code>sofinco-template.properties</code> sous le namespace <code>sofmix_simulatorCta.*</code>. Pas de duplication par composant.
+    </div>
+    <div class="card">
+      <h4>📋 Choicelists partagées</h4>
+      Les valeurs (PB/CR/RAC, AUTO/FAMILY/WORKS…) et leurs libellés français sont mutualisés. Ajouter un nouveau produit/projet = 1 ligne CND + 1 ligne properties.
+    </div>
+  </div>
+
+  <h3>🛠️ Bénéfices côté développeur</h3>
+  <div class="grid-3">
+    <div class="card">
+      <h4>⚡ Nouveau composant</h4>
+      Créer un nouveau composant simulateur (ex: <code>SimulatorCardSlim</code>) : <strong>4 lignes de CND</strong>, le mapping appelle <code>buildSimulatorCtaFromNode</code>, et tu hérites de tout (URL, routing, tracking, fallbacks).
+    </div>
+    <div class="card">
+      <h4>🧪 Tests centralisés</h4>
+      La logique URL est testée dans <code>simulatorCta.test.ts</code> (20+ fixtures table-driven). Les mappers composants n'ont qu'à mocker le helper — tests rapides et isolés.
+    </div>
+    <div class="card">
+      <h4>🔒 Typage fort</h4>
+      Types <code>SimulatorCtaProject</code>, <code>SimulatorCtaCreditType</code>, <code>SimulatorCtaInput</code> exportés. Autocomplétion + erreurs compile-time si un mauvais code projet est passé.
+    </div>
+  </div>
+
+  <h3>🛡️ Bénéfices côté maintenance / évolution</h3>
+  <table>
+    <thead>
+      <tr><th>Évolution future possible</th><th>Coût avec mixin (aujourd'hui)</th><th>Coût sans mixin (avant)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Le simulateur Vue.js change le nom d'un param URL (ex: <code>predefinedCreditType</code> → <code>creditCode</code>)</td>
+        <td><strong>1 ligne</strong> dans <code>buildSimulatorCtaUrl</code></td>
+        <td>N composants à patcher individuellement (oublis garantis)</td>
+      </tr>
+      <tr>
+        <td>Ajouter un nouveau type de crédit (ex: <code>LOA_AUTO</code>)</td>
+        <td><strong>1 valeur CND</strong> + 1 label properties</td>
+        <td>N CND à modifier en parallèle + N properties</td>
+      </tr>
+      <tr>
+        <td>Ajouter une nouvelle route Vue.js (ex: <code>#/garantie</code>)</td>
+        <td><strong>1 ligne</strong> dans <code>resolveSimulatorHash</code></td>
+        <td>N mappers + N URL builders custom à maintenir</td>
+      </tr>
+      <tr>
+        <td>Changer l'URL cible globale (migration vers <code>/sim-v3</code>)</td>
+        <td><strong>1 click éditeur</strong> dans le settings node (picker)</td>
+        <td>N modifications éditoriales (1 par composant)</td>
+      </tr>
+      <tr>
+        <td>Ajouter du tracking sur tous les CTA simulateur (ex: nouveau pixel)</td>
+        <td><strong>1 modification</strong> dans le helper</td>
+        <td>N composants à patcher</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>📈 Métriques avant/après</h3>
+  <table>
+    <thead>
+      <tr><th>Métrique</th><th>Avant refactor</th><th>Après refactor</th><th>Gain</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lignes CND dupliquées par composant simulateur</td>
+        <td>~10 (project, subProject, creditType, sourceId, ctaLabel, etc.)</td>
+        <td>0 (hérité du mixin)</td>
+        <td class="gain-cell">-100%</td>
+      </tr>
+      <tr>
+        <td>Endroits à patcher pour un bug URL</td>
+        <td>3+ (un par composant)</td>
+        <td>1 (helper central)</td>
+        <td class="gain-cell">÷3</td>
+      </tr>
+      <tr>
+        <td>Labels i18n dupliqués</td>
+        <td>~24 entries (8 champs × 3 composants)</td>
+        <td>8 entries (1 namespace partagé)</td>
+        <td class="gain-cell">-66%</td>
+      </tr>
+      <tr>
+        <td>Délai pour ajouter un nouveau composant simulateur</td>
+        <td>~2 jours (copy-paste + adaptation)</td>
+        <td>~2 heures (héritage mixin)</td>
+        <td class="gain-cell">÷8</td>
+      </tr>
+      <tr>
+        <td>Risque de divergence accidentelle entre composants</td>
+        <td>Élevé</td>
+        <td>Nul (typé + mutualisé)</td>
+        <td class="gain-cell">-100%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>🎁 Bénéfices indirects (effets de bord positifs)</h3>
+  <div class="grid-3">
+    <div class="card success">
+      <h4 class="check">Onboarding plus rapide</h4>
+      Un nouveau dev comprend <strong>une fois</strong> la sémantique simulateur (via le mixin) et l'applique partout. Pas N conventions à mémoriser.
+    </div>
+    <div class="card success">
+      <h4 class="check">Code review allégé</h4>
+      Quand un PR touche un composant simulateur, le reviewer sait que la logique URL <strong>vient du helper</strong> — pas besoin de revérifier les params à chaque fois.
+    </div>
+    <div class="card success">
+      <h4 class="check">Migration outillée</h4>
+      Les scripts Groovy (<code>migrate-simulatorBlock-mixins.groovy</code>) sont <strong>réutilisables</strong> comme template pour migrer d'autres composants futurs vers le mixin.
+    </div>
+  </div>
+
+  <div class="note info">
+    <strong>💡 Principe sous-jacent :</strong> Strangler Fig Pattern + Single Source of Truth. On a strangulé les implémentations divergentes V1 par un unique mixin V2, sans Big Bang ni rupture éditoriale.
+  </div>
+</section>
+
+<section>
+  <h2>⚙️ Settings node central — <code>sofnt:simulatorConfig</code></h2>
+  <p>Un seul node global qui centralise toute la config simulateur du site.</p>
+  <pre><span class="keyword">[sofnt:simulatorConfig]</span> &gt; jnt:content, sofmix:configs
+ - simulatorBasePage     <span class="type">(weakreference, picker[type='page'])</span> &lt; jnt:page
+ - simulatorRacBasePage  <span class="type">(weakreference, picker[type='page'])</span> &lt; jnt:page
+ - amountMin             <span class="type">(long)</span> = <span class="string">150</span>    autocreated &lt; <span class="string">'[150,999999]'</span>
+ - amountMax             <span class="type">(long)</span> = <span class="string">999999</span> autocreated &lt; <span class="string">'[150,999999]'</span></pre>
+  <div class="note info">
+    <strong>Path :</strong> <code>/sites/sofinco/contents/site-settings/simulator-config</code><br>
+    <strong>Initialisation :</strong> script Groovy <code>init-simulator-settings.groovy</code> à exécuter au déploiement.
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h4>simulatorBasePage</h4>
+      Page Jahia hébergeant le simulateur Vue.js standard (PB / CR / Auto / Travaux / Famille).
+    </div>
+    <div class="card">
+      <h4>simulatorRacBasePage</h4>
+      Page Jahia hébergeant le simulateur Vue.js en mode Rachat de Crédit.
+    </div>
+    <div class="card">
+      <h4>amountMin / amountMax</h4>
+      Bornes globales pour les inputs montant — modifier ici impacte SimulatorCredit ET SimulatorBlock simultanément.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>🔄 Flow JCR → React props</h2>
+  <p>Quand une page contenant un de ces composants est rendue :</p>
+
+  <div class="flow-step">
+    <div class="num">1</div>
+    <div><strong>Jahia</strong> instancie le composant via <code>default.server.tsx</code> avec <code>currentNode</code> et <code>renderContext</code></div>
+  </div>
+  <div class="flow-step">
+    <div class="num">2</div>
+    <div>Le <code>mapper.ts</code> est appelé : il lit les props du node JCR + du mixin <code>sofmix:simulatorCta</code></div>
+  </div>
+  <div class="flow-step">
+    <div class="num">3</div>
+    <div>Le mapper appelle <code>buildSimulatorCtaFromNode</code> qui : (a) résout le basePath depuis le settings node, (b) calcule le hash route Vue.js, (c) sérialise les params URL</div>
+  </div>
+  <div class="flow-step">
+    <div class="num">4</div>
+    <div>Le mapper appelle <code>resolveAmountBounds</code> qui lit amountMin/amountMax depuis le settings node</div>
+  </div>
+  <div class="flow-step">
+    <div class="num">5</div>
+    <div>Les props finales sont passées au composant React DS (<code>HeroSimulator</code>, <code>SimulatorBlock</code>, etc.)</div>
+  </div>
+</section>
+
+<section>
+  <h2>🎨 UI éditeur — JSON form overrides</h2>
+  <p>Chaque composant a un fichier <code>settings/content-editor-forms/forms/sofnt_xxx.json</code> qui :</p>
+  <ul>
+    <li><strong>Ordonne</strong> les champs (rank) : jcr:title → amountPlaceholder → mixin CTA</li>
+    <li><strong>Cache</strong> les champs mixin pas pertinents (ex: <code>simHashFragment</code> avancé)</li>
+    <li><strong>Cache</strong> les fieldsets legacy (<code>sofmix:cta</code> + <code>sofmix:ctaInternal/External</code> sur SimulatorCredit)</li>
+    <li><strong>Cache</strong> les bornes locales <code>amountMin</code>/<code>amountMax</code> sur SimulatorCredit pour forcer la lecture du settings global</li>
+  </ul>
+  <pre>{
+  <span class="string">"nodeType"</span>: <span class="string">"sofnt:simulatorCredit"</span>,
+  <span class="string">"priority"</span>: 1.0,
+  <span class="string">"sections"</span>: [{
+    <span class="string">"name"</span>: <span class="string">"content"</span>,
+    <span class="string">"fieldSets"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"sofnt:simulatorCredit"</span>, <span class="string">"fields"</span>: [
+        { <span class="string">"name"</span>: <span class="string">"jcr:title"</span>,         <span class="string">"rank"</span>: <span class="string">"1.0"</span> },
+        { <span class="string">"name"</span>: <span class="string">"amountPlaceholder"</span>, <span class="string">"rank"</span>: <span class="string">"2.0"</span> },
+        { <span class="string">"name"</span>: <span class="string">"amountMin"</span>,         <span class="string">"hide"</span>: true },
+        { <span class="string">"name"</span>: <span class="string">"amountMax"</span>,         <span class="string">"hide"</span>: true }
+      ]},
+      { <span class="string">"name"</span>: <span class="string">"sofmix:cta"</span>,         <span class="string">"hide"</span>: true },
+      { <span class="string">"name"</span>: <span class="string">"sofmix:ctaInternal"</span>, <span class="string">"hide"</span>: true },
+      { <span class="string">"name"</span>: <span class="string">"sofmix:ctaExternal"</span>, <span class="string">"hide"</span>: true }
+    ]
+  }]
+}</pre>
+</section>
+
+<section>
+  <h2>🚀 Scripts Groovy disponibles</h2>
+  <table>
+    <thead>
+      <tr><th>Script</th><th>Rôle</th><th>Quand l'exécuter</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>init-simulator-settings.groovy</code></td>
+        <td>Crée les 2 pages simulateur + le settings node avec amountMin/Max par défaut</td>
+        <td>1× après déploiement initial (idempotent)</td>
+      </tr>
+      <tr>
+        <td><code>migrate-simulatorBlock-mixins.groovy</code></td>
+        <td>Migre les nodes SimulatorBlock pré-refactor : renames legacy → mixin, deletes props consolidées</td>
+        <td>Lors de la migration des installs existantes</td>
+      </tr>
+      <tr>
+        <td><code>cleanup-legacy-simulator.groovy</code></td>
+        <td>Purge les types JCR obsolètes (<code>sofnt:repexSimulator</code>, <code>sofmix:ctaSimulator</code>)</td>
+        <td>Après refactor V1 → V2 (1×)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note warn">
+    <strong>Toujours commencer par <code>DRY_RUN = true</code></strong>, vérifier les logs, puis repasser à <code>false</code> et relancer.
+  </div>
+</section>
+
+<section>
+  <h2>📖 Cheat sheet — Détail de chaque champ du mixin <code>sofmix:simulatorCta</code></h2>
+  <p>Pour chaque champ : à quoi il sert, valeurs possibles, exemple concret d'URL générée.</p>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">ctaLabel</span>
+      <span class="field-type">string · i18n</span>
+    </div>
+    <div class="field-purpose">Texte affiché sur le bouton submit du form simulateur.</div>
+    <div class="field-example">
+      <strong>Exemple :</strong> <code>"Je simule mon prêt auto"</code><br>
+      → Bouton rendu : <code>&lt;button&gt;Je simule mon prêt auto&lt;/button&gt;</code>
+    </div>
+    <div class="field-tip">Si vide → fallback sur la translation <code>simulatorCta.defaultLabel</code> = "Je simule".</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">product</span>
+      <span class="field-type">choicelist · '','PB','CR','RAC','CR_S'</span>
+    </div>
+    <div class="field-purpose">Type de crédit pré-rempli dans le simulateur Vue.js (saute l'étape « choix du produit »).</div>
+    <table style="margin-top: 10px;">
+      <thead><tr><th>Valeur CND</th><th>Sens métier</th></tr></thead>
+      <tbody>
+        <tr><td><code>PB</code></td><td>Prêt Personnel</td></tr>
+        <tr><td><code>CR</code></td><td>Crédit Renouvelable</td></tr>
+        <tr><td><code>RAC</code></td><td>Rachat de Crédit</td></tr>
+        <tr><td><code>CR_S</code></td><td>Crédit Renouvelable spécifique</td></tr>
+      </tbody>
+    </table>
+    <div class="field-example">
+      <strong>Exemple <code>product=PB</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">predefinedCreditType</span>=<span class="val">PB</span>#/</div>
+    </div>
+    <div class="field-tip">Côté URL la clé devient <code>predefinedCreditType</code> (contrat simulateur Vue.js).</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">sourceId</span>
+      <span class="field-type">string (libre)</span>
+    </div>
+    <div class="field-purpose">Identifiant de source utilisé pour le tracking et l'attribution commerciale. Conventionnellement préfixé par <code>NEOURL</code>.</div>
+    <div class="field-example">
+      <strong>Exemple :</strong> <code>sourceId="NEOURL14"</code><br>
+      <div class="url-trace">/parcours-simulateur?<span class="key">sourceId</span>=<span class="val">NEOURL14</span>#/</div>
+    </div>
+    <div class="field-tip">Différent par campagne marketing. Demande à l'équipe digital marketing le bon NEOURL.</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">simProject</span>
+      <span class="field-type">choicelist · '','AUTO','FAMILY','WORKS','MISCELLANEOUS','RAC'</span>
+    </div>
+    <div class="field-purpose">Catégorie de projet du simulateur. Détermine la route hash Vue.js d'arrivée.</div>
+    <table style="margin-top: 10px;">
+      <thead><tr><th>Valeur</th><th>Route Vue.js</th><th>Page simulateur</th></tr></thead>
+      <tbody>
+        <tr><td><code>AUTO</code></td><td><code>#/auto</code></td><td>Auto / véhicule</td></tr>
+        <tr><td><code>FAMILY</code></td><td><code>#/famille-loisirs</code></td><td>Famille &amp; loisirs</td></tr>
+        <tr><td><code>WORKS</code></td><td><code>#/travaux</code></td><td>Travaux</td></tr>
+        <tr><td><code>MISCELLANEOUS</code></td><td><code>#/autre</code></td><td>Autres projets</td></tr>
+        <tr><td><code>RAC</code></td><td><code>#/rachat/nombre-credits</code></td><td>Rachat de crédit</td></tr>
+        <tr><td>(vide)</td><td><code>#/</code></td><td>Home simulateur (choix manuel)</td></tr>
+      </tbody>
+    </table>
+    <div class="field-example">
+      <strong>Exemple <code>simProject=AUTO</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">project</span>=<span class="val">AUTO</span>#/auto</div>
+    </div>
+    <div class="field-tip"><code>simProject=RAC</code> → bascule automatique vers <code>simulatorRacBasePage</code> au lieu de <code>simulatorBasePage</code>.</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">simSubProject</span>
+      <span class="field-type">choicelist (15 valeurs)</span>
+    </div>
+    <div class="field-purpose">Sous-catégorie de projet — précise l'usage exact. Cohérence requise avec <code>simProject</code>.</div>
+    <table style="margin-top: 10px;">
+      <thead><tr><th>simProject</th><th>simSubProject autorisés</th></tr></thead>
+      <tbody>
+        <tr><td><code>AUTO</code></td><td><code>AUTO_COMBUSTION</code>, <code>AUTO_ELECTRIC_HYBRID</code></td></tr>
+        <tr><td><code>FAMILY</code></td><td><code>FAMILY_MOVING</code>, <code>FAMILY_WEDDING</code>, <code>FAMILY_HEALTH</code>, <code>FAMILY_RECREATION</code>, <code>FAMILY_TRAVEL</code>, <code>FAMILY_OTHER</code></td></tr>
+        <tr><td><code>WORKS</code></td><td><code>WORK_ENERGY_RENOVATION</code>, <code>WORK_DECORATION</code></td></tr>
+        <tr><td><code>MISCELLANEOUS</code></td><td><code>MISC_FURNITURE</code>, <code>MISC_MOTORCYCLE</code>, <code>MISC_UNEXPECTED</code>, <code>MISC_ELECTRONIC_DEVICE</code>, <code>MISC_OTHER</code></td></tr>
+        <tr><td><code>RAC</code></td><td><code>RAC_RAC</code> (hardcodé)</td></tr>
+      </tbody>
+    </table>
+    <div class="field-example">
+      <strong>Exemple <code>simProject=FAMILY + simSubProject=FAMILY_WEDDING</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">project</span>=<span class="val">FAMILY</span>&amp;<span class="key">subProject</span>=<span class="val">FAMILY_WEDDING</span>#/montant-financement</div>
+    </div>
+    <div class="field-tip">Avec project + subProject définis, le hash devient <code>#/montant-financement</code> (saute l'étape sélection projet → directement à la saisie du montant).</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">simLoa</span>
+      <span class="field-type">choicelist · '','true','false'</span>
+    </div>
+    <div class="field-purpose">Mode LOA (Location avec Option d'Achat) — applicable principalement aux simulateurs auto.</div>
+    <div class="field-example">
+      <strong>Exemple <code>simProject=AUTO + simLoa=true</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">project</span>=<span class="val">AUTO</span>&amp;<span class="key">loa</span>=<span class="val">true</span>#/auto</div>
+    </div>
+    <div class="field-tip">Laisser vide pour utiliser le comportement par défaut du simulateur.</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">simIdcatorigin</span>
+      <span class="field-type">string</span>
+    </div>
+    <div class="field-purpose">Catégorie d'origine pour le tracking Eulerian. Si laissé vide, hérite automatiquement de l'<code>idcat</code> de la page Jahia courante (via mixin <code>spmix:eaPageOptions</code>).</div>
+    <div class="field-example">
+      <strong>Exemple <code>simIdcatorigin="home_page"</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">idcatorigin</span>=<span class="val">home_page</span>&amp;<span class="key">project</span>=<span class="val">AUTO</span>#/auto</div>
+    </div>
+    <div class="field-tip">Ne le remplir QUE si tu veux un override spécifique pour ce CTA. Sinon laisse vide pour hériter de la page (DRY).</div>
+  </div>
+
+  <div class="field-detail">
+    <div>
+      <span class="field-name">simHashFragment</span>
+      <span class="field-type">string (avancé)</span>
+    </div>
+    <div class="field-purpose">Override de la route d'arrivée dans le simulateur. Court-circuite le calcul automatique basé sur project/subProject.</div>
+    <div class="field-example">
+      <strong>Exemple <code>simHashFragment="/resultats"</code> :</strong>
+      <div class="url-trace">/parcours-simulateur?<span class="key">project</span>=<span class="val">AUTO</span>#<span class="val">/resultats</span></div>
+    </div>
+    <div class="field-tip">Réservé aux cas avancés où l'on veut atterrir sur une étape précise (ex: page résultats pour démo). À éviter en usage normal.</div>
+  </div>
+</section>
+
+<section>
+  <h2>🛡️ Sécurité &amp; fallbacks</h2>
+  <div class="grid-3">
+    <div class="card success">
+      <h4 class="check">Settings absent</h4>
+      Le helper retombe sur <code>/parcours-simulateur(-rac)</code> hardcodés — zéro panne site-wide
+    </div>
+    <div class="card success">
+      <h4 class="check">JS désactivé</h4>
+      Form GET natif fonctionne — perte du hash mais le simulateur Vue.js route via query params (<code>resumeSimulator()</code>)
+    </div>
+    <div class="card success">
+      <h4 class="check">Mixin pas configuré</h4>
+      L'URL fallback est la home simulateur — l'utilisateur sélectionne manuellement son projet
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center; padding: 20px; color: #718096; font-size: 0.9em;">
+  Doc générée le 24 juin 2026 · Sofinco SOF-5407 · Pour questions : voir <code>packages/template-set/src/lib/simulatorCta.ts</code>
+</footer>
+
+</div>
+</body>
+</html>

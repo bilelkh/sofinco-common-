@@ -1,0 +1,32 @@
+{
+	"name": "sofnt:hero",
+	"priority": 1.0,
+	"fields": [
+		{
+			"name": "variant",
+			"label": "Variante",
+			"valueConstraints": [
+				{
+					"value": { "type": "String", "value": "v1" },
+					"displayValue": "V1 — Image + Titre + Arguments",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:heroV1" }]
+				},
+				{
+					"value": { "type": "String", "value": "v2" },
+					"displayValue": "V2 — Image + Encart Offre",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:heroV2" }]
+				},
+				{
+					"value": { "type": "String", "value": "v3" },
+					"displayValue": "V3 — Image + Taux / Accroche",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:heroV3" }]
+				},
+				{
+					"value": { "type": "String", "value": "v4" },
+					"displayValue": "V4 — CTA Vidéo + Vidéo",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:heroV4" }]
+				}
+			]
+		}
+	]
+}

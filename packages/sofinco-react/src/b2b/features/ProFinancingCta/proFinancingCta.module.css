@@ -1,0 +1,44 @@
+@import "@styles/base.css";
+
+.pro-financing-cta {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 14) calc(var(--spacing) * 8);
+	border-radius: var(--radius-3xl);
+	background: var(--color-primary-base);
+	color: var(--color-white);
+	text-align: center;
+}
+
+.pro-financing-cta__eyebrow {
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--color-accent-base);
+}
+
+.pro-financing-cta__title {
+	font-family: var(--font-display);
+	font-size: var(--text-3xl);
+	line-height: var(--text-3xl--line-height);
+	margin: 0;
+}
+
+.pro-financing-cta__subtitle {
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	max-width: 52ch;
+	margin-inline: auto;
+}
+
+.pro-financing-cta__action {
+	margin-top: calc(var(--spacing) * 2);
+}
+
+@media (--medium-up) {
+	.pro-financing-cta {
+		padding: calc(var(--spacing) * 30) calc(var(--spacing) * 26);
+	}
+}

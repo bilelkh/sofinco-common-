@@ -1,0 +1,15 @@
+import { Meta, Canvas, Controls } from "@storybook/addon-docs/blocks";
+import * as ProFinancingCtaStories from "./ProFinancingCta.stories";
+
+<Meta of={ProFinancingCtaStories} />
+
+# ProFinancingCta
+
+Bloc d'appel à l'action dédié **B2B** (offre professionnelle). Il vit sous
+`features/b2b/` et n'utilise que des tokens `--sof-*` partagés du design system.
+
+<Canvas of={ProFinancingCtaStories.Default} />
+
+## Props
+
+<Controls />

@@ -1,0 +1,32 @@
+{
+	"nodeType": "sofnt:arrayFocusWrapper",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "mix:title",
+					"fields": [{ "name": "jcr:title", "rank": "1.0", "mandatory": true }]
+				},
+				{
+					"name": "sofmix:sectionHeader",
+					"fields": [{ "name": "subtitle", "rank": "2.0" }]
+				},
+				{
+					"name": "sofmix:headingStyle",
+					"fields": [
+						{ "name": "titleLevel", "rank": "3.0" },
+						{ "name": "titleStyle", "rank": "4.0" }
+					]
+				},
+				{
+					"name": "sofnt:arrayFocusWrapper",
+					"fields": [
+						{ "name": "backgroundColor", "rank": "5.0", "hide": true, "readOnly": true }
+					]
+				}
+			]
+		}
+	]
+}

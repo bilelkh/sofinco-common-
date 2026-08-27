@@ -1,0 +1,23 @@
+{
+	"nodeType": "sofnt:simulatorVar",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "mix:title",
+					"fields": [{ "name": "jcr:title", "rank": "1.0", "mandatory": true }]
+				},
+				{
+					"name": "sofnt:simulatorVar",
+					"fields": [
+						{ "name": "token", "rank": "2.0" },
+						{ "name": "family", "rank": "3.0" },
+						{ "name": "enabled", "rank": "4.0" }
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,12 @@
+[sofmix:offerSlide] mixin
+
+[sofnt:offerSlideBase] > jnt:content, jmix:editorialContent, mix:title, sofmix:offerSlide abstract
+ - jcr:title (string) i18n
+ - eyebrow (string, text) i18n
+ - description (string, textarea) i18n
+
+[sofnt:offerSlideList] > sofnt:listBase
+ + * (sofmix:offerSlide) = sofnt:offerSlideColored
+
+[sofnt:offer] > jnt:content, jmix:editorialContent, mix:title, sofmix:component
+ + slides (sofnt:offerSlideList) = sofnt:offerSlideList autocreated mandatory

@@ -1,0 +1,6 @@
+[sofnt:chatBot] > jnt:content, sofmix:component orderable
+ - avatarUrl (weakreference, picker[type='image']) < jmix:image
+ - greeting (string) mandatory
+ - question (string) mandatory
+ + * (sofnt:chatBotCategory)
+

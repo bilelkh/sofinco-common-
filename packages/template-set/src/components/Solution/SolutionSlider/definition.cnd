@@ -1,0 +1,4 @@
+[sofnt:solutionSlider] > jnt:content, sofmix:component orderable
+ - title (string) = 'Une solution pour chacun de vos besoins'
+ - subtitle (string)
+ + * (sofnt:solutionCard) = sofnt:solutionCard

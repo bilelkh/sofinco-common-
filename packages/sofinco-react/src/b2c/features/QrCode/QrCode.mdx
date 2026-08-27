@@ -1,0 +1,100 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as QrCodeStories from "./QrCode.stories";
+
+<Meta of={QrCodeStories} />
+
+# QrCode
+
+A lightweight presentational component that displays a QR image and a text label.
+
+## How It Works
+
+The component receives 4 props:
+
+- `src`: image URL for the QR code
+- `text`: label displayed under the QR code
+- `className`: optional custom class injected on the root container
+- `alwaysVisible`: authoring-only escape hatch — see [Responsive behavior](#responsive-behavior)
+
+Rendering behavior:
+
+- Without a `src`, the component renders **nothing** — an empty `<img src="">` makes browsers
+  re-request the page. Consumers that position themselves relative to the thumbnail should
+  import the `hasQrThumbnail(src)` predicate rather than re-test `src` themselves.
+- The root container is a `<figure>` laid out as a vertical flex column, **hidden by default**
+- The QR image is rendered first
+- The text is rendered below it, inside a `<figcaption>`
+- The component styles are applied from the local CSS module, then merged with your `className`
+
+## Responsive behavior
+
+The thumbnail is only shown **above the `--qr-code-up` breakpoint (1041px)**; below it the
+root is `display: none`. The switch is carried by CSS, never by a viewport read in JS — this
+component is rendered inside non-hydrated server subtrees (the Jahia footer), where a
+`useMediaQuery` would stay frozen on its server snapshot (`false`) and the thumbnail would
+never reach the visitor's HTML at any width.
+
+Consequence: **the fallback below the threshold is the consumer's job.** Render both branches
+server-side and let the media query reveal exactly one — see `QrFooter`, which pairs the QR
+with a download CTA hidden above the same 1041px threshold.
+
+`alwaysVisible` forces the thumbnail regardless of width. It is reserved for **authoring
+views**: in jContent the preview lives in an iframe that is often narrower than the threshold,
+and a contributor who just picked an image must be able to check it. Do not use it on views
+served to visitors, where the media query is what decides.
+
+## Basic Usage
+
+```tsx
+import { QrCode } from "sofinco-react";
+
+<QrCode
+  src="/images/samples/QrCode/qr-code.svg"
+  text="Scannez le QR code pour accéder à l'application."
+/>;
+```
+
+## Sticky Behavior
+
+To make the QrCode sticky, pass a custom class with the `className` prop.
+
+```tsx
+<QrCode
+  src="/images/samples/QrCode/qr-code.svg"
+  text="Téléchargez l'application"
+  className="qr-code--sticky"
+/>
+```
+
+Then define the sticky rule in your page or layout stylesheet:
+
+```css
+.qr-code--sticky {
+  position: sticky;
+  top: 24px;
+}
+```
+
+Notes:
+
+- Sticky works relative to the nearest scroll container.
+- If a parent has `overflow` not equal to `visible`, sticky behavior may be limited.
+
+## Story Variants
+
+The stories below pass `alwaysVisible` so they render at all: the docs canvas is narrower than
+the 1041px threshold. `BelowThreshold` shows what a visitor actually gets under it — nothing.
+
+<Canvas of={QrCodeStories.Default} />
+<Canvas of={QrCodeStories.WithShortText} />
+<Canvas of={QrCodeStories.WithLongText} />
+<Canvas of={QrCodeStories.BelowThreshold} />
+
+## Props
+
+<ArgTypes of={QrCodeStories} />
+
+## All Stories
+
+<Stories />

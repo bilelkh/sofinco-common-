@@ -1,0 +1,20 @@
+{
+	"name": "sofmix:cta",
+	"fields": [
+		{
+			"name": "ctaType",
+			"valueConstraints": [
+				{
+					"value": { "type": "String", "value": "internal" },
+					"displayValue": "Lien interne",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:ctaInternal" }]
+				},
+				{
+					"value": { "type": "String", "value": "external" },
+					"displayValue": "Lien externe",
+					"propertyList": [{ "name": "addMixin", "value": "sofmix:ctaExternal" }]
+				}
+			]
+		}
+	]
+}

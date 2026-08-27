@@ -1,0 +1,18 @@
+@import "@styles/base.css";
+
+.seomesh {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	padding: calc(var(--spacing) * 10) calc(var(--spacing) * 6);
+	width: 100%;
+	background: linear-gradient(135deg, rgba(178, 243, 255, 1) 0%, rgba(204, 255, 231, 1) 100%);
+}
+
+@media (--medium-up) {
+	.seomesh {
+		padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6);
+		gap: calc(var(--spacing) * 6);
+	}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "NEOURL04",
+  "type": "loan",
+  "label": "RACHAT DE CRÉDITS",
+  "minAmount": 3001.0,
+  "maxAmount": 100000.0,
+  "minDuration": 36,
+  "maxDuration": 120,
+  "minAnnualDebitRate": 7.7,
+  "maxAnnualDebitRate": 8.3,
+  "minAnnualGlobalEffectiveRate": 8.55,
+  "maxAnnualGlobalEffectiveRate": 8.55,
+  "promoGlobalEffectiveRate": 8.55,
+  "startDate": "2007-06-04",
+  "endDate": "2026-12-31"
+}

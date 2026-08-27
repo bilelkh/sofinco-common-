@@ -1,0 +1,47 @@
+@import "@styles/base.css";
+
+/*
+ * `.array-focus-wrapper` paints the single shared background behind the
+ * grouped blocks. The contributed color comes in through the
+ * `--array-focus-wrapper-bg` custom property (set inline by the component),
+ * falling back to the neutral ice surface token. The children's own outer
+ * padding and section washes are neutralized below so the color reads as one
+ * continuous surface.
+ */
+.array-focus-wrapper {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	width: 100%;
+	box-sizing: border-box;
+	background-color: var(--array-focus-wrapper-bg);
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10);
+
+	@media (--small-up) {
+		padding: calc(var(--spacing) * 30);
+	}
+}
+
+/* Neutralize each child's own outer padding so the wrapper is the single
+   source of outer spacing for the group. Each block's padding lives on its
+   root section (reachable via its public `className` prop); the two-class
+   selector outranks the block's own single-class declaration regardless of
+   CSS injection order, without reaching into any child's internal classes. */
+.array-focus-wrapper .array-focus-wrapper__product-focus,
+.array-focus-wrapper .array-focus-wrapper__seo-block,
+.array-focus-wrapper .array-focus-wrapper__insurance-focus {
+	padding: 0;
+}
+
+/* The promo card keeps its navy surface (that lives on the untouched
+   `.insurance-focus__card`); only its full-width sky wash is removed here. */
+.array-focus-wrapper .array-focus-wrapper__insurance-focus {
+	background: transparent;
+}
+
+.array-focus-wrapper__seo-block,
+.array-focus-wrapper__insurance-focus {
+	margin-top: calc(var(--spacing) * 26);
+
+	@media (--small-up) {
+		margin-top: calc(var(--spacing) * 30);
+	}
+}

@@ -1,0 +1,110 @@
+{
+  "id": "b01b22fc8fb80e1b0f910e526ea88094e54f5d54",
+  "capitalAmount": 15000.0,
+  "label": "PRÊT PERSONNEL",
+  "productCode": "PBPERSO ",
+  "campaignCode": "NEOURL14",
+  "proposals": [
+    {
+      "loanDuration": 48,
+      "dueNumber": 48,
+      "dueDeferralNumber": 0,
+      "scaleCode": "CRBP0000",
+      "annualDebitRate": 4.793,
+      "annualGlobalEffectiveRate": 4.9,
+      "annualChargeRate": 0.0,
+      "annualInsuranceEffectiveRate": 2.419,
+      "contractFees": 0.0,
+      "totalCostWithoutInsurance": 1513.44,
+      "totalCostWithInsurance": 2269.44,
+      "totalCostWithInsuranceAndServices": 2269.44,
+      "fixedRate": true,
+      "totalAmountWithoutInsurance": 16513.44,
+      "totalAmountWithInsurance": 17269.44,
+      "overdraftChargesAmount": 1513.44,
+      "personInsuranceTotalAmount": 756.0,
+      "installmentWithoutInsurance": {
+        "amount": 344.03,
+        "firstAmount": 344.03,
+        "lastAmount": 344.03,
+        "totalDueNumber": 48,
+        "dueNumber": 48
+      },
+      "installmentWithInsurance": {
+        "amount": 359.78,
+        "firstAmount": 359.78,
+        "lastAmount": 359.78,
+        "totalDueNumber": 48,
+        "dueNumber": 48
+      },
+      "hasBorrowerInsurance": true,
+      "hasCoBorrowerInsurance": false,
+      "borrowerInsurance": {
+        "insuranceCode": "01",
+        "insuranceInstallment": {
+          "amount": 15.75,
+          "firstAmount": 15.75,
+          "lastAmount": 15.75,
+          "totalDueNumber": 48,
+          "dueNumber": 48
+        },
+        "totalInsuranceCost": 756.0,
+        "insuranceProducts": null
+      },
+      "coBorrowerInsurance": null,
+      "alternativeBorrowerInsurance": null,
+      "alternativeCoBorrowerInsurance": null,
+      "maxProposal": {
+        "loanDuration": 48,
+        "dueNumber": 48,
+        "dueDeferralNumber": 0,
+        "scaleCode": "CRBPMAX",
+        "annualDebitRate": 4.793,
+        "annualGlobalEffectiveRate": 4.9,
+        "annualChargeRate": 0.0,
+        "annualInsuranceEffectiveRate": 2.419,
+        "contractFees": 0.0,
+        "totalCostWithoutInsurance": 1513.44,
+        "totalCostWithInsurance": 2269.44,
+        "totalCostWithInsuranceAndServices": 2269.44,
+        "fixedRate": true,
+        "totalAmountWithoutInsurance": 16513.44,
+        "totalAmountWithInsurance": 17269.44,
+        "overdraftChargesAmount": 1513.44,
+        "personInsuranceTotalAmount": 756.0,
+        "installmentWithoutInsurance": {
+          "amount": 344.03,
+          "firstAmount": 344.03,
+          "lastAmount": 344.03,
+          "totalDueNumber": 48,
+          "dueNumber": 48
+        },
+        "installmentWithInsurance": {
+          "amount": 359.78,
+          "firstAmount": 359.78,
+          "lastAmount": 359.78,
+          "totalDueNumber": 48,
+          "dueNumber": 48
+        },
+        "hasBorrowerInsurance": true,
+        "hasCoBorrowerInsurance": false,
+        "borrowerInsurance": {
+          "insuranceCode": "01",
+          "insuranceInstallment": {
+            "amount": 15.75,
+            "firstAmount": 15.75,
+            "lastAmount": 15.75,
+            "totalDueNumber": 48,
+            "dueNumber": 48
+          },
+          "totalInsuranceCost": 756.0,
+          "insuranceProducts": null
+        },
+        "coBorrowerInsurance": null,
+        "alternativeBorrowerInsurance": null,
+        "alternativeCoBorrowerInsurance": null,
+        "maxProposal": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+@import "@styles/breakpoints.css";
+
+.avis-client {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	background-color: var(--color-white);
+	padding: calc(var(--spacing) * 20) 0;
+	width: 100%;
+	overflow: hidden;
+}
+
+.avis-client__container {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 calc(var(--spacing) * 6);
+}
+
+/* Layout, gap, alignment and 80px bottom spacing are owned by SectionHeading. */
+.avis-client__header {
+	max-width: 720px;
+	margin-inline: auto;
+}
+
+.avis-client__sticker {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+}
+
+.avis-client__sticker-logo {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--spacing) * 2);
+}
+
+.avis-client__sticker-icon {
+	width: 28px;
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.avis-client__sticker-label {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-lg);
+	color: var(--color-primary-base);
+}
+
+.avis-client__sticker-rating {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-medium);
+	font-size: var(--text-sm);
+	color: var(--color-primary-base);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+}
+
+.avis-client__title {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-4xl);
+	line-height: var(--text-5xl--line-height);
+	letter-spacing: -0.02em;
+	color: var(--color-primary-base);
+	margin: 0;
+}
+
+.avis-client__link-wrapper {
+	margin-top: calc(var(--spacing) * 2);
+}
+
+.avis-client__carousel-wrapper {
+	margin-bottom: calc(var(--spacing) * 10);
+}
+
+.avis-client__swiper {
+	overflow: visible !important;
+}
+
+.avis-client__slide {
+	width: 340px;
+	height: auto;
+	display: flex;
+}
+
+.avis-client__navigation {
+	display: flex;
+	justify-content: center;
+	gap: calc(var(--spacing) * 4);
+	margin-top: calc(var(--spacing) * 8);
+}
+
+.avis-client__nav-button {
+	width: 62px;
+	height: 38px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-neutral-10);
+	border: none;
+	color: var(--color-primary-base);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.avis-client__nav-button:hover {
+	background-color: var(--color-neutral-20);
+}
+
+.avis-client__nav-button:focus-visible {
+	outline: 2px solid var(--color-primary-base);
+}
+
+.avis-client__nav-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+@media (--medium-up) {
+	.avis-client__title {
+		font-size: var(--text-3xl);
+	}
+
+	.avis-client__slide {
+		width: 540px;
+	}
+
+	.avis-client__navigation {
+		margin-top: calc(var(--spacing) * 20);
+	}
+}

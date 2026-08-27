@@ -1,0 +1,52 @@
+@import "@styles/breakpoints.css";
+
+.header {
+	/* Height of the tab bar (TopBar). Used as a negative sticky offset so the tab bar
+	   scrolls off the top while only the Menu pins at the viewport top. 0 on mobile,
+	   where the TopBar is hidden. */
+	--sof-topbar-height: 0px;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	position: sticky;
+	top: calc(-1 * var(--sof-topbar-height));
+	z-index: 998;
+	transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: transform;
+}
+
+@media (--medium-up) {
+	.header {
+		--sof-topbar-height: 40px; /* matches TopBar / Jahia .tabMenu height */
+	}
+}
+
+/* Headroom: slid up out of view when scrolling down (toggled by the Menu Island). */
+.header[data-header-hidden] {
+	transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.header {
+		transition: none;
+	}
+}
+
+.header__menu {
+	display: flex;
+	flex-direction: column;
+}
+
+.header__mobile-app {
+	display: none;
+}
+
+.header__hero {
+	display: block;
+}
+
+@media (max-width: 767px) {
+	.header__mobile-app {
+		display: block;
+	}
+}

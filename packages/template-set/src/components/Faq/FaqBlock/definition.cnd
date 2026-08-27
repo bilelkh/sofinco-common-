@@ -1,0 +1,34 @@
+[sofmix:faqIntegration] > jmix:dynamicFieldset mixin
+extends = sofnt:faq
+ - jsUrl (string) = 'https://assets.app.smart-tribune.com/sofinco/FAQ/faq-refonte-2024.main.js' mandatory
+ - kbId (string) mandatory
+ - cookieOptin (boolean)
+ - thematicsFilter (string)
+ - tagsFilter (string) multiple
+ - tagsOr (boolean) = false
+ - searchFiltered (boolean) = false
+ - headerId (string)
+ - extraParams (string) multiple
+
+[sofmix:faqItems] > jmix:dynamicFieldset mixin
+extends = sofnt:faq
+
+// `excludeFromStructuredData` retire ce bloc du JSON-LD `FAQPage` : à cocher quand
+// la FAQ sert de retranscription vidéo plutôt que de vraies questions/réponses.
+// Sans effet sur les blocs Smart Tribune (sofmix:faqIntegration), jamais balisés
+// puisque leur contenu n'existe pas dans le JCR.
+//
+// Le balisage se décide sur l'ABSENCE de sofmix:faqIntegration, jamais sur la
+// présence de sofmix:faqItems : ce dernier n'ayant aucune propriete, Jahia ne
+// l'attache jamais au noeud, et le tester reviendrait a ne rien baliser du tout.
+[sofnt:faq] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle orderable
+ - subtitle (string, textarea) i18n
+ - image (weakreference, picker[type='image']) < jmix:image
+ - imageAlt (string) i18n
+ - useExternalSource (string, choicelist) = 'smartTribune' autocreated
+ - excludeFromStructuredData (boolean) = 'false' autocreated
+ + * (sofnt:faqItem)
+ + link (sofnt:link)
+
+  
+

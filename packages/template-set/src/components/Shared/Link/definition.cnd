@@ -1,0 +1,8 @@
+[sofnt:link] > jnt:content, mix:title, jmix:link, sofmix:component
+ - j:linkType (string, choicelist[linkTypeInitializer,resourceBundle]) = 'none' mandatory
+
+[sofmix:link] mixin
+extends = sofnt:link
+ - iconLeft (string, choicelist[resourceBundle]) < 'chevron-up', 'folder-check', 'loader', 'menu', 'message-circle-question-mark', 'refreshccw', 'x', 'message-circle-buble'
+ - iconRight (string, choicelist[resourceBundle]) < 'chevron-up', 'folder-check', 'loader', 'menu', 'message-circle-question-mark', 'refreshccw', 'x', 'message-circle-buble'
+ - iconVariant (string, choicelist[resourceBundle]) = primary < primary, accent, danger

@@ -1,0 +1,5 @@
+[sofnt:guideCategory] > jnt:content, mix:title orderable
+ - image (weakreference, picker[type='image']) < jmix:image
+ - imageMobile (weakreference, picker[type='image']) < jmix:image
+ - imageAlt (string) i18n
+ + * (sofnt:link)

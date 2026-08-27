@@ -1,0 +1,242 @@
+@import "@styles/breakpoints.css";
+@import "@styles/tokens.css";
+
+.app-mobile {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	position: relative;
+	overflow: hidden;
+	padding: calc(var(--spacing) * 20) calc(var(--spacing) * 6) calc(var(--spacing) * 10)
+		calc(var(--spacing) * 6);
+	background-color: var(--color-primary-base);
+	color: var(--color-white);
+}
+
+/* Layout, gap, alignment and 80px bottom spacing are owned by SectionHeading. */
+.app-mobile__header {
+	padding: calc(var(--spacing) * 4);
+}
+
+.app-mobile__title {
+	margin: 0;
+	font-family: var(--font-sans);
+	font-size: var(--text-4xl);
+	line-height: var(--text-4xl--line-height);
+	letter-spacing: 0;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-neutral-00);
+	max-width: 700px;
+}
+
+.app-mobile__mobile-cta {
+	display: inline-flex;
+	width: fit-content !important;
+	margin: calc(var(--spacing) * 2) auto 0;
+	gap: calc(var(--spacing) * 2) !important;
+}
+
+.app-mobile__mobile-cta svg {
+	height: 13px;
+}
+
+.app-mobile__scene {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	width: fit-content;
+	margin: 0 auto;
+	min-height: 450px;
+}
+
+.app-mobile--without-qr .app-mobile__scene {
+	margin-top: 3rem;
+}
+
+.app-mobile__card {
+	--card-picto-max-size: 127px;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	width: 283px;
+	min-height: 184px;
+	background-color: var(--color-alpha-neutral-00-10);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: none;
+	border-radius: var(--radius-3xl);
+	padding: calc(var(--spacing) * 4);
+	color: var(--color-white);
+}
+
+.app-mobile__card::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		120deg,
+		var(--color-alpha-neutral-00-40),
+		rgba(255, 255, 255, 0),
+		var(--color-alpha-neutral-00-20)
+	);
+	-webkit-mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	mask:
+		linear-gradient(var(--color-neutral-100) 0 0) content-box,
+		linear-gradient(var(--color-danger-strong) 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(1) {
+	top: -1rem;
+	text-align: start;
+	transform: translateX(calc(-100% - 10rem));
+	left: 0;
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(3) {
+	bottom: 3rem;
+	text-align: start;
+	transform: translateX(calc(-100% - 2rem));
+	left: 0;
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(2) {
+	top: -1rem;
+	text-align: end;
+	transform: translateX(calc(100% + 10rem));
+	right: 0;
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(4) {
+	bottom: 3rem;
+	text-align: end;
+	transform: translateX(calc(100% + 2rem));
+	right: 0;
+}
+
+.app-mobile__card-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: calc(var(--spacing) * 3);
+	margin-bottom: calc(var(--spacing) * 2);
+}
+
+.app-mobile__card-label {
+	margin: 0;
+	composes: h3 from "@styles/utilities/typography.module.css";
+	color: var(--color-neutral-00);
+}
+
+/* Aucune largeur/hauteur ici : ce sont les attributs `width`/`height` de l'<img> (69x69,
+   la taille du picto de reference) qui dimensionnent la vignette. `object-fit` garantit
+   qu'un picto contribue dans un autre ratio soit contenu plutot qu'etire. */
+.app-mobile__picto {
+	object-fit: contain;
+}
+
+.app-mobile__card-picto {
+	flex-shrink: 0;
+	object-fit: contain;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	max-width: var(--card-picto-max-size);
+	max-height: var(--card-picto-max-size);
+	top: 0;
+	transform: translateY(-50%);
+}
+
+.app-mobile__card:has(.app-mobile__card-picto) {
+	padding-top: calc(var(--card-picto-max-size) / 2);
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(1) .app-mobile__card-picto,
+.app-mobile__scene > .app-mobile__card:nth-of-type(3) .app-mobile__card-picto {
+	right: 2.5rem;
+}
+
+.app-mobile__scene > .app-mobile__card:nth-of-type(2) .app-mobile__card-picto,
+.app-mobile__scene > .app-mobile__card:nth-of-type(4) .app-mobile__card-picto {
+	left: 2.5rem;
+}
+
+.app-mobile__card-complement {
+	margin: 0;
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	line-height: normal;
+	letter-spacing: 0;
+	font-weight: var(--font-weight-medium);
+	color: var(--color-neutral-00);
+}
+
+.app-mobile__phone {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+}
+
+.app-mobile__phone-img {
+	display: block;
+	width: 100%;
+	max-width: 400px;
+	height: auto;
+	object-fit: contain;
+	filter: drop-shadow(0 32px 64px var(--color-alpha-neutral-100-40));
+	max-height: 590px;
+}
+
+.app-mobile__qr-img {
+	display: block;
+	width: 150px;
+	/* Neutralise le hint de dimension porté par l'attribut `height` : le QR garde son
+	   carré réel au lieu d'être étiré dans une boîte 150x105. */
+	height: auto;
+	margin: calc(var(--spacing) * 6) auto calc(var(--spacing) * 10) auto;
+}
+
+@media (--large-down) {
+	.app-mobile__card {
+		--card-picto-max-size: 88px;
+	}
+
+	.app-mobile__scene {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: min(100%, 420px);
+		margin-top: calc(var(--spacing) * 8);
+		gap: calc(calc(var(--spacing) * 4) + 2.75rem);
+		min-height: auto;
+	}
+
+	.app-mobile--without-qr .app-mobile__scene {
+		margin-top: max(3rem, calc(var(--spacing) * 8));
+	}
+
+	.app-mobile__phone {
+		order: -1;
+	}
+
+	.app-mobile__card {
+		position: relative;
+		width: 100%;
+	}
+
+	.app-mobile__scene > .app-mobile__card:nth-of-type(1),
+	.app-mobile__scene > .app-mobile__card:nth-of-type(2),
+	.app-mobile__scene > .app-mobile__card:nth-of-type(3),
+	.app-mobile__scene > .app-mobile__card:nth-of-type(4) {
+		top: auto;
+		bottom: auto;
+		left: auto;
+		right: auto;
+		transform: none;
+	}
+}

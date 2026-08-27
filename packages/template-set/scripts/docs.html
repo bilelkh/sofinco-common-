@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation : Générateur de Composants Sofinco</title>
+    <style>
+        :root {
+            --primary: #00c49a;
+            --primary-dark: #00a07d;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --bg-page: #f8f9fa;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --react-color: #61dafb;
+            --jahia-color: #0066cc;
+            --ocp-color: #805ad5;
+            --yagni-color: #dd6b20;
+            --i18n-color: #2f855a;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-page);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 48px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3 { color: #1a202c; margin-top: 1.8em; }
+        h1 { font-size: 2rem; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-top: 0; }
+        h2 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        h3 { font-size: 1.1rem; margin-top: 1.2em; color: #2d3748; }
+        p  { margin-bottom: 1em; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .badge-dev    { background: #e53e3e; }
+        .badge-all    { background: var(--primary); }
+        .badge-new    { background: #d69e2e; }
+        .badge-ocp    { background: var(--ocp-color); }
+        .badge-yagni  { background: var(--yagni-color); }
+        .badge-i18n   { background: var(--i18n-color); }
+
+        .callout {
+            padding: 14px 20px;
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .callout-warn  { background: #fffbeb; border-left-color: #d69e2e; }
+        .callout-tip   { background: #f0fff4; border-left-color: var(--primary); }
+
+        /* ── Flow steps ── */
+        .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 24px 0;
+            border-left: 3px solid var(--border);
+            padding-left: 24px;
+        }
+        .flow-step {
+            position: relative;
+            padding: 12px 0 12px 0;
+        }
+        .flow-step::before {
+            content: attr(data-num);
+            position: absolute;
+            left: -36px;
+            top: 14px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-step-title { font-weight: 700; color: #2d3748; margin-bottom: 4px; }
+        .flow-step-desc  { font-size: 0.95rem; color: var(--text-muted); }
+        .flow-step-optional { font-size: 0.8rem; color: #a0aec0; font-style: italic; margin-top: 2px; }
+
+        /* ── Package sections ── */
+        .package-section {
+            margin-top: 24px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .package-header {
+            padding: 14px 20px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .react-header  { background: #f0fbfd; border-bottom: 2px solid var(--react-color); }
+        .jahia-header  { background: #f0f5fa; border-bottom: 2px solid var(--jahia-color); }
+        .file-grid     { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 20px; }
+        .file-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: 6px;
+        }
+        .file-card.ocp-only   { border-left: 3px solid var(--ocp-color); }
+        .file-card.yagni-hide { border-left: 3px solid #fc8181; }
+        .file-name {
+            font-family: "Fira Code", "Consolas", monospace;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        .file-desc { font-size: 0.92rem; color: var(--text-muted); margin: 0; }
+
+        /* ── Strategy comparison table ── */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            margin-top: 16px;
+        }
+        .compare-table th {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            color: #4a5568;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .compare-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .compare-table tr:nth-child(even) td { background: #f8fafc; }
+        .th-file  { width: 34%; }
+        .th-ocp   { width: 33%; color: var(--ocp-color) !important; }
+        .th-yagni { width: 33%; color: var(--yagni-color) !important; }
+        .yes { color: #2f855a; font-weight: 600; }
+        .no  { color: #c53030; font-weight: 600; }
+        .dim { color: #a0aec0; font-style: italic; }
+
+        /* ── Code block ── */
+        .code-block {
+            background: #1a202c;
+            color: #a0aec0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-family: "Fira Code", "Consolas", monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            line-height: 1.9;
+            margin: 12px 0;
+        }
+        .code-block .prompt  { color: #68d391; }
+        .code-block .comment { color: #4a5568; }
+        .code-block .answer  { color: #faf089; }
+        .code-block .info    { color: #76e4f7; }
+
+        /* ── Legend ── */
+        .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 0.85rem; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+        code { background: #edf2f7; padding: 1px 6px; border-radius: 4px; font-family: "Fira Code", monospace; font-size: 0.88em; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Générateur de Composants Sofinco <span class="badge badge-all">Pour Tous</span></h1>
+
+    <div class="callout">
+        <strong>👋 En résumé :</strong> Ce script génère automatiquement toute l'architecture
+        d'un composant Jahia + React en une seule commande. Il pose 4 à 5 questions et crée
+        entre 8 et 10 fichiers parfaitement connectés — zéro erreur humaine, respect strict
+        des conventions du projet.
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>1. Lancement <span class="badge badge-dev">Devs</span></h2>
+
+    <p>Depuis la racine du projet (monorepo) :</p>
+    <div class="code-block">
+        npm run make:component<br>
+        <span class="comment"># ou</span><br>
+        yarn run make:component
+    </div>
+
+    <div class="callout callout-warn">
+        <strong>💡 Dépannage :</strong> Si le terminal affiche une erreur, installez l'exécuteur TypeScript :
+        <code>yarn add -D tsx</code> ou <code>npm install -D tsx</code>.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>2. Flow de questions</h2>
+
+    <p>Le script pose les questions dans cet ordre. Chaque réponse est formatée automatiquement
+    (PascalCase, camelCase) — vous pouvez écrire <code>hero-banner</code>, <code>HeroBanner</code>
+    ou <code>hero_banner</code>, le résultat est identique.</p>
+
+    <div class="flow">
+        <div class="flow-step" data-num="1">
+            <div class="flow-step-title">Nom du composant</div>
+            <div class="flow-step-desc">Ex : <code>EventsListDemo</code>, <code>hero-section</code>, <code>SeoMesh</code></div>
+        </div>
+        <div class="flow-step" data-num="2">
+            <div class="flow-step-title">Périmètre de marque <span class="badge badge-new">Nouveau</span></div>
+            <div class="flow-step-desc"><code>sofinco-react/src</code> est cloisonné par marque — le composant est déposé dans un seul de ces dossiers :<br>
+            <code>[1] b2c</code> → <code>src/b2c/features/</code> &nbsp;·&nbsp;
+            <code>[2] b2b</code> → <code>src/b2b/features/</code> &nbsp;·&nbsp;
+            <code>[3] common</code> → <code>src/common/</code> (rendu par les deux marques).</div>
+            <div class="flow-step-optional">Par défaut : b2c.</div>
+        </div>
+        <div class="flow-step" data-num="3">
+            <div class="flow-step-title">Domaine / Groupe parent</div>
+            <div class="flow-step-desc">Regroupe plusieurs composants sous un dossier commun avec un <code>index.ts</code> de barrel.<br>
+            Ex : tapez <code>Footer</code> pour créer <code>src/b2c/features/Footer/FooterLogo/</code>.</div>
+            <div class="flow-step-optional">Laissez vide pour un composant indépendant.</div>
+        </div>
+        <div class="flow-step" data-num="4">
+            <div class="flow-step-title">Sous-dossiers ?  <span style="font-weight:400;color:#a0aec0">(y/n) — affiché uniquement si le nom contient plusieurs mots</span></div>
+            <div class="flow-step-desc">Si votre composant s'appelle <code>EventsList</code>, le script propose de créer
+            <code>Events/List/</code> au lieu d'un seul dossier <code>EventsList/</code>.</div>
+        </div>
+        <div class="flow-step" data-num="5">
+            <div class="flow-step-title">Stratégie d'interface serveur <span class="badge badge-new">Nouveau</span></div>
+            <div class="flow-step-desc">
+                <strong>[1] OCP</strong> — Génère une interface <code>*PropsServer extends *Props</code> dédiée.
+                Idéal quand la vue serveur aura des props supplémentaires (labels edit-mode, nodes JCR enfants).<br>
+                <strong>[2] YAGNI</strong> — Pas d'interface serveur. Client et serveur partagent la même <code>*Props</code>.
+                Idéal pour les composants simples qui ne différencient pas les deux contextes.
+            </div>
+        </div>
+        <div class="flow-step" data-num="6">
+            <div class="flow-step-title">Traductions / i18n ? <span class="badge badge-new">Nouveau</span></div>
+            <div class="flow-step-desc">
+                <strong>[y]</strong> — Conserve <code>useAppTranslation</code> et ajoute <code>t?</code> en paramètre
+                optionnel dans toutes les fonctions de mapping.<br>
+                <strong>[n]</strong> — Supprime <code>useAppTranslation</code> et le paramètre <code>t</code>
+                de tous les fichiers générés. Pour les composants sans texte traduit.
+            </div>
+        </div>
+    </div>
+
+    <h3>Exemple de session complète</h3>
+    <div class="code-block">
+<span class="prompt">&gt; Nom du composant :</span> <span class="answer">EventsListDemo</span><br>
+<span class="prompt">&gt; Nom Domain Groupe Component :</span> <span class="answer">Events</span><br>
+<span class="prompt">&gt; Diviser en sous-dossiers (Events/List/Demo) ? (y/n) :</span> <span class="answer">n</span><br>
+<br>
+<span class="info">📐 Stratégie d'interface serveur :</span><br>
+<span class="info">   [1] OCP  — PropsServer extends Props</span><br>
+<span class="info">   [2] YAGNI — Props partagés Client/Serveur</span><br>
+<span class="prompt">&gt; Votre choix (1 ou 2) :</span> <span class="answer">1</span><br>
+<br>
+<span class="info">🌐 Utiliser les traductions (useAppTranslation / t) ?</span><br>
+<span class="info">   [y] Oui — t? optionnel dans les mappings</span><br>
+<span class="info">   [n] Non — useAppTranslation et t supprimés</span><br>
+<span class="prompt">&gt; Votre choix (y/n) :</span> <span class="answer">n</span><br>
+<br>
+<span class="info">🚀 Génération de EventsListDemo...</span><br>
+<span class="info">   🏷️  Périmètre : b2c</span><br>
+<span class="info">   📁 Domaine : Events</span><br>
+<span class="info">   📍 Import généré : sofinco-react</span><br>
+<span class="info">   📐 Stratégie : OCP (PropsServer)</span><br>
+<span class="info">🎉 Architecture Client/Serveur générée avec succès !</span>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>3. Fichiers générés</h2>
+
+    <!-- REACT -->
+    <div class="package-section">
+        <div class="package-header react-header">⚛️ Package <code>sofinco-react</code> — Interface visuelle (identique dans toutes les stratégies)</div>
+        <div class="file-grid">
+            <div class="file-card">
+                <div class="file-name">[nom].types.ts</div>
+                <p class="file-desc">Interface <code>*Props</code> du composant React pur. Définit les données attendues (titre, URL, etc.). C'est le contrat de données partagé entre les deux packages.</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">[Nom].tsx</div>
+                <p class="file-desc">Le composant React principal — "stupide" : il affiche uniquement ce qu'on lui passe, sans savoir d'où vient la donnée.</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">[nom].module.css</div>
+                <p class="file-desc">Styles isolés du composant (CSS Modules).</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">index.ts</div>
+                <p class="file-desc">Barrel export du composant. Si un domaine est défini, le script met aussi à jour le <code>index.ts</code> du domaine <strong>et</strong> le <code>src/index.ts</code> racine — automatiquement, sans doublon.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAHIA -->
+    <div class="package-section">
+        <div class="package-header jahia-header">⚙️ Package <code>sofinco-template</code> — Couche Jahia (varie selon la stratégie)</div>
+        <div class="file-grid">
+            <div class="file-card">
+                <div class="file-name">definition.cnd</div>
+                <p class="file-desc">Plan JCR du composant. Déclare le type de nœud Jahia (<code>sofnt:monComposant</code>) et les champs éditables dans le back-office.</p>
+            </div>
+            <div class="file-card ocp-only">
+                <div class="file-name">[nom].types.ts <span class="badge badge-ocp">OCP uniquement</span></div>
+                <p class="file-desc">Déclare <code>*PropsServer extends *Props</code>. Permet d'ajouter des props exclusifs au serveur (nodes JCR, labels edit-mode) sans toucher à l'interface React. <strong>Non généré en mode YAGNI.</strong></p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">[nom].mapping.ts</div>
+                <p class="file-desc">
+                    Traduit un nœud JCR brut en objet Props utilisable par React.<br>
+                    <strong>OCP :</strong> deux fonctions — <code>map*PropsClient(node)</code> et <code>map*PropsServer(node)</code>.<br>
+                    <strong>YAGNI :</strong> une seule fonction — <code>map*Props(node)</code>.<br>
+                    Si i18n activé, <code>t?</code> est ajouté comme paramètre optionnel.
+                </p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">[nom].render.tsx</div>
+                <p class="file-desc">Abstraction du rendu. Expose <code>render*Client(props)</code> (Island hydration) et <code>render*Server(props)</code> (rendu direct). Le <code>default.server.tsx</code> n'instancie jamais de JSX directement, il passe toujours par ce fichier.</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">default.server.tsx</div>
+                <p class="file-desc">
+                    Point d'entrée Jahia — enregistre le composant via <code>jahiaComponent()</code>.<br>
+                    <strong>OCP :</strong> appelle <code>map*PropsServer</code> en edit-mode et <code>map*PropsClient</code> en live.<br>
+                    <strong>YAGNI :</strong> appelle une seule fois <code>map*Props</code>, puis choisit le render selon <code>isEdit</code>.<br>
+                    Si i18n désactivé, <code>useAppTranslation</code> et <code>const { t }</code> sont absents.
+                </p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">views/[Nom]Server.tsx</div>
+                <p class="file-desc">Vue rendue uniquement en mode édition Jahia (Page Composer). Conçue pour accueillir les boutons <code>AddContentButton</code> et les <code>RenderChildren</code> Jahia. Reçoit <code>*PropsServer</code> (OCP) ou <code>*Props</code> (YAGNI).</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">views/[Nom]Client.client.tsx</div>
+                <p class="file-desc">Composant hydratable côté navigateur. Enveloppe le composant React pur pour l'architecture Islands de Jahia. Reçoit toujours <code>*Props</code> (sérialisable).</p>
+            </div>
+            <div class="file-card">
+                <div class="file-name">views/[nom].module.css</div>
+                <p class="file-desc">CSS exclusif à la vue serveur (edit-mode). Utile pour mettre en valeur les zones éditables dans le Page Composer.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>4. Tableau comparatif OCP vs YAGNI <span class="badge badge-new">Nouveau</span></h2>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--ocp-color)"></div> OCP</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--yagni-color)"></div> YAGNI</div>
+    </div>
+
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th class="th-file">Fichier / Élément</th>
+                <th class="th-ocp">OCP [1]</th>
+                <th class="th-yagni">YAGNI [2]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>[nom].types.ts</code> (template-set)</td>
+                <td class="yes">✔ Créé — <code>*PropsServer extends *Props</code></td>
+                <td class="no">✘ Non créé</td>
+            </tr>
+            <tr>
+                <td>Fonctions dans <code>mapping.ts</code></td>
+                <td><code>map*PropsClient()</code><br><code>map*PropsServer()</code></td>
+                <td><code>map*Props()</code> — une seule</td>
+            </tr>
+            <tr>
+                <td>Type retourné par le mapping serveur</td>
+                <td><code>*PropsServer</code></td>
+                <td><code>*Props</code></td>
+            </tr>
+            <tr>
+                <td><code>render*Server(props)</code></td>
+                <td>param : <code>*PropsServer</code></td>
+                <td>param : <code>*Props</code></td>
+            </tr>
+            <tr>
+                <td><code>views/*Server.tsx</code> — import du type</td>
+                <td>depuis <code>../[nom].types</code></td>
+                <td>depuis <code>sofinco-react</code> direct</td>
+            </tr>
+            <tr>
+                <td><code>default.server.tsx</code> — appels mapping</td>
+                <td><code>map*PropsServer(node)</code> en edit<br><code>map*PropsClient(node)</code> en live</td>
+                <td><code>map*Props(node)</code> — appelé une fois avant le <code>if (isEdit)</code></td>
+            </tr>
+            <tr>
+                <td>Quand l'utiliser ?</td>
+                <td>Vue serveur avec des props <strong>supplémentaires</strong> (ex : labels edit-mode, nodes JCR enfants)</td>
+                <td>Composant simple où client et serveur partagent exactement les <strong>mêmes données</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>5. Option i18n — Traductions <span class="badge badge-i18n">Nouveau</span></h2>
+
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th class="th-file">Élément</th>
+                <th style="color:var(--i18n-color)">i18n = y (avec traductions)</th>
+                <th style="color:#c53030">i18n = n (sans traductions)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Import dans <code>default.server.tsx</code></td>
+                <td class="yes"><code>import { useAppTranslation } from "#lib/i18n"</code></td>
+                <td class="no">Absent</td>
+            </tr>
+            <tr>
+                <td>Corps de la fonction dans <code>default.server.tsx</code></td>
+                <td class="yes"><code>const { t } = useAppTranslation();</code></td>
+                <td class="no">Absent</td>
+            </tr>
+            <tr>
+                <td>Signature des fonctions dans <code>mapping.ts</code></td>
+                <td><code>map*Props(node, t?: (key: string) => string)</code></td>
+                <td><code>map*Props(node)</code></td>
+            </tr>
+            <tr>
+                <td>Appel dans <code>default.server.tsx</code></td>
+                <td><code>map*Props(currentNode, t)</code></td>
+                <td><code>map*Props(currentNode)</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="callout callout-tip" style="margin-top:16px">
+        <strong>💡 Pourquoi <code>t?</code> optionnel et non obligatoire ?</strong><br>
+        Rendre <code>t</code> optionnel permet d'appeler les fonctions de mapping dans des contextes
+        sans i18n (tests unitaires, scripts de migration) sans avoir à passer un mock. C'est un
+        choix de flexibilité qui n'impacte pas la type-safety à l'usage normal.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>6. Configuration globale <span class="badge badge-dev">Devs</span></h2>
+
+    <p>En haut du fichier <code>generate-component.ts</code>, une seule constante contrôle
+    le style d'import pour tous les fichiers générés par toute l'équipe :</p>
+
+    <div class="code-block">
+        <span class="comment">// generate-component.ts — ligne 15</span><br>
+        const IMPORT_STYLE: ImportStyle = <span class="answer">'A'</span>;
+    </div>
+
+    <table class="compare-table" style="margin-top:12px">
+        <thead>
+            <tr><th>Valeur</th><th>Import généré</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>'A'</code> (défaut)</td>
+                <td><code>import { Hero } from "sofinco-react"</code></td>
+                <td>Simple, recommandé. Tree-shaking géré par le bundler.</td>
+            </tr>
+            <tr>
+                <td><code>'B'</code></td>
+                <td><code>import { Hero } from "sofinco-react/Hero/Banner"</code></td>
+                <td>Import précis par chemin. Utile si le package n'est pas configuré pour l'export racine.</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <h2>7. Comportement Fail-Safe</h2>
+
+    <p>Le script ne peut pas écraser un fichier existant. Si vous relancez le générateur
+    sur un composant déjà créé :</p>
+
+    <div class="code-block">
+        ✅ Créé   : <span class="answer">footer.mapping.ts</span><br>
+        ⏩ Ignoré : <span class="comment">footer.types.ts (Existe déjà)</span><br>
+        ⏩ Ignoré : <span class="comment">default.server.tsx (Existe déjà)</span>
+    </div>
+
+    <p>Cela permet d'ajouter un sous-composant dans un domaine existant sans risque d'écraser
+    du travail déjà effectué.</p>
+
+    <div class="callout callout-tip">
+        <strong>💡 Astuce :</strong> Les <code>index.ts</code> de barrel sont mis à jour par
+        <em>append</em> (ajout en fin de fichier) — jamais réécrits. Un export déjà présent
+        n'est jamais dupliqué.
+    </div>
+
+</div>
+</body>
+</html>

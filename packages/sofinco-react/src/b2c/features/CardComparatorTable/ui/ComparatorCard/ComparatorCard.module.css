@@ -1,0 +1,80 @@
+@import "@styles/tokens.css";
+
+.comparator-card {
+	position: relative;
+	border-radius: var(--radius-3xl);
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	max-width: 580px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+.comparator-card__badge {
+	font-family: var(--font-display);
+	font-weight: var(--font-weight-extrabold);
+	position: absolute;
+	top: calc(calc(var(--spacing) * 3) * -1);
+	left: 50%;
+	transform: translateX(-50%);
+	border-radius: var(--radius-full);
+	background: linear-gradient(135deg, #35deff 25%, #aeffd9 75%);
+	z-index: 1;
+}
+
+.comparator-card__image-container {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	border-radius: var(--radius-3xl);
+	overflow: hidden;
+	margin-bottom: calc(var(--spacing) * 6);
+	background: linear-gradient(135deg, #35deff 0%, #aeffd9 100%);
+}
+
+.comparator-card__image {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.comparator-card__body {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.comparator-card__title {
+	font-family: var(--font-sans);
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-xl);
+	color: var(--color-primary-strong);
+	margin-bottom: calc(var(--spacing) * 4);
+}
+
+.comparator-card__description {
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	line-height: var(--text-sm--line-height);
+	color: var(--color-primary-strong);
+	margin: 0 0 calc(var(--spacing) * 6) 0;
+}
+
+.comparator-card__feature-list {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+	margin: 0 0 calc(var(--spacing) * 8) 0;
+}
+
+.comparator-card__cta-button {
+	margin-top: auto;
+	width: 100%;
+	justify-content: center;
+}

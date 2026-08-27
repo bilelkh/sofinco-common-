@@ -1,0 +1,4 @@
+[sofnt:mentionSettings] > jnt:content, mix:title, sofmix:configs
+ - message (string) = 'Un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager.' i18n
+
+ [sofnt:mention] > jnt:content, sofmix:component

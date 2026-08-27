@@ -1,0 +1,11 @@
+[sofnt:cardAdvantages] > jnt:content, mix:title, sofmix:component, sofmix:ctaInternal orderable
+ - subtitle (string, textarea) i18n
+ - cardImage (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ 
+ - momentsTitle (string) mandatory i18n
+ - momentsSubtitle (string, textarea) i18n
+ 
+ - imageDesktop (weakreference, picker[type='image']) mandatory < 'jmix:image'
+ - imageMobile (weakreference, picker[type='image']) mandatory < 'jmix:image'
+
+ + * (sofnt:cardArgument)

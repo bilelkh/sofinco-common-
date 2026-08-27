@@ -1,0 +1,111 @@
+{
+	"name": "sofinco-template",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist",
+		"src/**/*.cnd",
+		"settings",
+		"static",
+		"javascript",
+		"!javascript/**/*.test.ts",
+		"!javascript/**/loadPlugin.ts"
+	],
+	"scripts": {
+		"build": "tsc --noEmit && vite build && run package",
+		"clean": "rm -rf dist/",
+		"deploy": "jahia-deploy",
+		"dev": "vite build --watch",
+		"format": "prettier --write --list-different .",
+		"lint": "eslint .",
+		"package": "yarn pack --out dist/package.tgz",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"coverage": "vitest run --coverage",
+		"sonar": "vitest run --coverage && sonar-scanner",
+		"watch": "run dev",
+		"watch:callback": "run package && run deploy",
+		"make:component": "npx tsx scripts/generate-component.ts"
+	},
+	"imports": {
+		"#lib/*": [
+			"./src/lib/*",
+			"./src/lib/*.ts",
+			"./src/lib/*.tsx"
+		],
+		"#audit/*": [
+			"./src/audit/*",
+			"./src/audit/*.ts",
+			"./src/audit/*.tsx"
+		],
+		"#cms/*": [
+			"./src/components/*",
+			"./src/components/*.ts",
+			"./src/components/*.tsx"
+		],
+		"#shared/*": [
+			"./src/components/Shared/*",
+			"./src/components/Shared/*.ts",
+			"./src/components/Shared/*.tsx"
+		],
+		"#test/*": [
+			"./src/test/*",
+			"./src/test/*.ts",
+			"./src/test/*.tsx"
+		]
+	},
+	"dependencies": {
+		"@radix-ui/react-accordion": "^1.2.12",
+		"@radix-ui/react-dialog": "^1.1.15",
+		"@radix-ui/react-navigation-menu": "^1.2.14",
+		"@radix-ui/react-popover": "^1.1.15",
+		"@radix-ui/react-tabs": "^1.1.13",
+		"canvas-confetti": "^1.9.3",
+		"clsx": "^2.1.1",
+		"modern-normalize": "^3.0.1",
+		"motion": "^12.38.0",
+		"sofinco-react": "workspace:*",
+		"swiper": "^12.1.4"
+	},
+	"devDependencies": {
+		"@eslint-react/eslint-plugin": "^2.0.0",
+		"@eslint/compat": "^2.0.0",
+		"@eslint/js": "^9.26.0",
+		"@jahia/javascript-modules-library": "^1.2.0",
+		"@jahia/vite-plugin": "^1.2.0",
+		"@types/canvas-confetti": "^1.9.0",
+		"@types/react": "^19.1.2",
+		"@vitest/coverage-v8": "^4.1.8",
+		"autoprefixer": "^10.4.27",
+		"eslint": "^9.26.0",
+		"globals": "^16.0.0",
+		"happy-dom": "^20.11.1",
+		"i18next": "^25.0.2",
+		"postcss": "^8.5.8",
+		"postcss-custom-media": "^12.0.1",
+		"postcss-mixins": "^12.1.2",
+		"postcss-nesting": "^14.0.0",
+		"prettier": "^3.5.3",
+		"react": "19.2.3",
+		"react-i18next": "^16.1.0",
+		"sonarqube-scanner": "^4.3.6",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.31.1",
+		"typescript-plugin-css-modules": "^5.1.0",
+		"vite": "^7.0.0",
+		"vitest": "^4.1.8"
+	},
+	"packageManager": "yarn@4.10.3",
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"jahia": {
+		"name": "sofinco-template",
+		"snapshot": true,
+		"module-dependencies": "default",
+		"module-type": "templatesSet",
+		"server": "dist/server/index.js",
+		"static-resources": "/dist/client,/dist/assets,/locales,/images,/icons,/javascript",
+		"import": "settings/import.xml"
+	}
+}

@@ -1,0 +1,85 @@
+@import "sofinco-react/styles/breakpoints.css";
+
+.seoBlockContainer {
+	background: var(--color-neutral-00);
+	border-radius: var(--radius-3xl);
+	padding: calc(var(--spacing) * 14);
+	max-width: 1200px;
+	margin: calc(var(--spacing) * 6) auto;
+	display: flex;
+	flex-direction: row;
+	gap: calc(var(--spacing) * 20);
+	box-shadow: var(--shadow-sm);
+}
+
+.leftColumn {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: calc(var(--spacing) * 8);
+}
+
+.mainTitle {
+	color: var(--color-primary-base);
+	font-weight: var(--font-weight-bold);
+	font-size: var(--text-3xl);
+	line-height: var(--text-3xl--line-height);
+	margin: 0;
+}
+
+.ctaButton {
+	display: inline-flex;
+	align-items: center;
+	background-color: var(--color-primary-base);
+	color: var(--color-neutral-00);
+	padding: calc(var(--spacing) * 3) calc(var(--spacing) * 6);
+	border-radius: var(--radius-full);
+	text-decoration: none;
+	font-weight: var(--font-weight-semibold);
+	font-size: var(--text-sm);
+	transition: background-color 0.3s ease;
+}
+
+.ctaButton:hover {
+	background-color: var(--color-primary-strong);
+}
+
+.ctaIconWrapper {
+	background-color: var(--color-neutral-00);
+	border-radius: 50%;
+	width: calc(var(--spacing) * 6);
+	height: calc(var(--spacing) * 6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: calc(var(--spacing) * 4);
+}
+
+.ctaIconArrow {
+	color: var(--color-secondary-base);
+	font-weight: var(--font-weight-bold);
+	font-size: var(--text-lg);
+	line-height: 1;
+}
+
+.rightColumn {
+	flex: 1.5;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: calc(var(--spacing) * 10);
+}
+
+@media (--medium-down) {
+	.seoBlockContainer {
+		flex-direction: column;
+		padding: calc(var(--spacing) * 8);
+		gap: calc(var(--spacing) * 14);
+	}
+
+	.rightColumn {
+		gap: calc(var(--spacing) * 8);
+	}
+}

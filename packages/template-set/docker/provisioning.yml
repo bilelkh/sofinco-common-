@@ -1,0 +1,15 @@
+- installOrUpgradeBundle: "mvn:org.jahia.modules/javascript-modules-engine/1.2.0"
+- installBundle: "mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-httpclient/3.1_7"
+  autoStart: true
+  uninstallPreviousVersion: true
+# Apache HttpClient5 (stack HTTP des appels APIM de sofinco-core) — bundles OSGi natifs,
+# importés (pas embarqués). Doivent être déployés avant que sofinco-core ne résolve.
+- installBundle: "mvn:org.apache.httpcomponents.core5/httpcore5/5.4"
+  autoStart: true
+  uninstallPreviousVersion: true
+- installBundle: "mvn:org.apache.httpcomponents.core5/httpcore5-h2/5.4"
+  autoStart: true
+  uninstallPreviousVersion: true
+- installBundle: "mvn:org.apache.httpcomponents.client5/httpclient5/5.6.1"
+  autoStart: true
+  uninstallPreviousVersion: true

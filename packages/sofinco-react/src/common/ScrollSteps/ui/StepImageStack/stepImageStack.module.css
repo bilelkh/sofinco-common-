@@ -1,0 +1,109 @@
+@import "@styles/base.css";
+
+/* Cadre extérieur : porte la pastille décorative, n'est PAS rogné. */
+.stepImageStack {
+	position: relative;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1 / 1;
+	margin: 0 auto;
+}
+
+@media (--small-up) {
+	.stepImageStack {
+		width: 100%;
+		height: auto;
+		aspect-ratio: var(--step-image-stack-ratio, 1 / 1);
+	}
+}
+
+/* Pastille de couleur décalée derrière le cadre (opt-in via --step-image-stack-accent-color). */
+.stepImageStack::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	transform: translate(6%, -6%);
+	border-radius: var(--radius-4xl);
+	background: var(--step-image-stack-accent-color, transparent);
+}
+
+/* Cadre intérieur : rogne le glissement des couches (overflow: hidden). */
+.stepImageStack__clip {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: var(--radius-4xl);
+	contain: layout paint;
+}
+
+/*
+ * Les couches sont animées via la custom property --step-progress (0 → 1),
+ * écrite par GSAP sur la section à chaque frame. L'interpolation se fait
+ * entièrement en CSS (compositeur GPU) : aucune frame ne repasse par React.
+ */
+.stepImageStack__layer {
+	position: absolute;
+	inset: 0;
+	transform-origin: center top;
+}
+
+/* Couche pas encore atteinte. */
+.stepImageStack__layer[data-state="hidden"] {
+	opacity: 0;
+	z-index: 0;
+}
+
+/* Couche déjà passée : invisible, légèrement réduite. */
+.stepImageStack__layer[data-state="left"] {
+	opacity: 0;
+	transform: scale(0.82);
+	z-index: 1;
+}
+
+/* Couche active : se réduit et s'efface au fil de la progression. */
+.stepImageStack__layer[data-state="current"] {
+	opacity: calc(1 - var(--step-progress, 0));
+	transform: scale(calc(0.82 + 0.18 * (1 - var(--step-progress, 0))));
+	z-index: 2;
+	will-change: opacity, transform;
+}
+
+/* Couche suivante : monte et apparaît (pleinement opaque dès 35 % de progression). */
+.stepImageStack__layer[data-state="entering"] {
+	opacity: min(1, var(--step-progress, 0) / 0.35);
+	transform: translateY(calc((1 - var(--step-progress, 0)) * 45%));
+	z-index: 3;
+	will-change: opacity, transform;
+}
+
+/* Mobile: slower, gentler transitions — entering fades in over 60% of progress instead of 35%,
+   and the upward travel is reduced to avoid a harsh snap feel. */
+@media (--small-down) {
+	.stepImageStack__layer[data-state="current"] {
+		opacity: calc(1 - var(--step-progress, 0) * 0.85);
+	}
+
+	.stepImageStack__layer[data-state="entering"] {
+		opacity: min(1, var(--step-progress, 0) / 0.6);
+		transform: translateY(calc((1 - var(--step-progress, 0)) * 25%));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.stepImageStack__layer[data-state="left"],
+	.stepImageStack__layer[data-state="current"],
+	.stepImageStack__layer[data-state="entering"] {
+		transform: none;
+	}
+}
+
+.stepImageStack__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: var(--radius-4xl);
+}

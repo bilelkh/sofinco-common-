@@ -1,0 +1,15 @@
+@import "@styles/breakpoints.css";
+
+/* Miroir exact du média de `.qr-code` (QrCode.module.css) : au-dessus du seuil c'est la
+   vignette QR qui occupe la zone, en dessous c'est ce CTA. Les deux partent dans le HTML
+   serveur et le navigateur n'en révèle qu'un — voir `QrFooter.tsx` pour le pourquoi.
+
+   Sélecteur doublé (spécificité 0-2-0) : la règle doit battre `.cta { display: inline-flex }`
+   (Cta.module.css), de même spécificité. À égalité c'est l'ordre d'émission des feuilles qui
+   tranche — un ordre qui ne dépend que du graphe d'imports et qu'un simple déplacement de
+   ligne suffirait à inverser, faisant réapparaître le CTA à côté du QR sur desktop. */
+@media (--qr-code-up) {
+	.qr-footer__cta.qr-footer__cta {
+		display: none;
+	}
+}

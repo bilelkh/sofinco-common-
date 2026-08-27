@@ -1,0 +1,87 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as FaqStories from "./Faq.stories";
+
+<Meta of={FaqStories} />
+
+# Faq
+
+A "Foire aux questions" section: a wide rounded hero image, a centered title and subtitle, and a list of expandable Q&A rows in the Sofinco ice-blue surface style with a turquoise +/− toggle.
+
+## How It Works
+
+Faq composes:
+
+- `imageUrl` / `imageAlt`: top hero image (rendered with `border-radius: var(--radius-4xl)`). Pass an empty `imageUrl` to hide the image.
+- `title`: section heading rendered as `h2`
+- `subtitle`: supporting paragraph below the title
+- `items`: array of `FaqItem` objects rendered as accordion rows
+
+Each row uses a real `<button>` for the toggle, with `aria-expanded` / `aria-controls` for accessibility. The expand/collapse animation is CSS-only (no `framer-motion`), driven by `grid-template-rows: 0fr → 1fr`. Multiple rows can be open at the same time.
+
+### FaqItem Details
+
+```ts
+type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+```
+
+Field notes:
+
+- `id`: stable identifier — used as the React `key` and to wire `aria-controls`. In Jahia this is the JCR node identifier of the `sofnt:faqItem` child node.
+- `question`: rendered with an automatic `1.`, `2.`, … prefix based on the item's index in the list.
+- `answer`: plain text. `white-space: pre-line` is applied so newlines in the source are preserved.
+
+## Basic Usage
+
+```tsx
+import { Faq } from "sofinco-react";
+
+<Faq
+  title="Foire aux questions"
+  subtitle="Vous avez des questions sur nos produits ou solutions ? Nous avons les réponses !"
+  imageUrl="/images/faq-hero.jpg"
+  imageAlt="Une main tenant une carte bancaire Sofinco"
+  items={[
+    {
+      id: "1",
+      question: "Quels types de prêts propose Sofinco ?",
+      answer: "Sofinco propose une large gamme de crédits à la consommation…",
+    },
+    {
+      id: "2",
+      question: "Comment effectuer ma demande de crédit conso ?",
+      answer: "Vous pouvez effectuer votre demande directement en ligne…",
+    },
+  ]}
+/>;
+```
+
+## Jahia Integration
+
+In the Jahia template-set, the component is mapped from a `sofnt:faq` node:
+
+- `jcr:title` → `title`
+- `subtitle` (i18n textarea) → `subtitle`
+- `image` (image picker) → `imageUrl`
+- `imageAlt` (i18n) → `imageAlt`
+- child nodes of type `sofnt:faqItem` → `items` (each `jcr:title` is the question, `answer` is the textarea)
+
+In edit mode, `<AddContentButtons nodeTypes={["sofnt:faqItem"]} />` is rendered below the list so editors can append new questions.
+
+## Story Variants
+
+<Canvas of={FaqStories.Default} />
+<Canvas of={FaqStories.WithoutImage} />
+<Canvas of={FaqStories.NotManyQuestion} />
+
+## Props
+
+<ArgTypes of={FaqStories} />
+
+## All Stories
+
+<Stories />

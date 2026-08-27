@@ -1,0 +1,9 @@
+// `amountPlaceholder` / `amountMin` / `amountMax` ne sont plus déclarés ici :
+// ils viennent de sofmix:simulatorAmount, qui porte tout le champ montant
+// (placeholder, bornes, messages d'erreur).
+[sofnt:chatBotSimulatorLeaf] > jnt:content, sofmix:simulatorCta, sofmix:simulatorAmount
+ - conclusion (string) mandatory i18n
+ - features (string) multiple i18n
+ - amountCtaLabel (string) = "Je valide" autocreated i18n
+ - productCtaLabel (string) mandatory i18n
+ - linkType (string, choicelist[linkTypeInitializer,resourceBundle]) = 'none' mandatory

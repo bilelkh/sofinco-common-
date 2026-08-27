@@ -1,0 +1,18 @@
+/* Edit-mode only: dotted red outline to visually separate each suggestion list. */
+.edit-suggestions {
+	padding-left: 1rem;
+}
+
+.edit-suggestions__title {
+	margin: 0.5rem 0;
+	padding: 0.25rem;
+	font-weight: 700;
+	text-align: center;
+	background-color: #f0f0f0;
+}
+
+.edit-suggestions__property-name {
+	color: #00334d;
+	font-weight: 800;
+	margin: 0 0 8px 0;
+}

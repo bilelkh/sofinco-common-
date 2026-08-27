@@ -1,0 +1,26 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<joant = 'http://www.jahia.org/jahia/joa/nt/1.0'>
+<sofnt = 'http://www.sofinco.fr/jahia/nt/1.0'>
+
+// OAuth IdP connector.
+// joant:sofincoOAuthView -> the settings card rendered in Administration > Jahia Authentication.
+//                           jmix:authConnectorSettingView makes it appear in the connector list.
+// The login button is NOT defined here: it now lives in template-set as the React
+// sofnt:loginButton component (Island). See packages/template-set/src/components/LoginButton.
+[joant:sofincoOAuthView] > jnt:content, jmix:authConnectorSettingView
+
+// -- Politique de poids des images -------------------------------------------
+// Definie ICI (module qui la consomme via ch.sofinco.core.validation.image), pas dans
+[sofnt:imageWeightPolicy] > jnt:content, jmix:droppableContent, mix:title orderable
+ + * (sofnt:imageWeightRule)
+
+// inheritDefaults=true : les tokens saisis COMPLETENT les tokens par defaut de la
+// categorie (config vide = defauts) ; false = remplacement total. maxSizeKb fait foi.
+[sofnt:imageWeightRule] > jnt:content, jmix:droppableContent
+ - category        (string, choicelist[resourceBundle]) = 'default' mandatory autocreated indexed=no < 'icon-logo', 'mobile', 'tablet', 'default'
+ - inheritDefaults (boolean) = true autocreated indexed=no
+ - matchTokens     (string) indexed=no multiple
+ - maxSizeKb       (long) = 1024 mandatory autocreated indexed=no < '[1,1536]'
