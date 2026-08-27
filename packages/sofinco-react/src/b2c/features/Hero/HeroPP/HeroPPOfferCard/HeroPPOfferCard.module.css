@@ -87,15 +87,6 @@
 		}
 	}
 }
-
-.card__detail {
-	margin: 0;
-	font-size: var(--text-sm);
-	line-height: var(--text-xs--line-height);
-	color: var(--color-primary-base);
-	font-weight: var(--font-weight-medium);
-}
-
 .card__imgWrapper {
 	flex: 1 1 auto;
 	line-height: 0;

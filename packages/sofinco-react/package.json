@@ -19,7 +19,7 @@
 		"build-storybook": "storybook build",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"storybook": "storybook dev -p 8080",
+		"storybook": "storybook dev -p 6006",
 		"test": "vitest run --config vitest.unit.config.ts",
 		"test:watch": "vitest --config vitest.unit.config.ts"
 	},

@@ -104,6 +104,7 @@ export function ProductAdvantages({
 						onSwiper={setSwiper}
 						onSlideChange={(instance) => setActiveIndex(instance.realIndex)}
 						slidesPerView="auto"
+						centeredSlides
 						spaceBetween={24}
 						autoplay={
 							enableProgress

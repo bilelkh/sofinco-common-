@@ -192,21 +192,145 @@
 		"}";
 
 	/*
-	 * PÉRIMÈTRE : la page courante UNIQUEMENT — mais `descendants` ne s'y arrête pas tout
-	 * seul. `typesFilter` filtre ce qui est RETOURNÉ, pas ce qui est TRAVERSÉ : depuis la
-	 * page racine d'un site, la requête descend dans toutes les sous-pages et remonte les
-	 * ancres du site entier. Comme on insère `href="#fragment"`, qui résout toujours sur la
-	 * page courante, chacune de ces ancres hors-page fabriquerait un lien mort.
+	 * ZONES DE CONTENU D'UNE PAGE, PAR NOM — et c'est le périmètre de toute la recherche.
 	 *
-	 * On récupère donc aussi la liste des sous-pages pour écarter côté client tout contenu
-	 * situé sous l'une d'elles. `recursionTypesFilter` conviendrait mieux — il pilote bien
-	 * la traversée — mais il signifie « ne descendre QUE dans ces types » et imposerait
-	 * d'énumérer tous les types conteneurs, liste fragile qu'un type oublié viderait.
+	 * Les deux zones où un contributeur pose des ancres : `main` porte le corps de la page
+	 * (et donc les ancres de section), `mentions` porte le bloc de mentions légales, dont
+	 * chaque paragraphe est une cible de renvoi.
+	 *
+	 * Ne sont interrogées QUE ces deux-là. Chaque zone en plus est un aller-retour serveur
+	 * sur chaque ouverture du menu, pour un contenu qui, en pratique, ne porte pas d'ancre.
+	 *
+	 * Les `<AbsoluteArea>` — pied de page, menu, pictos — n'ont de toute façon jamais eu leur
+	 * place ici : elles visent des nœuds de SITE partagés par toutes les pages, alors qu'un
+	 * `href="#fragment"` résout sur la page courante.
+	 */
+	var PAGE_AREAS = ["main", "mentions"];
+
+	/*
+	 * Zones des gabarits VOLONTAIREMENT hors périmètre — la liste existe pour que ce choix
+	 * reste un choix, et non un oubli.
+	 *
+	 * `header` accueille `sofnt:header`, qui dérive de `sofmix:component` — le mixin du
+	 * module, pas le `spmix:component` du legacy. Il ne porte donc NI `baseAnchor` NI
+	 * `anchorId`, les deux seules propriétés d'ancre de section. Aucune ancre n'y est
+	 * atteignable : l'exclusion est sans effet observable.
+	 *
+	 * `BANNIERE` n'existe que dans le gabarit `legacy` et reçoit du contenu importé, lequel
+	 * PEUT porter `baseAnchor`. Une ancre posée dans une bannière ne sera donc pas proposée
+	 * par le menu. Arbitrage assumé : la bannière est un visuel d'en-tête, pas une section
+	 * vers laquelle on renvoie, et le coût d'une zone supplémentaire est payé à chaque
+	 * ouverture. À rebasculer dans `PAGE_AREAS` si le cas se présente vraiment.
+	 *
+	 * `plugin.js` est chargé tel quel par CKEditor : il ne peut rien importer de `src/`. Ces
+	 * deux listes sont donc une COPIE des gabarits, et une copie dérive. Un test confronte
+	 * leur UNION aux `<Area name>` réels : une zone nouvelle fait échouer la suite tant que
+	 * personne n'a tranché dans quelle liste elle va (voir plugin.test.ts).
+	 */
+	var EXCLUDED_AREAS = ["header", "BANNIERE"];
+
+	/*
+	 * PÉRIMÈTRE : la page courante UNIQUEMENT — et il se joue DANS la requête.
+	 *
+	 * `typesFilter` filtre ce qui est RETOURNÉ, pas ce qui est TRAVERSÉ. Un `descendants`
+	 * lancé depuis la page traverse donc toutes ses sous-pages. Comme on insère
+	 * `href="#fragment"`, qui résout toujours sur la page courante, chaque ancre hors-page
+	 * fabriquerait un lien mort.
+	 *
+	 * CE FILTRAGE SE FAISAIT APRÈS COUP, EN JAVASCRIPT, ET C'ÉTAIT LE DÉFAUT.
+	 *
+	 * On demandait les descendants de la page, puis on écartait ce qui vivait sous une
+	 * sous-page. Juste sur une page produit. Sur la PAGE D'ACCUEIL, dont toutes les pages du
+	 * site sont descendantes, la requête rapatriait le contenu du site ENTIER — richtext
+	 * compris — pour n'en garder que quelques nœuds. Assez gros pour heurter la pagination
+	 * par défaut du serveur : la réponse était tronquée avant d'atteindre `home/main`, le
+	 * filtre écartait ensuite tout, et le menu se retrouvait vide SANS la moindre erreur.
+	 * D'où un bouton grisé sur l'accueil seulement, et jamais en local, où le site est trop
+	 * petit pour atteindre la limite.
+	 *
+	 * ON NE DESCEND DONC PLUS DEPUIS LA PAGE, MAIS DEPUIS SES ZONES NOMMÉES.
+	 *
+	 * Les zones sont des enfants DIRECTS de la page, et une sous-page ne porte jamais l'un
+	 * de ces noms : les sous-arbres voisins ne sont plus atteignables, ils ne sont même plus
+	 * demandés. Le volume devient celui de la page seule, quel que soit son rang dans
+	 * l'arborescence.
+	 *
+	 * `isPage` reste demandé : `jnt:page` HÉRITE de `jnt:content`, donc aucun `typesFilter`
+	 * ne sait séparer une page d'un contenu. C'est le seul discriminant fiable, et il sert
+	 * de garde-fou au cas — non prévu par le modèle Jahia — où une page apparaîtrait sous
+	 * une zone.
 	 *
 	 * `property/properties(language:)` est obligatoire : les champs richtext sont i18n,
 	 * sans langue leur valeur revient à null et les ancres saisies à la main seraient
 	 * manquées.
 	 */
+
+	/*
+	 * Champs lus sur un nœud candidat, extraits en constante : la requête les demande à DEUX
+	 * profondeurs — la zone puis ses descendants — et deux copies divergeraient au premier
+	 * ajout de propriété.
+	 *
+	 * `anchor` porte les mentions légales (`sofnt:mentionLegalItem`), `baseAnchor` les ancres
+	 * de section du LEGACY (`spmix:component`, mixin de tout composant importé de l'ancien
+	 * portail). Deux sources distinctes, dans deux zones distinctes : ne lire que `mentions`
+	 * perdrait toutes les ancres de section, qui vivent dans `main` et `BANNIERE`.
+	 */
+	var DECLARED_FIELDS =
+		" path" +
+		' isPage: isNodeType(type: { types: ["jnt:page"] })' +
+		" primaryNodeType { name }" +
+		' isMentionLegalItem: isNodeType(type: { types: ["sofnt:mentionLegalItem"] })' +
+		' anchor: property(name: "anchor", language: $language) { value }' +
+		' baseAnchor: property(name: "baseAnchor", language: $language) { value }' +
+		' anchorId: property(name: "anchorId", language: $language) { value }' +
+		// Aperçu de la mention dans le menu. Demandé NOMMÉMENT : c'est la seule valeur
+		// richtext dont le chemin critique a besoin.
+		' mentionContent: property(name: "content", language: $language) { value }';
+
+	var CONTENT_FIELDS =
+		" path" +
+		' isPage: isNodeType(type: { types: ["jnt:page"] })' +
+		" primaryNodeType { name }" +
+		" properties(language: $language) { name value }";
+
+	/** `["a","b"]` → `["a", "b"]` littéral GraphQL. */
+	function gqlStringList(values) {
+		return (
+			"[" +
+			values
+				.map(function (v) {
+					return JSON.stringify(String(v));
+				})
+				.join(", ") +
+			"]"
+		);
+	}
+
+	/** Enveloppe `fields` dans la traversée « zones nommées puis descendants ». */
+	function areaScopedQuery(name, fields) {
+		return (
+			"query " +
+			name +
+			"($path: String!, $language: String!) {" +
+			"  jcr(workspace: EDIT) {" +
+			"    nodeByPath(path: $path) {" +
+			"      areas: children(names: " +
+			gqlStringList(PAGE_AREAS) +
+			") {" +
+			"        nodes {" +
+			fields +
+			'          contents: descendants(typesFilter: { types: ["jnt:content"] }) {' +
+			"            nodes {" +
+			fields +
+			"            }" +
+			"          }" +
+			"        }" +
+			"      }" +
+			"    }" +
+			"  }" +
+			"}"
+		);
+	}
 	/*
 	 * DEUX REQUÊTES, ET C'EST LE POINT CLÉ DE LA RÉACTIVITÉ.
 	 *
@@ -224,47 +348,9 @@
 	 * On sépare donc : la requête légère pilote le menu, la lourde vient compléter en
 	 * arrière-plan. Le menu n'attend plus jamais le scan de contenu pour s'ouvrir.
 	 */
-	var DECLARED_QUERY =
-		"query SofincoDeclaredAnchors($path: String!, $language: String!) {" +
-		"  jcr(workspace: EDIT) {" +
-		"    nodeByPath(path: $path) {" +
-		'      subPages: descendants(typesFilter: { types: ["jnt:page"] }) {' +
-		"        nodes { path }" +
-		"      }" +
-		'      contents: descendants(typesFilter: { types: ["jnt:content"] }) {' +
-		"        nodes {" +
-		"          path" +
-		"          primaryNodeType { name }" +
-		'          isMentionLegalItem: isNodeType(type: { types: ["sofnt:mentionLegalItem"] })' +
-		'          anchor: property(name: "anchor", language: $language) { value }' +
-		'          baseAnchor: property(name: "baseAnchor", language: $language) { value }' +
-		'          anchorId: property(name: "anchorId", language: $language) { value }' +
-		// Aperçu de la mention dans le menu. Demandé NOMMÉMENT : c'est la seule valeur
-		// richtext dont le chemin critique a besoin.
-		'          mentionContent: property(name: "content", language: $language) { value }' +
-		"        }" +
-		"      }" +
-		"    }" +
-		"  }" +
-		"}";
+	var DECLARED_QUERY = areaScopedQuery("SofincoDeclaredAnchors", DECLARED_FIELDS);
 
-	var CONTENT_QUERY =
-		"query SofincoContentAnchors($path: String!, $language: String!) {" +
-		"  jcr(workspace: EDIT) {" +
-		"    nodeByPath(path: $path) {" +
-		'      subPages: descendants(typesFilter: { types: ["jnt:page"] }) {' +
-		"        nodes { path }" +
-		"      }" +
-		'      contents: descendants(typesFilter: { types: ["jnt:content"] }) {' +
-		"        nodes {" +
-		"          path" +
-		"          primaryNodeType { name }" +
-		"          properties(language: $language) { name value }" +
-		"        }" +
-		"      }" +
-		"    }" +
-		"  }" +
-		"}";
+	var CONTENT_QUERY = areaScopedQuery("SofincoContentAnchors", CONTENT_FIELDS);
 
 	// Retient la jnt:page la plus profonde, le nœud lui-même inclus (`ancestors` l'exclut).
 	function resolvePagePath(data) {
@@ -433,26 +519,42 @@
 	}
 
 	/*
-	 * Nœuds de contenu de la page COURANTE.
+	 * Nœuds de contenu de la page COURANTE, aplatis depuis ses zones nommées.
 	 *
-	 * `descendants` a traversé les sous-pages : on écarte tout ce qui vit sous l'une d'elles.
-	 * Les sous-pages profondes sont couvertes de fait, leur chemin étant préfixé par celui
-	 * d'une sous-page directe.
+	 * Le périmètre est déjà tenu par la requête : elle ne demande que `main`, `mentions`,
+	 * `header` et `BANNIERE`, qu'aucune sous-page ne peut porter comme nom. Le filtre par
+	 * chemin qui suit n'est donc plus le mécanisme — c'est un garde-fou. On le garde parce
+	 * qu'il ne coûte rien sur un ensemble désormais borné, et qu'une ancre morte proposée
+	 * par l'outil censé garantir des ancres valides est un défaut silencieux.
 	 */
 	function pageContentNodes(data) {
 		var root = data && data.jcr && data.jcr.nodeByPath;
 		if (!root) return [];
 
-		var subPagePaths = ((root.subPages && root.subPages.nodes) || [])
-			.map(function (n) {
-				return n && n.path;
-			})
-			.filter(Boolean);
+		var flat = [];
+		var nestedPagePaths = [];
 
-		return ((root.contents && root.contents.nodes) || []).filter(function (n) {
-			if (!n || !n.path) return false;
-			for (var i = 0; i < subPagePaths.length; i++) {
-				if (n.path.indexOf(subPagePaths[i] + "/") === 0) return false;
+		((root.areas && root.areas.nodes) || []).forEach(function (area) {
+			if (!area || !area.path || area.isPage) return;
+
+			// La zone elle-même peut porter une ancre — `descendants` ne se retourne pas.
+			flat.push(area);
+
+			((area.contents && area.contents.nodes) || []).forEach(function (n) {
+				if (!n || !n.path) return;
+				if (n.isPage) {
+					nestedPagePaths.push(n.path);
+					return;
+				}
+				flat.push(n);
+			});
+		});
+
+		if (!nestedPagePaths.length) return flat;
+
+		return flat.filter(function (n) {
+			for (var i = 0; i < nestedPagePaths.length; i++) {
+				if (n.path.indexOf(nestedPagePaths[i] + "/") === 0) return false;
 			}
 			return true;
 		});
@@ -1253,6 +1355,16 @@
 			buildContentAnchors: buildContentAnchors,
 			capAnchors: capAnchors,
 			signature: signature,
+			/*
+			 * Pas des helpers, mais le PÉRIMÈTRE est une règle de correction à part entière :
+			 * redescendre depuis la page au lieu de ses zones a suffi à vider le menu sur
+			 * l'accueil sans lever d'erreur. Et les deux listes de zones sont une copie des
+			 * gabarits, que leur test doit pouvoir confronter à l'original.
+			 */
+			PAGE_AREAS: PAGE_AREAS,
+			EXCLUDED_AREAS: EXCLUDED_AREAS,
+			DECLARED_QUERY: DECLARED_QUERY,
+			CONTENT_QUERY: CONTENT_QUERY,
 		};
 	}
 
@@ -1420,9 +1532,7 @@
 							button.setState(CKEDITOR.TRISTATE_DISABLED);
 							el.setAttribute(
 								"title",
-								cache.loaded && !cache.loading
-									? LABELS.empty
-									: LABELS.loading,
+								cache.loaded && !cache.loading ? LABELS.empty : LABELS.loading,
 							);
 						} catch {
 							/* état inchangé : le menu reste utilisable tel quel */
@@ -1603,8 +1713,7 @@
 					if (capped.hidden > 0) {
 						items.sofincoAnchorsHidden = {
 							label: LABELS.hiddenItem(capped.hidden),
-							title:
-								LABELS.hiddenTitle,
+							title: LABELS.hiddenTitle,
 							group: "sofincoAnchorsContent",
 							order: 9999,
 							onClick: function () {},

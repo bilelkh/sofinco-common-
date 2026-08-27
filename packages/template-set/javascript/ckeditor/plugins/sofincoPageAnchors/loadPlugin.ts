@@ -39,6 +39,12 @@ export interface PageAnchorsApi {
 		hidden: number;
 	};
 	signature: (list: Array<Record<string, unknown>>) => string;
+	/** Zones de contenu interrogées, copie des `<Area name>` des gabarits. */
+	PAGE_AREAS: string[];
+	/** Zones des gabarits volontairement hors périmètre. */
+	EXCLUDED_AREAS: string[];
+	DECLARED_QUERY: string;
+	CONTENT_QUERY: string;
 }
 
 /**
@@ -67,6 +73,22 @@ export const PAGE_ANCHORS_API_KEYS = [
 	"signature",
 ] as const satisfies ReadonlyArray<keyof PageAnchorsApi>;
 
+/** Même rôle, pour la part de la surface qui n'est pas appelable. */
+export const PAGE_ANCHORS_QUERY_KEYS = [
+	"DECLARED_QUERY",
+	"CONTENT_QUERY",
+] as const satisfies ReadonlyArray<keyof PageAnchorsApi>;
+
+/**
+ * Listes de zones. Séparées des requêtes : ce sont des tableaux, et la dérive qu'on veut
+ * détecter n'est pas la même — non pas « le helper a été renommé » mais « une zone a été
+ * ajoutée à un gabarit sans que personne ne dise si elle entre dans le périmètre ».
+ */
+export const PAGE_ANCHORS_LIST_KEYS = [
+	"PAGE_AREAS",
+	"EXCLUDED_AREAS",
+] as const satisfies ReadonlyArray<keyof PageAnchorsApi>;
+
 const SOURCE = readFileSync(fileURLToPath(new URL("./plugin.js", import.meta.url)), "utf8");
 
 /** Fenêtre du dernier chargement, gardée pour {@link closePageAnchorsPlugin}. */
@@ -85,7 +107,11 @@ export function loadPageAnchorsPlugin(): PageAnchorsApi {
 	const api = scope.__sofincoPageAnchors as PageAnchorsApi | undefined;
 	if (!api) throw new Error("plugin.js n'a pas publié sa surface de test");
 
-	const missing = PAGE_ANCHORS_API_KEYS.filter((key) => typeof api[key] !== "function");
+	const missing = [
+		...PAGE_ANCHORS_API_KEYS.filter((key) => typeof api[key] !== "function"),
+		...PAGE_ANCHORS_QUERY_KEYS.filter((key) => typeof api[key] !== "string"),
+		...PAGE_ANCHORS_LIST_KEYS.filter((key) => !Array.isArray(api[key])),
+	];
 	if (missing.length) {
 		throw new Error(
 			"plugin.js ne publie plus : " +

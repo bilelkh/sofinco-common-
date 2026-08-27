@@ -39,6 +39,7 @@ export function MentionLegal({ title, items, initiallyOpen = true }: MentionLega
 						isOpen ? classes["mention-legal__items-wrapper--open"] : ""
 					}`}
 					aria-hidden={!isOpen}
+					inert={!isOpen}
 				>
 					<div className={classes["mention-legal__items"]}>
 						{items.map((item, index) => (

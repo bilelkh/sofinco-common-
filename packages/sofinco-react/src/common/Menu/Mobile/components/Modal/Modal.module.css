@@ -1,11 +1,5 @@
 @import "@styles/base.css";
 
-.menu__modal__trigger__icon {
-	width: 24px;
-	height: 24px;
-	color: var(--color-primary-base);
-}
-
 .menu__modal__trigger {
 	all: unset;
 	display: flex;

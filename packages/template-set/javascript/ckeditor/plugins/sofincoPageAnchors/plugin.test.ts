@@ -12,9 +12,13 @@
  *
  * `happy-dom` est nécessaire : `buildContentAnchors` s'appuie sur `DOMParser`.
  */
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
 	PAGE_ANCHORS_API_KEYS,
+	PAGE_ANCHORS_QUERY_KEYS,
 	closePageAnchorsPlugin,
 	loadPageAnchorsPlugin,
 	type PageAnchorsApi,
@@ -217,34 +221,160 @@ describe("textFromHtml et truncate", () => {
 	});
 });
 
-describe("pageContentNodes", () => {
+describe("périmètre des requêtes", () => {
 	/*
-	 * `descendants` traverse les sous-pages : sans ce filtrage, le menu proposerait les ancres
-	 * du site entier. Or on insère `href="#fragment"`, qui résout toujours sur la page
-	 * courante — chaque entrée hors-page serait un lien mort.
+	 * LA RÉGRESSION QUE CES TESTS VERROUILLENT.
+	 *
+	 * Un `descendants` lancé depuis la page traverse ses sous-pages. Sur une page produit ça
+	 * ne se voit pas ; sur la PAGE D'ACCUEIL, dont tout le site est descendant, la réponse
+	 * heurtait la pagination par défaut du serveur et se faisait tronquer. Le contenu propre
+	 * à l'accueil tombant hors de la troncature, le filtre client écartait ensuite tout :
+	 * zéro ancre, aucune erreur, bouton grisé — sur l'accueil uniquement, et jamais en local
+	 * où le site est trop petit pour atteindre la limite.
+	 *
+	 * Le périmètre doit donc être tenu PAR la requête, et ça ne se voit que dans son texte.
 	 */
-	it("écarte tout contenu vivant sous une sous-page", () => {
-		const nodes = api.pageContentNodes({
-			jcr: {
-				nodeByPath: {
-					subPages: { nodes: [{ path: "/sites/s/home/sub" }] },
+	// `api` n'existe qu'à partir du `beforeAll` : on le lit DANS le test, pas à la collecte.
+	for (const name of PAGE_ANCHORS_QUERY_KEYS) {
+		describe(name, () => {
+			it("descend depuis les zones nommées, jamais depuis la page", () => {
+				expect(api[name]).toContain("areas: children(names:");
+				// Le seul `descendants` autorisé est celui imbriqué sous `areas`.
+				expect(api[name].match(/descendants\(/g)).toHaveLength(1);
+				expect(api[name]).not.toMatch(/nodeByPath\([^)]*\)\s*\{\s*\w*:?\s*descendants\(/);
+			});
+
+			it("demande `isPage`, seul discriminant des sous-pages", () => {
+				// `jnt:page` hérite de `jnt:content` : aucun typesFilter ne sait les séparer.
+				expect(api[name]).toContain('isPage: isNodeType(type: { types: ["jnt:page"] })');
+			});
+
+			it("nomme les zones interrogées, et elles seules", () => {
+				for (const area of api.PAGE_AREAS) expect(api[name]).toContain(`"${area}"`);
+				// Le coût d'une zone est payé à CHAQUE ouverture du menu : une exclusion qui
+				// resterait dans la requête ne se verrait nulle part ailleurs.
+				for (const area of api.EXCLUDED_AREAS) expect(api[name]).not.toContain(`"${area}"`);
+			});
+
+			it("équilibre ses accolades", () => {
+				expect((api[name].match(/\{/g) || []).length).toBe((api[name].match(/\}/g) || []).length);
+			});
+		});
+	}
+
+	/*
+	 * `plugin.js` est chargé tel quel par CKEditor : il ne peut rien importer de `src/`, donc
+	 * `PAGE_AREAS` est une COPIE des gabarits. Une zone ajoutée à un gabarit sans l'être ici
+	 * ne casserait rien — elle rendrait juste ses ancres introuvables, en silence. C'est
+	 * exactement le genre de défaut qui ne se découvre qu'en recette.
+	 */
+	describe("zones des gabarits", () => {
+		/** `<Area name>` RELATIFS déclarés par les gabarits de page. */
+		const templateAreas = () => {
+			const dir = fileURLToPath(new URL("../../../../src/templates/Page/", import.meta.url));
+			const found = new Set<string>();
+
+			for (const file of readdirSync(dir).filter((f) => f.endsWith(".server.tsx"))) {
+				const source = readFileSync(join(dir, file), "utf8");
+				// `<AbsoluteArea>` ne contient pas la sous-chaîne `<Area` : les zones de SITE
+				// (pied de page, menu, pictos) sont donc écartées d'office, et c'est voulu —
+				// elles sont partagées par toutes les pages.
+				for (const [, area] of source.matchAll(/<Area\s+name="([^"]+)"/g)) found.add(area);
+			}
+			return found;
+		};
+
+		/*
+		 * LE GARDE-FOU, ET POURQUOI IL PORTE SUR L'UNION.
+		 *
+		 * Le périmètre a été réduit à `main` et `mentions` : une simple égalité avec
+		 * `PAGE_AREAS` échouerait sur `header` et `BANNIERE`, et la seule façon de la faire
+		 * passer serait de supprimer le test — donc de perdre la détection.
+		 *
+		 * On vérifie donc que CHAQUE zone des gabarits a été TRANCHÉE : interrogée, ou
+		 * explicitement écartée. Une zone nouvelle n'entre dans aucune liste et fait échouer
+		 * la suite, ce qui est exactement le moment où quelqu'un doit décider.
+		 */
+		it("sont toutes tranchées : interrogées ou explicitement écartées", () => {
+			const areas = templateAreas();
+
+			expect(areas.size).toBeGreaterThan(0);
+			expect([...areas].sort()).toEqual([...api.PAGE_AREAS, ...api.EXCLUDED_AREAS].sort());
+		});
+
+		it("interroge `main` et `mentions`, les deux zones porteuses d'ancres", () => {
+			// `main` porte les ancres de section, `mentions` les renvois de mentions légales.
+			expect([...api.PAGE_AREAS].sort()).toEqual(["main", "mentions"]);
+		});
+
+		it("n'écarte aucune zone qu'elle interroge", () => {
+			// Les deux listes viennent d'une relecture manuelle des gabarits : rien ne les
+			// empêche structurellement de se contredire.
+			const interrogees = new Set(api.PAGE_AREAS);
+			expect(api.EXCLUDED_AREAS.filter((a) => interrogees.has(a))).toEqual([]);
+		});
+
+		it("n'écarte que des zones qui existent vraiment", () => {
+			// Une exclusion qui ne correspond à plus rien est un vestige : elle laisserait
+			// croire qu'un arbitrage tient encore alors que la zone a disparu du gabarit.
+			const areas = templateAreas();
+			expect(api.EXCLUDED_AREAS.filter((a) => !areas.has(a))).toEqual([]);
+		});
+	});
+});
+
+describe("pageContentNodes", () => {
+	const shape = (areas: unknown[]) => ({ jcr: { nodeByPath: { areas: { nodes: areas } } } });
+
+	it("aplatit les zones et leurs descendants", () => {
+		const nodes = api.pageContentNodes(
+			shape([
+				{
+					path: "/sites/s/home/main",
+					contents: { nodes: [{ path: "/sites/s/home/main/bloc" }] },
+				},
+				{
+					path: "/sites/s/home/mentions",
+					contents: { nodes: [{ path: "/sites/s/home/mentions/ml/item" }] },
+				},
+			]),
+		);
+
+		// La zone elle-même est incluse : `descendants` ne se retourne pas sur son point de départ.
+		expect(nodes.map((n) => n.path)).toEqual([
+			"/sites/s/home/main",
+			"/sites/s/home/main/bloc",
+			"/sites/s/home/mentions",
+			"/sites/s/home/mentions/ml/item",
+		]);
+	});
+
+	it("écarte une page rencontrée en descendant, et son sous-arbre", () => {
+		// Garde-fou : le modèle Jahia ne place pas de page sous une zone, mais une ancre morte
+		// dans le menu est un défaut silencieux — on ne parie pas là-dessus.
+		const nodes = api.pageContentNodes(
+			shape([
+				{
+					path: "/sites/s/home/main",
 					contents: {
 						nodes: [
-							{ path: "/sites/s/home/bloc" },
-							{ path: "/sites/s/home/sub/bloc" },
-							{ path: "/sites/s/home/sub/deep/bloc" },
+							{ path: "/sites/s/home/main/bloc" },
+							{ path: "/sites/s/home/main/nested", isPage: true },
+							{ path: "/sites/s/home/main/nested/bloc" },
+							{ path: "/sites/s/home/main/nested/deep/bloc" },
 						],
 					},
 				},
-			},
-		});
+			]),
+		);
 
-		expect(nodes.map((n) => n.path)).toEqual(["/sites/s/home/bloc"]);
+		expect(nodes.map((n) => n.path)).toEqual(["/sites/s/home/main", "/sites/s/home/main/bloc"]);
 	});
 
 	it("renvoie une liste vide quand la requête n'a rien rapporté", () => {
 		expect(api.pageContentNodes(null)).toEqual([]);
 		expect(api.pageContentNodes({ jcr: {} })).toEqual([]);
+		expect(api.pageContentNodes(shape([]))).toEqual([]);
 	});
 });
 
@@ -252,15 +382,24 @@ describe("buildContentAnchors", () => {
 	const data = {
 		jcr: {
 			nodeByPath: {
-				subPages: { nodes: [] },
-				contents: {
+				areas: {
 					nodes: [
 						{
-							path: "/sites/s/home/seo",
-							primaryNodeType: { name: "sofnt:seoBlock" },
-							properties: [
-								{ name: "content", value: '<h2 id="section-a">A</h2><a name="ancien"></a>' },
-							],
+							path: "/sites/s/home/main",
+							contents: {
+								nodes: [
+									{
+										path: "/sites/s/home/seo",
+										primaryNodeType: { name: "sofnt:seoBlock" },
+										properties: [
+											{
+												name: "content",
+												value: '<h2 id="section-a">A</h2><a name="ancien"></a>',
+											},
+										],
+									},
+								],
+							},
 						},
 					],
 				},
@@ -433,8 +572,12 @@ describe("stripLeadingNumber", () => {
 });
 
 describe("buildDeclaredAnchors", () => {
+	// La zone `main` est le point de depart reel de la requete. Sans propriete d'ancre, elle
+	// traverse `declaredAnchorOf` sans rien produire : elle n'influe sur aucun resultat.
 	const page = (nodes: Array<Record<string, unknown>>) => ({
-		jcr: { nodeByPath: { subPages: { nodes: [] }, contents: { nodes } } },
+		jcr: {
+			nodeByPath: { areas: { nodes: [{ path: "/sites/s/home/main", contents: { nodes } }] } },
+		},
 	});
 
 	const mention = (path: string, anchor: string, content?: string) => ({
@@ -492,10 +635,7 @@ describe("buildDeclaredAnchors", () => {
 
 	it("dédoublonne deux nœuds qui visent le même fragment", () => {
 		const anchors = api.buildDeclaredAnchors(
-			page([
-				mention("/sites/s/home/m1", "(3)"),
-				mention("/sites/s/home/m2", "3"),
-			]),
+			page([mention("/sites/s/home/m1", "(3)"), mention("/sites/s/home/m2", "3")]),
 		);
 
 		// `(3)` et `3` désignent la même note : deux entrées « 3 » dans le menu seraient

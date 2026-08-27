@@ -19,14 +19,6 @@
 	max-width: 900px;
 	margin-inline: auto;
 }
-
-.solution-complementary__eyebrow {
-	display: inline-block;
-	width: 32px;
-	height: 12px;
-	border-radius: var(--radius-full);
-}
-
 .solution-complementary__logo {
 	display: block;
 	height: 20px;

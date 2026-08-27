@@ -61,25 +61,6 @@
 	flex-direction: column;
 	gap: calc(var(--spacing) * 3);
 }
-
-.section-carte__list-icon {
-	display: inline-flex;
-	flex-shrink: 0;
-	color: var(--color-secondary-base);
-}
-
-.section-carte__list-icon svg {
-	width: 16px;
-	height: 16px;
-}
-
-.section-carte__list-label {
-	color: var(--color-primary-base);
-	font-size: var(--text-sm);
-	line-height: var(--text-sm--line-height);
-	font-weight: var(--font-weight-medium);
-}
-
 .section-carte__cta {
 	display: inline-flex;
 	width: 100%;

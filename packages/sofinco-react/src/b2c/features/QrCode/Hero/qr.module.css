@@ -46,33 +46,9 @@
 		visibility 0s linear 0.75s;
 	pointer-events: none;
 }
-
-.qr-sticker__image {
-	width: 88px;
-	height: 88px;
-	border-radius: var(--radius-md);
-	display: block;
-}
-
-.qr-sticker__label {
-	color: rgba(255, 255, 255, 0.75);
-	font-size: 11px;
-	font-weight: 600;
-	text-align: center;
-	max-width: 88px;
-}
-
-.qr-sticker__mobile-app-btn {
-	display: none !important;
-}
-
 /* Sur Mobile : On l'affiche */
 @media (max-width: 767px) {
 	.qr-sticker {
 		display: none;
-	}
-
-	.qr-sticker__mobile-app-btn {
-		display: inline-flex !important;
 	}
 }
