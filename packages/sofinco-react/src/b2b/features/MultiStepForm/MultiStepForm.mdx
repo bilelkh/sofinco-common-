@@ -111,8 +111,13 @@ grille reste à une colonne.
 
 ### Champ `autocomplete`
 
-Pour une valeur qui vient d'un service plutôt que d'une liste connue d'avance. `onSearch`
-est appelée à la frappe et rend les options ; le formulaire, lui, ne connaît aucune API.
+Pour une valeur qui vient d'un service plutôt que d'une liste connue d'avance. La
+configuration n'apporte qu'une URL — `searchUrl`, le point d'entrée du référentiel des
+communes — et le formulaire tient l'appel lui-même : annulation à chaque frappe,
+normalisation de la saisie, mise en forme des options (cf. `searchCityOptions`). Une URL
+plutôt qu'une fonction parce que cette configuration arrive de Jahia en JSON, où une
+fonction ne survivrait pas. `searchUrl` est facultative : sans elle, c'est le référentiel
+de production qui répond.
 
 Deux rappels vont par paire quand la valeur retenue ne suffit pas à désigner le choix —
 le cas du code postal, qui désigne jusqu'à **quatorze communes** :
@@ -130,7 +135,7 @@ le cas du code postal, qui désigne jusqu'à **quatorze communes** :
 	type: "autocomplete",
 	label: "Code postal",
 	minLength: 2,
-	onSearch: (query, signal) => searchCityOptions(query, { signal }),
+	searchUrl: "https://api-ref.sofinco.fr/nomenclatures/v1/cities",
 	fills: (option) => ({ ville: option.meta?.city ?? "" }),
 	display: (values) => (values.ville ? `${values.ville} (${values.codePostal})` : ""),
 	validation: { pattern: /^\d{5}$/ },

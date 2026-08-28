@@ -186,7 +186,7 @@ describe("champ autocomplete", () => {
 					name: "codePostal",
 					type: "autocomplete",
 					label: "Code postal",
-					onSearch: async () => [],
+					searchUrl: "https://exemple.invalid/cities",
 					fills: (option) => ({ ville: option.meta?.city ?? "" }),
 					display: (values) =>
 						values.codePostal && values.ville ? `${values.ville} (${values.codePostal})` : "",
@@ -202,16 +202,33 @@ describe("champ autocomplete", () => {
 		expect(html).toContain('aria-autocomplete="list"');
 	});
 
+	/*
+	 * La recherche vit désormais dans le composant, plus dans la configuration : le
+	 * seul espion possible est `fetch` lui-même, celui que `searchCityOptions` appelle.
+	 */
 	it("n'interroge pas la source au rendu — la recherche part à la frappe", () => {
-		const onSearch = vi.fn(async () => []);
+		const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json([]));
 
-		render({
-			steps: [
-				{ fields: [{ name: "codePostal", type: "autocomplete", label: "Code postal", onSearch }] },
-			],
-		});
+		try {
+			render({
+				steps: [
+					{
+						fields: [
+							{
+								name: "codePostal",
+								type: "autocomplete",
+								label: "Code postal",
+								searchUrl: "https://exemple.invalid/cities",
+							},
+						],
+					},
+				],
+			});
 
-		expect(onSearch).not.toHaveBeenCalled();
+			expect(fetchSpy).not.toHaveBeenCalled();
+		} finally {
+			fetchSpy.mockRestore();
+		}
 	});
 
 	/*

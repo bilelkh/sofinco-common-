@@ -11,6 +11,7 @@ import TextField from "@shared/ui/TextField/TextField";
 import Textarea from "@shared/ui/Textarea/Textarea";
 import Title from "@shared/ui/Title/Title";
 import { FootnoteText } from "@shared/footnotes";
+import { searchCityOptions } from "@shared/utils/searchCities";
 
 import type {
 	FormFieldConfig,
@@ -366,7 +367,16 @@ const MultiStepForm = ({
 						return cell(
 							<Autocomplete
 								{...common}
-								onSearch={field.onSearch}
+								/*
+								 * La recherche est tenue ici, pas dans la configuration : celle-ci
+								 * n'apporte qu'une URL (cf. `searchUrl`), une fonction ne passerait
+								 * pas le JSON de Jahia. Refaite à chaque rendu sans dommage —
+								 * `useAutocompleteSearch` lit `onSearch` par référence et le tient
+								 * hors de ses dépendances.
+								 */
+								onSearch={(query, signal) =>
+									searchCityOptions(query, { signal, endpoint: field.searchUrl })
+								}
 								minLength={field.minLength}
 								debounceMs={field.debounceMs}
 								icon={field.icon}

@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import type {
 	AutocompleteLabels,
 	AutocompleteOption,
-	AutocompleteSearch,
 } from "@shared/ui/Autocomplete/Autocomplete.type";
 import type { SelectOption, SelectOptionGroup } from "@shared/ui/Select/Select.type";
 import type { StepperCounterVariant, StepperVariant } from "@shared/ui/Stepper";
@@ -136,11 +135,19 @@ export interface SelectFieldConfig extends BaseFieldConfig {
 export interface AutocompleteFieldConfig extends BaseFieldConfig {
 	type: "autocomplete";
 	/**
-	 * Source des options. Reçoit la saisie et un signal d'annulation ; à elle
-	 * d'appeler le service et de rendre des options. Le formulaire ne connaît
-	 * aucune API : c'est la configuration qui apporte la sienne.
+	 * Point d'entrée du référentiel des communes interrogé à la frappe — une URL,
+	 * et rien d'autre. L'appel lui-même (annulation, normalisation de la saisie,
+	 * mise en forme des options) est tenu par le formulaire, cf. `searchCityOptions`.
+	 *
+	 * Une URL plutôt qu'une fonction parce que cette configuration vient de Jahia
+	 * en JSON : une fonction n'y survivrait pas à la sérialisation. Le corollaire
+	 * assumé est qu'il n'y a qu'une source, celle des communes ; un champ nourri
+	 * par un autre service demanderait d'élargir ce contrat.
+	 *
+	 * Omise, la valeur retombe sur le référentiel de production (`CITIES_ENDPOINT`).
+	 * À renseigner pour viser la recette, un proxy, ou un bouchon de test.
 	 */
-	onSearch: AutocompleteSearch;
+	searchUrl?: string;
 	/** Caractères avant déclenchement de la recherche. Défaut 1. */
 	minLength?: number;
 	/** Attente avant l'appel, en ms. Défaut 250. */

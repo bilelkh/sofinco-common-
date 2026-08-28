@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { searchCityOptions } from "@shared/utils/searchCities";
+import { sanitizeHtml } from "@utils/sanitizeHtml";
 
 /*
  * Le référentiel de production n'autorise que `https://www.sofinco.fr` et
@@ -24,6 +24,14 @@ const SECTEURS = [
 	{ value: "energie", label: "Énergies & rénovation" },
 	{ value: "sport", label: "Sport & loisirs" },
 ];
+
+/*
+ * Mention Informatique et Libertés, telle qu'un contributeur la rédige dans le CKEditor
+ * de Jahia : du HTML, avec ses scories de collage (`<meta>`, `style="white-space:pre-wrap"`).
+ * Elle passe par `sanitizeHtml` avant `dangerouslySetInnerHTML`, comme partout ailleurs
+ * dans le DS où du texte CMS est rendu — `Faq`, `MentionLegal`, `SeoBlock`.
+ */
+const MENTION_RGPD_HTML = `<p><meta charset="utf-8"><span style="white-space:pre-wrap;">Sofinco, en tant que responsable de traitement, collecte vos données personnelles afin de répondre à votre demande de contact et vous présenter ses solutions de financements en vue d’un éventuel partenariat commercial.</span></p><p><meta charset="utf-8"><span style="white-space:pre-wrap;">Vous pouvez à tout moment exercer vos droits Informatique et Libertés par courriel à&nbsp;dpdcacf@ca-cf.fr.</span></p><p><meta charset="utf-8"><span style="white-space:pre-wrap;">Pour en savoir plus sur vos droits (notamment droit d’accès et d’opposition à la prospection commerciale) et les traitements de vos données&nbsp;cliquez ici.</span></p>`;
 
 /**
  * Parcours de référence : trois étapes qui couvrent les trois contrôles du DS
@@ -66,8 +74,7 @@ const STEPS: FormStepConfig[] = [
 				// Deux caractères : à un seul, le référentiel rend vingt communes prises
 				// dans toute la France, ce qui n'aide personne.
 				minLength: 2,
-				onSearch: (query, signal) =>
-					searchCityOptions(query, { signal, endpoint: CITIES_ENDPOINT_DEV }),
+				searchUrl: CITIES_ENDPOINT_DEV,
 				/*
 				 * Un code postal désigne jusqu'à quatorze communes : la commune retenue est
 				 * rangée à côté du code, sans quoi le choix serait perdu à la soumission.
@@ -91,6 +98,7 @@ const STEPS: FormStepConfig[] = [
 				required: true,
 			},
 		],
+		content: <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(MENTION_RGPD_HTML) }} />,
 	},
 	{
 		id: "contact",
