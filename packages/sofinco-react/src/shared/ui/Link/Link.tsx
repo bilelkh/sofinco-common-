@@ -17,6 +17,7 @@ const Link = ({
 	iconVariant = "primary",
 	className,
 	tracking,
+	onClick,
 }: LinkProps) => {
 	const mainClassName = clsx(
 		styles.link,
@@ -39,6 +40,7 @@ const Link = ({
 			rel={isExternal ? "noopener noreferrer" : undefined}
 			className={mainClassName}
 			data-tracking={trackingAttr}
+			onClick={onClick}
 			/*
 			 * Le renvoi du libellé est `aria-hidden` (il polluerait le nom accessible du
 			 * lien) : la note est rattachée ici, en description. Rien si le libellé n'en

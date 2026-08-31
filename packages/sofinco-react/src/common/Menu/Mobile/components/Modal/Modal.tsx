@@ -31,11 +31,11 @@ import { type ModalProps } from "./Modal.type";
 import styles from "./Modal.module.css";
 import Cta from "@/shared/ui/Cta/Cta";
 
-const Modal = ({ onOpenChange, title, description, children, slotCtaMobile }: ModalProps) => {
+const Modal = ({ open, onOpenChange, title, description, children, slotCtaMobile }: ModalProps) => {
 	const overlayRef = useRef<HTMLDivElement>(null);
 
 	return (
-		<Root onOpenChange={onOpenChange}>
+		<Root open={open} onOpenChange={onOpenChange}>
 			<Trigger asChild>
 				<Cta
 					className={styles.menu__modal__trigger}

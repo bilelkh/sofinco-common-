@@ -2,7 +2,7 @@ import { jahiaComponent, RenderChildren } from "@jahia/javascript-modules-librar
 import { Cta, Link } from "sofinco-react";
 import { getCtaProps } from "#lib/cta";
 import { getAsBoolean } from "#lib/jcr";
-import { buildSmartPushLink } from "../Faq/SmartPush/smartPush.mapping";
+import { buildSmartPushLink } from "#lib/smartPush/smartPush.mapping";
 import classes from "./component.module.css";
 
 jahiaComponent(

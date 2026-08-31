@@ -1,3 +1,6 @@
+// Intégration Smart Tribune (panneau « Aide & Contact ») + rappel immédiat iovox. Vit dans
+// `lib/` et non `components/` : aucun type de nœud, consommé par `Menu/NavMenu` et
+// `MySpace` — même profil que `tracking.ts` ou `consent-bootstrap.ts`.
 import type { JCRNodeWrapper } from "org.jahia.services.content";
 import type { LinkProps } from "sofinco-react";
 import { getAsBoolean, getChildNode, str } from "#lib/jcr";
@@ -157,6 +160,12 @@ export function buildSmartPushLink(): LinkProps {
 		label: SMARTPUSH_LINK_LABEL,
 		iconLeft: "message-circle-question-mark",
 		iconVariant: "primary",
+		/*
+		 * Seul lien du menu qui n'emmène nulle part : il ouvre le panneau Smart Tribune
+		 * PAR-DESSUS. Sans ce drapeau, le menu mobile — un dialogue modal qui piège le
+		 * focus — resterait ouvert derrière le panneau.
+		 */
+		closesMenu: true,
 		tracking: { event: "click_menu_myspace", menu_level_1: SMARTPUSH_LINK_LABEL },
 	};
 }

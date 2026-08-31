@@ -9,7 +9,8 @@ import type { JCRNodeWrapper } from "org.jahia.services.content";
 import MenuJahia from "./MenuJahia.client";
 import { mapNavMenuProps } from "./navMenu.mapping";
 import { isMainResourceNode } from "#lib/renderContext";
-import SmartPushScript from "#cms/Faq/SmartPush/views/SmartPushScript";
+import SmartPushScript from "#lib/smartPush/views/SmartPushScript";
+import IovoxWebCallback from "#lib/smartPush/views/IovoxWebCallback";
 import classes from "./component.module.css";
 
 interface Props {
@@ -55,7 +56,12 @@ jahiaComponent(
 					</>
 				) : (
 					<>
-						{smartPushConfig && <SmartPushScript cfg={smartPushConfig} />}
+						{smartPushConfig && (
+							<>
+								<SmartPushScript cfg={smartPushConfig} />
+								<IovoxWebCallback />
+							</>
+						)}
 						<Island component={MenuJahia} props={data} />
 					</>
 				)}

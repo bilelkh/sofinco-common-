@@ -151,7 +151,15 @@ describe("buildSmartPushLink", () => {
 			label: "Aide & Contact",
 			iconLeft: "message-circle-question-mark",
 			iconVariant: "primary",
+			closesMenu: true,
 			tracking: { event: "click_menu_myspace", menu_level_1: "Aide & Contact" },
 		});
+	});
+
+	it("demande la fermeture du menu mobile, contrairement aux liens de navigation", () => {
+		// Ce lien n'emmène nulle part (`href: "#"`) : il ouvre le panneau Smart Tribune
+		// PAR-DESSUS. Sans ce drapeau, le menu mobile — un dialogue modal qui piège le
+		// focus — resterait ouvert derrière le panneau.
+		expect(buildSmartPushLink().closesMenu).toBe(true);
 	});
 });

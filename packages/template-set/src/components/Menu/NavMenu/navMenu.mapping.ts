@@ -19,7 +19,7 @@ import {
 	buildSmartPushLink,
 	mapSmartPushConfig,
 	type SmartPushConfig,
-} from "#cms/Faq/SmartPush/smartPush.mapping";
+} from "#lib/smartPush/smartPush.mapping";
 import { mapTopBarTabs } from "../TabMenu/tabMenu.mapping";
 import { mapSearchProps } from "#cms/Search/search.mapping";
 

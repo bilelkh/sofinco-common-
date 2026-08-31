@@ -73,6 +73,11 @@
 	},
 	"a11y": {
 		"noteBasDePage": "Note de bas de page",
-		"retourRef": "Retour à la référence"
+		"retourRef": "Retour à la référence",
+		"iovoxFormTitle": "Formulaire de rappel immédiat",
+		"iovoxClose": "Fermer la fenêtre de rappel"
+	},
+	"iovoxWebCallback": {
+		"title": "Être rappelé par un conseiller Sofinco"
 	}
 }

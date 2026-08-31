@@ -1,0 +1,153 @@
+.dialog {
+	width: min(42rem, calc(100vw - calc(var(--spacing) * 8)));
+	max-width: 42rem;
+	/* Le corps peut recevoir du script une hauteur plus grande que l'écran : on plafonne ici
+	   et on laisse `.body` défiler. Sans cela le UA rogne à `calc(100% - 6px)` SANS barre de
+	   défilement, et le bas du formulaire devient inatteignable. `dvh` et non `vh` : sur
+	   mobile la barre d'URL rétractable fausse `vh`. */
+	max-height: calc(100dvh - calc(var(--spacing) * 8));
+	padding: 0;
+	border: none;
+	border-radius: var(--radius-2xl);
+	background: var(--color-neutral-00);
+	box-shadow: var(--shadow-xl);
+}
+
+.dialog::backdrop {
+	background-color: var(--color-alpha-neutral-100-60);
+	backdrop-filter: blur(4px);
+}
+
+/* Sur desktop la barre s'efface : ses enfants remontent dans le flux du dialog, le titre
+   reste masqué aux yeux et le bouton n'existe pas. Cf. la media query pour le mobile. */
+.header {
+	display: contents;
+}
+
+.close {
+	display: none;
+}
+
+/* Repris de la classe partagée plutôt que recopié : un seul point de vérité, que le plein
+   écran mobile défait ci-dessous. */
+.title {
+	composes: sr-only from global;
+}
+
+/* Le padding vertical est relu par le script à chaque `iovox_wcb_resize` : il doit rester
+   une valeur simple, résoluble par `getComputedStyle` — jamais un pourcentage.
+
+   `height` n'est qu'une valeur d'attente : au premier `iovox_wcb_resize` le script pose une
+   hauteur en style inline, qui l'emporte sur toute règle d'ici. Inutile de la redéfinir en
+   media query — elle ne vaudrait qu'avant l'arrivée du formulaire. La colonne flex du
+   dialog ouvert produit déjà le plein écran attendu en mobile. */
+.body {
+	position: relative;
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	height: 30rem;
+	min-height: 12rem;
+	overflow-y: auto;
+	padding: calc(var(--spacing) * 8) calc(var(--spacing) * 4);
+}
+
+.iframe {
+	display: block;
+	flex-grow: 1;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+@keyframes dialog-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes backdrop-fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+/* `display` posé UNIQUEMENT sur l'état ouvert. Le navigateur masque un dialog fermé via
+   `dialog:not([open]) { display: none }` dans SA feuille — et une déclaration d'auteur
+   l'emporte sur une règle UA quelle que soit la spécificité. Un `display` sur `.dialog`
+   tout court rendrait donc la modale visible sur toutes les pages, fermée. La colonne flex
+   sert le plafonnement de hauteur plus haut : le corps rétrécit et défile. */
+.dialog[open] {
+	display: flex;
+	flex-direction: column;
+	animation: dialog-fade-in 0.3s ease-out forwards;
+}
+
+.dialog[open]::backdrop {
+	animation: backdrop-fade-in 0.3s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dialog[open],
+	.dialog[open]::backdrop {
+		animation: none;
+	}
+}
+
+@media (max-width: 48rem) {
+	.dialog {
+		width: calc(100vw - calc(var(--spacing) * 4));
+		/* `max-width` desktop levé : sous 48rem la modale prend toute la largeur. Sans ce
+		   retrait, entre ~44rem et 48rem elle reste plafonnée à 42rem tout en étant pleine
+		   hauteur — une colonne étroite à gouttières, ni la carte desktop ni la feuille
+		   mobile. */
+		max-width: none;
+		/* `dvh` et non `vh`, pour la raison donnée en haut de fichier — et c'est ICI qu'elle
+		   se joue : `100vh` vaut la hauteur « large », barre d'URL déployée comprise. Le bas
+		   du formulaire iovox, donc son bouton d'envoi, passerait sous le chrome du
+		   navigateur, hors d'atteinte puisque ce niveau est en `overflow: hidden` et que
+		   seul `.body` défile. */
+		height: calc(100dvh - calc(var(--spacing) * 4));
+		max-height: calc(100dvh - calc(var(--spacing) * 4));
+		margin: auto;
+		border-radius: var(--radius-xl);
+	}
+
+	/* Barre de SECOURS, révélée par le script quand le formulaire n'arrive pas — jamais
+	   autrement. iovox rend son propre en-tête (logo, croix) dès qu'il est là : la nôtre
+	   ferait doublon. Mais si l'iframe ne charge pas, sa croix n'existe pas non plus et le
+	   plein écran n'a plus de sortie — pas d'Échap sur mobile, 8 px de voile. Le titre reste
+	   masqué aux yeux dans tous les cas : il ne sert que de nom accessible au dialog. */
+	.dialog[data-iovox-stalled] .header {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: flex-end;
+		padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+	}
+
+	.dialog[data-iovox-stalled] .close {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: calc(var(--spacing) * 11); /* 44px — cible tactile minimale */
+		height: calc(var(--spacing) * 11);
+		padding: 0;
+		/* L'icône hérite la couleur via `stroke="currentColor"`. */
+		color: inherit;
+		cursor: pointer;
+		background: none;
+		border: 0;
+	}
+}

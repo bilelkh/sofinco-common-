@@ -27,7 +27,7 @@ const getQrAppSettings = vi.fn<
 vi.mock("#lib/siteConfigs", () => ({
 	getQrAppSettings: (site: unknown) => getQrAppSettings(site),
 }));
-vi.mock("#cms/Faq/SmartPush/smartPush.mapping", () => ({
+vi.mock("#lib/smartPush/smartPush.mapping", () => ({
 	mapSmartPushConfig: vi.fn((site: unknown) => (site ? { jsUrl: "/push.js", kbId: "42" } : null)),
 	buildSmartPushLink: vi.fn(() => ({
 		id: "smartpush-trigger",

@@ -10,6 +10,11 @@
 	"nr31fYHB-RqO06BCl4rYO": "This pattern is named <a>Islands Architecture.</a>",
 	"a11y": {
 		"noteBasDePage": "Footnote",
-		"retourRef": "Back to reference"
+		"retourRef": "Back to reference",
+		"iovoxFormTitle": "Immediate call-back form",
+		"iovoxClose": "Close the call-back window"
+	},
+	"iovoxWebCallback": {
+		"title": "Be called back by a Sofinco adviser"
 	}
 }
