@@ -16,9 +16,13 @@ export function StepItem({ item, isActive, panelId, onActivate, interactive }: S
 					{BadgeIcon ? <BadgeIcon /> : item.badge}
 				</span>
 			)}
-			<span className={classes.stepItem__title}>
-				<FootnoteText>{item.title}</FootnoteText>
-			</span>
+			{/* `p` par défaut : le rendu live n'a jamais posé de TITRE ici — c'était un <span>.
+			    Le passage à <p> est visuellement neutre (`.stepItem__title` force `display: block`
+			    et le reset global met `p { margin: 0 }`), mais il donne une valeur offrable dans
+			    la choicelist du contributeur, qui pourra promouvoir l'étape dans le plan SEO. */}
+			<Title as={item.titleAs ?? "p"} visualStyle="none" className={classes.stepItem__title}>
+				{item.title}
+			</Title>
 		</>
 	);
 

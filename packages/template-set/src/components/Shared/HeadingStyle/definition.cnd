@@ -1,3 +1,18 @@
+// Deux axes DÉLIBÉRÉMENT distincts — c'est toute la valeur de ce mixin.
+//
+//  - `titleLevel` : la balise émise dans le DOM. Ce que lisent Google et les lecteurs d'écran.
+//    `p` y figure parce que le besoin SEO est « un texte qui ressemble à un titre sans en être
+//    un » — c'était d'ailleurs le DÉFAUT du site legacy (`spmix:title.level`, libellé « Normal »).
+//
+//  - `titleStyle` : l'apparence. Volontairement limitée à h1–h4, les seules échelles que porte
+//    le design system. Le legacy ne faisait pas autrement : son axe visuel était une échelle de
+//    tailles indépendante du niveau, jamais un « style h5 ». Un titre h5 ou h6 choisit donc son
+//    apparence parmi ces quatre-là.
 [sofmix:headingStyle] mixin
- - titleLevel (string, choicelist) = 'h2' autocreated < 'h1','h2', 'h3', 'h4'
- - titleStyle (string, choicelist) = 'h2' autocreated < 'h1','h2', 'h3', 'h4'
+ - titleLevel (string, choicelist) = 'h2' autocreated < 'h1','h2','h3','h4','h5','h6','p'
+ - titleStyle (string, choicelist) = 'h2' autocreated < 'h1','h2','h3','h4'
+
+// Niveau des titres d'ITEMS d'un composant a liste (cartes, etapes, slides, items
+// de reassurance). Se pose sur le CONTENEUR, jamais sur les items.
+[sofmix:itemHeadingLevel] mixin
+ - itemsTitleLevel (string, choicelist) < 'h1','h2','h3','h4','h5','h6','p'

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { makeNode } from "#test/jahia";
 import type { TFunction } from "#lib/i18n";
 import type { RenderContext } from "org.jahia.services.render";
+import frLocale from "../../../settings/locales/fr.json";
 
 vi.mock("#lib/jcr", () => import("#test/jahia"));
 
@@ -33,6 +34,7 @@ import {
 	mapRepresentativeExampleProps,
 	mapRepresentativeExampleServerProps,
 	mapEmptyRepresentativeExampleProps,
+	LARGE_TEXT_ROW_KEYS,
 } from "./representativeExample.mapping";
 import { getRepresentativeExampleBridge, toExampleData } from "./representativeExampleBridge";
 
@@ -86,10 +88,18 @@ describe("mapRepresentativeExampleProps", () => {
 		vi.mocked(toExampleData).mockReturnValue({
 			variant: "pretPerso",
 			exampleAmount: "30 000 €",
+			// Clés au format ÉMIS PAR LE JAVA (`RepresentativeExampleMapper.LABEL_*`), préfixe
+			// compris. La fixture portait auparavant un raccourci `row.*` que rien ne contredisait,
+			// `toExampleData` étant mocké et `t` une identité : un mapping calé sur cette forme
+			// aurait passé les tests et n'aurait jamais matché en production.
 			rows: [
-				{ labelKey: "row.monthlyPayment", value: "429,07", highlighted: false },
-				{ labelKey: "row.duration", value: "496 mois", highlighted: false },
-				{ labelKey: "row.totalDue", value: "8,187%", highlighted: true },
+				{
+					labelKey: "representativeExample.row.monthlyPayment",
+					value: "429,07",
+					highlighted: false,
+				},
+				{ labelKey: "representativeExample.row.duration", value: "496 mois", highlighted: false },
+				{ labelKey: "representativeExample.row.totalDue", value: "8,187%", highlighted: true },
 			],
 			insurance: { monthlyAmount: "5", taea: "0,5%", totalInsuranceCost: "180" },
 			insuranceTextOverride: undefined,
@@ -105,6 +115,9 @@ describe("mapRepresentativeExampleProps", () => {
 		expect(result!.exampleAmount).toBe("30 000 €");
 		expect(result!.rows).toHaveLength(3);
 		expect(result!.rows[2].highlighted).toBe(true);
+		// `largeText` se déduit du labelKey, il n'est pas contribué : mensualité et total dû sont
+		// agrandis, la durée non. C'est la règle de maquette, verrouillée ici.
+		expect(result!.rows.map((r) => r.largeText)).toEqual([true, false, true]);
 		expect(result!.cta).toMatchObject({
 			href: "/parcours-simulateur?sourceId=NEOURL14#/auto",
 			ctaSection: "representative-example",
@@ -365,5 +378,25 @@ describe("mapEmptyRepresentativeExampleProps (mode dégradé)", () => {
 		expect(mapEmptyRepresentativeExampleProps(node, rcFor(node), t).amount).toBe(
 			`${new Intl.NumberFormat("fr-FR").format(5000)} €`,
 		);
+	});
+});
+
+describe("LARGE_TEXT_ROW_KEYS", () => {
+	/*
+	 * Garde anti-dérive avec le Java. Les libellés de lignes sont produits par
+	 * `RepresentativeExampleMapper` (bundle `sofinco-core`) : rien, à la compilation, ne relie
+	 * ses constantes `LABEL_*` au Set déclaré côté TypeScript. Un renommage là-bas ne casserait
+	 * donc rien ici — les lignes retomberaient simplement à 16 px, sans erreur, et la régression
+	 * ne se verrait qu'à l'œil sur la page.
+	 *
+	 * `fr.json` est le point de contact vérifiable : le Java émet la clé, l'i18n doit la traduire.
+	 * Une clé du Set absente du bundle est donc soit un préfixe erroné, soit une ligne renommée
+	 * côté Java — les deux cas se règlent avant la livraison plutôt qu'en recette.
+	 */
+	it("ne référence que des clés de ligne existantes dans fr.json", () => {
+		const known = new Set(
+			Object.keys(frLocale.representativeExample.row).map((k) => `representativeExample.row.${k}`),
+		);
+		expect([...LARGE_TEXT_ROW_KEYS].filter((key) => !known.has(key))).toEqual([]);
 	});
 });

@@ -9,6 +9,8 @@ const meta = {
 		layout: "fullscreen",
 	},
 	args: {
+		// Pas de `visualStyle` : le type l'interdit (`Omit<TitleProps, "visualStyle">`)
+		// et le composant le force à `"none"` — la typo vient de `.simulator-block__title`.
 		title: {
 			children: "Financez vos projets avec le crédit conso Sofinco",
 			as: "h1",

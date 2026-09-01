@@ -21,7 +21,7 @@ export const Default: Story = {
 		linkLabel: "Voir tous les avis clients",
 		linkHref: "#",
 		sticker: {
-			avisLogoUrl: "/images/logo/avis-verifies-light.svg",
+			avisLogoUrl: "/images/samples/AvisClient/logo-avis-verifies.svg",
 			ratingReviewsCount: 5646,
 			ratingScore: 4.4,
 		},

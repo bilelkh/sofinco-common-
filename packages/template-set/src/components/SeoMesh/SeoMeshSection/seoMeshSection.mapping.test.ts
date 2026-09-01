@@ -25,6 +25,8 @@ describe("seoMeshSection mappers", () => {
 		});
 		expect(mapSeoMeshSection(node)).toEqual({
 			title: "Section",
+			// `subBlockLevel` absent → repli h3, le niveau que le composant codait en dur.
+			titleAs: "h3",
 			links: [
 				{ id: "a", href: "/a", label: "A" },
 				{ id: "b", href: "/b", label: "B" },

@@ -21,6 +21,13 @@ export interface TableRow {
 	value: string;
 	/** Indicates whether the row should use the highlighted visual style. */
 	highlighted?: boolean;
+	/**
+	 * Enlarges the label and the value one step, `--text-base` → `--text-lg`.
+	 *
+	 * Independent from `highlighted`, which only drives the colours: the highlighted column
+	 * needs both, otherwise it renders smaller than the enlarged rows around it.
+	 */
+	largeText?: boolean;
 }
 
 /**

@@ -154,8 +154,8 @@ export function OfferComparisonTable({ title, offers, className }: OfferComparis
 										className={classes["offer-comparison-table__image"]}
 										src={offer.image.src}
 										alt={offer.image.alt ?? ""}
-										width={449}
-										height={300}
+										width={444}
+										height={298}
 									/>
 								</td>
 							))}

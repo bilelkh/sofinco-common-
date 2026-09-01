@@ -71,6 +71,7 @@ describe("mapHowItWorksPropsClient", () => {
 					id: "1",
 					badge: 1,
 					title: "Je simule et je souscris en ligne",
+					titleAs: "p",
 					description: "Je simule et je souscris en ligne — description",
 					imageUrl: "1.png",
 					imageAlt: "Visuel Je simule et je souscris en ligne",
@@ -79,6 +80,7 @@ describe("mapHowItWorksPropsClient", () => {
 					id: "2",
 					badge: 2,
 					title: "Je reçois les fonds sur mon compte",
+					titleAs: "p",
 					description: "Je reçois les fonds sur mon compte — description",
 					imageUrl: "2.png",
 					imageAlt: "Visuel Je reçois les fonds sur mon compte",
@@ -87,6 +89,7 @@ describe("mapHowItWorksPropsClient", () => {
 					id: "3",
 					badge: 3,
 					title: "Je rembourse à mensualités fixes",
+					titleAs: "p",
 					description: "Je rembourse à mensualités fixes — description",
 					imageUrl: "3.png",
 					imageAlt: "Visuel Je rembourse à mensualités fixes",
@@ -95,6 +98,7 @@ describe("mapHowItWorksPropsClient", () => {
 					id: "4",
 					badge: 4,
 					title: "Crédit remboursé : c'est terminé.",
+					titleAs: "p",
 					description: "Crédit remboursé : c'est terminé. — description",
 					imageUrl: "4.png",
 					imageAlt: "Visuel Crédit remboursé : c'est terminé.",
@@ -192,8 +196,8 @@ describe("mapHowItWorksPropsClient", () => {
 		const node = makeNode({
 			props: {
 				...baseProps,
-				"ctaType": "internal",
-				"ctaLabel": "Je découvre l'offre",
+				ctaType: "internal",
+				ctaLabel: "Je découvre l'offre",
 			},
 			nodeTypes: ["sofnt:howItWorks"],
 			children: [],
@@ -334,7 +338,7 @@ describe("mapHowItWorksPropsServer", () => {
 
 	it("maps cta (sofmix:ctaOptional) so the edit view can preview it", () => {
 		const node = makeNode({
-			props: { ...baseProps, "ctaType": "external", "ctaLabel": "Vers le simulateur" },
+			props: { ...baseProps, ctaType: "external", ctaLabel: "Vers le simulateur" },
 			nodeTypes: ["sofnt:howItWorks"],
 			children: [],
 		});

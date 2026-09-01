@@ -5,12 +5,14 @@ const meta = {
 	title: "B2C/AppMobile",
 	component: AppMobile,
 	args: {
-		// picto provisoire en attendant le bon asset.
-		picto: "/images/logo/sf-logo.png",
+		sectionHeadingProps: {
+			title: "Je pilote mes projets du bout des doigts",
+			subtitle:
+				"Suivez vos remboursements, gestion centralisée de votre argent, paramètres ... retrouvez tout dans l'App Sofinco, c'est aussi simple que ça.",
+			visualStyle: "h2",
+		},
+		picto: "/images/samples/HomePage/AppMobile/picto-section-app-mobile.svg",
 		backgroundColor: "#03334D",
-		title: "Je pilote mes projets du bout des doigts",
-		subtitle:
-			"Suivez vos remboursements, gestion centralisée de votre argent, paramètres ... retrouvez tout dans l'App Sofinco, c'est aussi simple que ça.",
 		img: "/images/samples/HomePage/AppMobile/application-mobile-sofinco-desktop.webp",
 		imgQrCode: "/images/samples/QrCode/qr-code.svg",
 		mobileCtaHrefIos: "https://apps.apple.com/fr/app/sofinco/id1496197496",
@@ -57,9 +59,12 @@ export const SansQrCode: Story = {
 export const CarteBancaire: Story = {
 	name: "Carte bancaire (page produit)",
 	args: {
-		title: "Tous mes paiements à portée de main",
-		subtitle:
-			"Suivi de vos remboursements, gestion centralisée de votre argent, paramètres ... Retrouvez tout dans l'App Sofinco, c'est aussi simple que ça.",
+		sectionHeadingProps: {
+			title: "Tous mes paiements à portée de main",
+			subtitle:
+				"Suivi de vos remboursements, gestion centralisée de votre argent, paramètres ... Retrouvez tout dans l'App Sofinco, c'est aussi simple que ça.",
+			visualStyle: "h2",
+		},
 		img: "/images/samples/ProductPages/ProductCardPage/AppMobile/app-mobile-carte-bancaire-desktop.webp",
 		imgQrCode: undefined,
 		cards: [
@@ -90,9 +95,12 @@ export const CarteBancaire: Story = {
 export const CreditRenouvelable: Story = {
 	name: "Crédit renouvelable (page produit)",
 	args: {
-		title: "Je gère mon crédit renouvelable depuis mon app",
-		subtitle:
-			"Crédit, remboursement, paramètres... Tout est réuni en un seul endroit pour une gestion simple et rapide",
+		sectionHeadingProps: {
+			title: "Je gère mon crédit renouvelable depuis mon app",
+			subtitle:
+				"Crédit, remboursement, paramètres... Tout est réuni en un seul endroit pour une gestion simple et rapide",
+			visualStyle: "h2",
+		},
 		img: "/images/samples/ProductPages/ProductCreditPage/AppMobile/application-mobile-credit-renouvelable-desktop.webp",
 		imgQrCode: "/images/samples/QrCode/qr-code.svg",
 		mobileCtaHrefIos: undefined,
@@ -125,9 +133,12 @@ export const CreditRenouvelable: Story = {
 export const PretPerso: Story = {
 	name: "Prêt personnel (page produit)",
 	args: {
-		title: "Toute la gestion de mon prêt dans l'app Sofinco",
-		subtitle:
-			"Montant restant dû, échéances, paramètres... Tout réuni en un seul endroit, c'est aussi simple que ça.",
+		sectionHeadingProps: {
+			title: "Toute la gestion de mon prêt dans l'app Sofinco",
+			subtitle:
+				"Montant restant dû, échéances, paramètres... Tout réuni en un seul endroit, c'est aussi simple que ça.",
+			visualStyle: "h2",
+		},
 		img: "/images/samples/ProductPages/ProductLoanPage/AppMobile/application-mobile-pret-perso-desktop.webp",
 		imgQrCode: "/images/samples/QrCode/qr-code.svg",
 		mobileCtaHrefIos: undefined,

@@ -20,16 +20,6 @@ const meta = {
 				cta: { label: "Je découvre la carte", href: "#" },
 			},
 			{
-				id: "offer-carte-glossy",
-				variant: "glossy" as const,
-				title: "Avec la carte Sofinco, j'ai le pouvoir de payer en 1x, 3x, 10X",
-				description:
-					"Avec la carte Sofinco associée à son crédit renouvelable, choisissez de régler vos achats au comptant ou en plusieurs fois, même après l'achat !",
-				imgMobile: "/images/samples/HomePage/OfferCarousel/promo-actu-carte-mobile.webp",
-				imgDesktop: "/images/samples/HomePage/OfferCarousel/promo-actu-carte-desktop.webp",
-				cta: { label: "Je découvre la carte", href: "#" },
-			},
-			{
 				id: "offer-electrifions",
 				variant: "colored" as const,
 				title:

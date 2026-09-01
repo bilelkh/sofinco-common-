@@ -1,6 +1,7 @@
 import type { JCRNodeWrapper } from "org.jahia.services.content";
 import type { ScrollStepsItem } from "sofinco-react";
 import { str, imgUrl, getChildNodesByType } from "#lib/jcr";
+import { readItemsTitleLevel } from "#cms/Shared/HeadingStyle/headingStyle.mapping";
 
 /**
  * Mapping JCR → DS pour une étape.
@@ -19,6 +20,11 @@ export function mapHowItWorksStep(node: JCRNodeWrapper): ScrollStepsItem {
 	return {
 		id: node.getIdentifier(),
 		title: str(node, "jcr:title"),
+		// Niveau lu sur le bloc HowItWorks, pas sur l'etape : les etapes sont des pairs.
+		// Repli "p" : le rendu LIVE n'a jamais pose de TITRE ici — c'etait un <span>. Le <h4>
+		// visible en recette est celui de l'apercu d'edition, que Google ne voit pas. Le
+		// passage a <p> est visuellement neutre.
+		titleAs: readItemsTitleLevel(node, "sofnt:howItWorks", "p"),
 		description: str(node, "description"),
 		imageUrl: imgUrl(node, "image"),
 		imageAlt: str(node, "imageAlt"),

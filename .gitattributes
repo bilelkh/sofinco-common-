@@ -1,3 +1,11 @@
+# Fins de ligne normalisees LF, en depot ET dans la copie de travail.
+#
+# Sans cette regle, un checkout Windows (`core.autocrlf=true`) sort des fichiers
+# en CRLF : `prettier --check` echoue alors sur TOUT le depot, y compris les
+# fichiers non modifies, ce qui rend le hook lint-staged et la CI illisibles.
+# `.editorconfig` declare deja `end_of_line = lf` — on l'applique ici a git.
+* text=auto eol=lf
+
 /.yarn/**            linguist-vendored
 /.yarn/releases/*    binary
 /.yarn/plugins/**/*  binary

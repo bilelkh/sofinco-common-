@@ -6,7 +6,7 @@ import { buildSimulatorCtaFromNode } from "#lib/simulatorCta";
 import { extractPromotionTracking } from "#lib/promotionTracking";
 import { mapAvisClientsStickerPropsClient } from "#cms/AvisClientsSticker/avisClientsSticker.mapping";
 import type { TFunction } from "#lib/i18n";
-import { buildTitleProps } from "../Shared/HeadingStyle/headingStyle.mapping";
+import { buildTitleProps, readTitleTag } from "../Shared/HeadingStyle/headingStyle.mapping";
 
 export function mapProductHeroProps(
 	node: JCRNodeWrapper,
@@ -25,7 +25,19 @@ export function mapProductHeroProps(
 	const rate = str(node, "rateValue");
 
 	return {
-		eyebrow: str(node, "productLabel"),
+		/*
+		 * `eyebrowProps` et non `eyebrow` : le DS ne rend plus la chaine nue depuis que le
+		 * sur-titre passe par <Title>. Le niveau vient de `eyebrowLevel`, propre au hero —
+		 * `sofmix:headingStyle` est deja consomme par le titre principal.
+		 * `visualStyle: "none"` : l'apparence est portee par le variant `eyebrow` de la charte,
+		 * pas par une echelle de titre.
+		 */
+		eyebrowProps: {
+			children: str(node, "productLabel"),
+			as: readTitleTag(node, "eyebrowLevel", "p"),
+			visualStyle: "none",
+			variant: "eyebrow",
+		},
 		title: buildTitleProps(node, headerTitle, "h1"),
 		/*
 		 * PAS de `strLimit` ici. `description` est passé en richtext (wysiwyg) pour

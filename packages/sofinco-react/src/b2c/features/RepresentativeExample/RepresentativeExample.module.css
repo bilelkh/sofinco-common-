@@ -125,7 +125,7 @@
 
 .representative-example__th {
 	font-family: var(--font-sans);
-	font-size: var(--text-lg);
+	font-size: var(--text-base);
 	font-weight: var(--font-weight-medium);
 	color: var(--color-primary-base);
 	letter-spacing: -0.02em;
@@ -142,7 +142,7 @@
 	align-items: center;
 	gap: calc(var(--spacing) * 2);
 	font-family: var(--font-display);
-	font-size: var(--text-xl);
+	font-size: var(--text-base);
 	font-weight: var(--font-weight-extrabold);
 	color: var(--color-primary-base);
 	background-color: var(--color-white);
@@ -157,7 +157,7 @@
 .representative-example__td::before {
 	content: attr(data-label);
 	font-family: var(--font-sans);
-	font-size: var(--text-lg);
+	font-size: var(--text-base);
 	font-weight: var(--font-weight-medium);
 	color: var(--color-primary-base);
 	letter-spacing: -0.02em;
@@ -197,7 +197,6 @@
 
 .representative-example__td--highlighted {
 	color: var(--color-accent-base);
-	font-size: var(--text-xl);
 	background-color: var(--color-primary-base);
 }
 
@@ -205,12 +204,19 @@
 	color: var(--color-white);
 }
 
+/* Enlarged rows (TableRow.largeText) */
+.representative-example__th--large,
+.representative-example__td--large,
+.representative-example__td--large::before {
+	font-size: var(--text-lg);
+}
+
 /* Legal mentions */
 .representative-example__insurance-legal {
 	margin: calc(var(--spacing) * 8) auto calc(var(--spacing) * 8) auto;
 	max-width: 800px;
-	font-size: var(--text-xs);
-	line-height: var(--text-xs--line-height);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
 	font-weight: var(--font-weight-medium);
 }
 

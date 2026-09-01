@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 import type { FooterProps } from "./footer.types";
 
 const footerArgs: FooterProps = {
-	mainLogoUrl: "/images/logo/logo_accent.svg",
+	mainLogoUrl: "/images/samples/Footer/logo-sofinco-accent.svg",
 	mainLogoAlt: "Sofinco",
 	mainLogoLinkUrl: "#",
 	socialTitle: "Suivez-nous",
@@ -20,7 +20,7 @@ const footerArgs: FooterProps = {
 		isActive: true,
 	},
 	avisClientData: {
-		avisLogoUrl: "/images/logo/avis-verifies.svg",
+		avisLogoUrl: "/images/samples/Footer/logo-avis-verifies.svg",
 		avisTitle: "Avis Vérifiés",
 		ratingScore: 4.4,
 		ratingReviewsCount: 5646,
@@ -29,7 +29,7 @@ const footerArgs: FooterProps = {
 		{
 			id: "1",
 			title: "Groupe Crédit Agricole",
-			imageUrl: "/images/logo/logo-casa.png",
+			imageUrl: "/images/samples/Footer/logo-credit-agricole.png",
 			altText: "Groupe Crédit Agricole",
 			linkUrl: "#",
 			disclaimer: "Partenaire officiel",
@@ -37,7 +37,7 @@ const footerArgs: FooterProps = {
 		{
 			id: "2",
 			title: "Lucie",
-			imageUrl: "/images/logo/logo-lucie.png",
+			imageUrl: "/images/samples/Footer/logo-lucie.png",
 			altText: "Lucie — Labellisé en RSE",
 			linkUrl: "#",
 			disclaimer: "Partenaire historique",
@@ -45,7 +45,7 @@ const footerArgs: FooterProps = {
 		{
 			id: "3",
 			title: "Best Workplaces",
-			imageUrl: "/images/logo/logo-bestworkplace-2025.png",
+			imageUrl: "/images/samples/Footer/logo-best-workplaces-2025.png",
 			altText: "Best Workplaces France 2025",
 			linkUrl: "#",
 			disclaimer: "Partenaire historique",

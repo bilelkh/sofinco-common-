@@ -5,9 +5,14 @@ const meta = {
 	title: "B2C/Reassurance",
 	component: Reassurance,
 	args: {
-		title: "Sofinco accompagne vos projets",
-		subtitle:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pellentesque magna ut erat vehicula, nec euismod nisl lacinia.",
+		sectionHeadingProps: {
+			title: "Sofinco accompagne vos projets",
+			subtitle:
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pellentesque magna ut erat vehicula, nec euismod nisl lacinia.",
+			titleAs: "h2",
+			align: "center",
+			visualStyle: "h2",
+		},
 		items: [
 			{
 				id: 1,
@@ -41,13 +46,18 @@ export const Default: Story = {};
 
 export const WithDescriptions: Story = {
 	args: {
-		title: "Sofinco vous accompagne dans tous vos projets de financement",
-		subtitle:
-			"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+		sectionHeadingProps: {
+			title: "Sofinco vous accompagne dans tous vos projets de financement",
+			subtitle:
+				"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+			titleAs: "h2",
+			align: "center",
+			visualStyle: "h2",
+		},
 		items: [
 			{
 				id: 1,
-				icon: "/images/samples/HomePage/Reassurance/icone-seul-accompagne.svg",
+				icon: "/images/samples/HomePage/Reassurance/icone-simulation-gratuite.svg",
 				title: "Simulation gratuite et sans engagement",
 				text: "Un parcours 100 % en ligne pour estimer votre capacité d'emprunt en quelques clics.",
 				link: { href: "#", label: "En savoir plus" },
@@ -80,9 +90,14 @@ export const WithDescriptions: Story = {
 export const CreditRenouvelable: Story = {
 	name: "Crédit renouvelable (page produit)",
 	args: {
-		title: "Sofinco vous accompagne dans tous vos projets",
-		subtitle:
-			"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+		sectionHeadingProps: {
+			title: "Sofinco vous accompagne dans tous vos projets",
+			subtitle:
+				"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+			titleAs: "h2",
+			align: "center",
+			visualStyle: "h2",
+		},
 		items: [
 			{
 				id: 1,
@@ -119,9 +134,14 @@ export const CreditRenouvelable: Story = {
 export const PretPerso: Story = {
 	name: "Prêt personnel (page produit)",
 	args: {
-		title: "Sofinco vous accompagne dans tous vos projets",
-		subtitle:
-			"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+		sectionHeadingProps: {
+			title: "Sofinco vous accompagne dans tous vos projets",
+			subtitle:
+				"Les petits comme les grands, ceux qu'on n'a pas prévus comme ceux dont on rêve depuis toujours.",
+			titleAs: "h2",
+			align: "center",
+			visualStyle: "h2",
+		},
 		items: [
 			{
 				id: 1,

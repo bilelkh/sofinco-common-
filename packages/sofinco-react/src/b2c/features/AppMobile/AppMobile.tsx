@@ -5,14 +5,14 @@ import styles from "@b2c/features/AppMobile/AppMobile.module.css";
 import MobileDownloadCta from "@b2c/features/AppMobile/ui/MobileDownloadCta";
 import useMobileAppHref from "@b2c/features/AppMobile/ui/useMobileAppHref";
 import SectionHeading from "@shared/ui/SectionHeading";
+import Title from "@shared/ui/Title";
 import Image from "@shared/ui/Image";
 import { FootnoteText } from "@shared/footnotes";
 
 export const AppMobile = ({
 	picto,
 	backgroundColor,
-	title,
-	subtitle,
+	sectionHeadingProps,
 	cards,
 	img,
 	imgQrCode,
@@ -44,10 +44,15 @@ export const AppMobile = ({
 			aria-labelledby={headingId}
 			style={sectionStyle}
 		>
+			{/* CONVENTION D'ORDRE — les props contribuées d'abord, celles que la SECTION
+			    possède ensuite. Le spread était en DERNIER : le mapper émet toujours un
+			    `visualStyle`, qui écrasait le `"none"` ci-dessous et faisait gagner
+			    `.title--h2` dans la cascade. Au même endroit, un mapper qui viendrait
+			    renseigner `eyebrow` ou `id` ferait disparaître le picto Sofinco et
+			    l'`aria-labelledby`. */}
 			<SectionHeading
+				{...sectionHeadingProps}
 				id={headingId}
-				title={title}
-				subtitle={subtitle}
 				align="center"
 				visualStyle="none"
 				variant="white"
@@ -101,9 +106,13 @@ export const AppMobile = ({
 				{cards.map((card) => (
 					<article key={card.id} className={styles["app-mobile__card"]}>
 						<div className={styles["app-mobile__card-header"]}>
-							<h3 className={styles["app-mobile__card-label"]}>
-								<FootnoteText>{card.label}</FootnoteText>
-							</h3>
+							<Title
+								as={card.labelAs ?? "h3"}
+								visualStyle="none"
+								className={styles["app-mobile__card-label"]}
+							>
+								{card.label}
+							</Title>
 							{card.picto && (
 								<Image
 									src={card.picto}

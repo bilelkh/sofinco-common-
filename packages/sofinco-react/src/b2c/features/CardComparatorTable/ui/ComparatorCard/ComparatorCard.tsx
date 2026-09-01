@@ -24,8 +24,8 @@ export default function ComparatorCard({
 			)}
 
 			<div className={styles["comparator-card__image-container"]}>
-				{/* `.comparator-card__image-container` box: `aspect-ratio: 4 / 3` at its
-				    `max-width: 580px`. */}
+				{/* `.comparator-card__image-container` box: `aspect-ratio: 1 / 1`, puis
+				    `4 / 3` a partir de `--small-up`, a son `max-width: 580px`. */}
 				<Image
 					src={image}
 					decorative

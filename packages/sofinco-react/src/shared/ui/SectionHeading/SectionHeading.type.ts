@@ -25,5 +25,4 @@ export type SectionHeadingProps = {
 	titleClassName?: string;
 	/** Optional children to render inside the heading. */
 	children?: React.ReactNode;
-
 };

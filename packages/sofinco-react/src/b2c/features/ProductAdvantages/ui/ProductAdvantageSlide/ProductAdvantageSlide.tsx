@@ -5,7 +5,7 @@ import { sanitizeHtml } from "@utils/sanitizeHtml";
 
 export type ProductAdvantageSlideProps = Pick<
 	ProductAdvantageCategory,
-	"title" | "text" | "imageDesktop" | "imageMobile" | "imageAlt"
+	"title" | "titleAs" | "text" | "imageDesktop" | "imageMobile" | "imageAlt"
 >;
 
 /**
@@ -14,11 +14,16 @@ export type ProductAdvantageSlideProps = Pick<
  */
 export function ProductAdvantageSlide({
 	title,
+	titleAs,
 	text,
 	imageDesktop,
 	imageMobile,
 	imageAlt,
 }: ProductAdvantageSlideProps) {
+	// `h3` par défaut : le niveau codé en dur jusqu'ici, pour que les contenus déjà publiés
+	// sans choix explicite rendent exactement la même chose.
+	const TitleTagEl = titleAs ?? "h3";
+
 	return (
 		<article className={classes["product-advantage-slide"]}>
 			<Image
@@ -40,7 +45,9 @@ export function ProductAdvantageSlide({
 			/>
 
 			<div className={classes["product-advantage-slide__overlay"]}>
-				<h3
+				{/* Balise dynamique : le titre est du HTML contribué, donc `dangerouslySetInnerHTML`
+				    plutôt que <Title>, qui enveloppe ses enfants dans <FootnoteText>. */}
+				<TitleTagEl
 					className={classes["product-advantage-slide__title"]}
 					dangerouslySetInnerHTML={{ __html: sanitizeHtml(title) }}
 				/>

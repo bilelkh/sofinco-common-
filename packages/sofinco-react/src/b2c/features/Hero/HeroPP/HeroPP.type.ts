@@ -5,7 +5,6 @@ import type { PromotionTracking } from "@b2c/features/Hero/promotionTracking";
 import type { TitleProps } from "@shared/ui/Title/Title.type";
 
 export type HeroPPProps = {
-	eyebrow: string;
 	title?: TitleProps;
 	description: string;
 	cta: CtaProps | null;
@@ -13,4 +12,5 @@ export type HeroPPProps = {
 	offerCard: HeroPPOfferCardProps;
 	className?: string;
 	tracking?: PromotionTracking;
+	eyebrowProps?: TitleProps;
 };

@@ -20,7 +20,10 @@ module from the page's own properties.
 - `title`: section heading (`<h2>`).
 - `subtitle`: intro — **richtext HTML** (rendered via `dangerouslySetInnerHTML`).
 - `amountLabel` / `exampleAmount`: the highlighted "Montant emprunté" card.
-- `rows`: table columns. Each `{ label, value, highlighted? }` is already translated and formatted server-side; mark the "Montant total dû" column with `highlighted: true`.
+- `rows`: table columns. Each `{ label, value, highlighted?, largeText? }` is already translated and formatted server-side.
+  - `highlighted: true` marks the "Montant total dû" column — it drives the **colours** (accent text on primary background). It no longer changes the font size.
+  - `largeText: true` is **separate and required** for size: label and value are 16px by default, `largeText` bumps that column to 18px. The highlighted column needs **both** — `highlighted` alone now renders smaller than the enlarged rows around it.
+  - Server-side, `largeText` is not contributed: it is derived from the row's `labelKey` by `LARGE_TEXT_ROW_KEYS` (template-set). Enlarge what the customer compares — monthly payment, adjusted last payment, TAEG, total due — never the secondary rows.
 - `insuranceLegalText`: insurance mention — **richtext HTML**.
 - `cta`: call-to-action (`label` + `href` are used).
 
@@ -49,22 +52,29 @@ import { RepresentativeExample } from "sofinco-react";
   title="Parce que tout est plus clair avec un exemple..."
   subtitle="<p>Exemple représentatif hors assurance facultative pour un prêt personnel, sous réserve d'acceptation de votre dossier par Sofinco.</p>"
   amountLabel="Montant emprunté"
-  exampleAmount="10 000 €"
+  exampleAmount="15 000 €"
   rows={[
-    { label: "Mensualités", value: "344,03€" },
+    { label: "Mensualités *", value: "344,03 €", largeText: true },
     { label: "Durée", value: "48 mois" },
-    { label: "TAEG Fixe", value: "4,900%" },
+    { label: "TAEG fixe **", value: "4,900 %", largeText: true },
     { label: "Taux débiteur fixe", value: "4,793 %" },
-    { label: "Montant total dû", value: "16513,44 €", highlighted: true },
+    { label: "Frais de dossier", value: "0,00 €" },
+    { label: "Montant total dû", value: "16 513,44 €", highlighted: true, largeText: true },
   ]}
-  insuranceLegalText="<p>Assurance facultative Décès, Perte Totale et Irréversible d'Autonomie : pour 10 000 € empruntés, le coût mensuel de l'assurance est de 5,00 € en complément de la mensualité.</p>"
+  insuranceLegalText="Nous vous proposons de souscrire <a href=&quot;#&quot;>l'assurance emprunteur facultative</a><sup>(5)</sup> pour 15,75 € supplémentaires par mois. Le Taux Annuel Effectif de l'Assurance (TAEA) est de 2,419 %. Le montant total dû au titre de l'assurance est de 756,00 €."
   cta={{
-    label: "Simuler mon crédit renouvelable",
+    label: "Simuler mon prêt personnel",
     href: "#",
     ctaSection: "representative-example-cta",
   }}
 />;
 ```
+
+> ℹ️ **Where these figures come from.** They are the `pretPerso` APIM fixture
+> (`sofinco-core/src/main/resources/mocks/loan_pb_response.json`), rendered through
+> `RepresentativeExampleMapper.buildLoan` and the `representativeExample.*` keys of `fr.json`.
+> Copy them as-is rather than inventing amounts: `344,03 € × 48 = 16 513,44 €`, so the snippet
+> stays a valid representative example for a regulated credit product.
 
 ## Story Variants
 

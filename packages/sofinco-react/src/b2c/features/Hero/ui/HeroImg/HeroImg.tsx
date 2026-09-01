@@ -16,7 +16,7 @@ const HeroImg = ({ lowSrc, desktopSrc, tabletSrc, mobileSrc }: HeroImgProps) => 
 			style={lowSrc ? { backgroundImage: `url(${lowSrc})` } : undefined}
 		>
 			<source media="(min-width: 1024px)" srcSet={desktopSrc} width={1440} height={722} />
-			<source media="(min-width: 768px)" srcSet={tabletSrc} width={1440} height={722} />
+			<source media="(min-width: 768px)" srcSet={tabletSrc} width={1024} height={1366} />
 			<source media="(max-width: 767px)" srcSet={mobileSrc} width={420} height={842} />
 			<img
 				src={desktopSrc}

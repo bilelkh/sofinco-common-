@@ -11,6 +11,9 @@
 	max-width: 1040px;
 }
 
+/* Typographie COMPLÈTE, parce que <SectionHeading> reçoit `visualStyle="none"` :
+   aucune classe `.title--h*` n'atterrit sur l'élément, ce bloc est la seule source.
+   Ne pas l'alléger sans retirer `visualStyle="none"` — les deux vont ensemble. */
 .reassurance__title {
 	margin: 0;
 	font-family: var(--font-sans);

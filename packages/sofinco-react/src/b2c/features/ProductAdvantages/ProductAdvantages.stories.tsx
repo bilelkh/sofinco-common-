@@ -137,7 +137,11 @@ const meta = {
 		layout: "fullscreen",
 	},
 	args: {
-		title: "La simplicité pour tous mes achats",
+		sectionHeadingProps: {
+			title: "La simplicité pour tous mes achats",
+			titleAs: "h2",
+			align: "center",
+		},
 		categories,
 	},
 } satisfies Meta<typeof ProductAdvantages>;
@@ -215,8 +219,11 @@ const creditRenouvelableCategories: ProductAdvantageCategory[] = [
 export const CreditRenouvelable: Story = {
 	name: "Crédit renouvelable (page produit)",
 	args: {
-		title: "Les avantages du Crédit Renouvelable Sofinco",
-		subtitle: "Une solution pensée pour votre quotidien et les aléas de la vie",
+		sectionHeadingProps: {
+			title: "Les avantages du Crédit Renouvelable Sofinco",
+			subtitle: "Une solution pensée pour votre quotidien et les aléas de la vie",
+			align: "center",
+		},
 		categories: creditRenouvelableCategories,
 	},
 };
@@ -271,9 +278,12 @@ const pretPersoCategories: ProductAdvantageCategory[] = [
 export const PretPerso: Story = {
 	name: "Prêt personnel (page produit)",
 	args: {
-		title: "Enfin un emprunt à la hauteur !",
-		subtitle:
-			"Montant précis, taux garanti, calendrier de remboursement … on ne laisse rien au hasard.",
+		sectionHeadingProps: {
+			title: "Enfin un emprunt à la hauteur !",
+			subtitle:
+				"Montant précis, taux garanti, calendrier de remboursement … on ne laisse rien au hasard.",
+			align: "center",
+		},
 		categories: pretPersoCategories,
 	},
 };

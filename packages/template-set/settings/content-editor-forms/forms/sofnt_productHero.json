@@ -10,11 +10,16 @@
 					"fields": [
 						{ "name": "jcr:title", "rank": "1.0" },
 						{ "name": "productLabel", "rank": "2.0" },
-						{ "name": "description", "rank": "3.0" },
-						{ "name": "rateValue", "rank": "4.0" },
-						{ "name": "rateLabel", "rank": "5.0" },
-						{ "name": "characteristics", "rank": "6.0" },
-						{ "name": "imageDesktop", "rank": "7.0" }
+						{
+							"name": "eyebrowLevel",
+							"rank": "3.0",
+							"defaultValues": [{ "value": "p" }]
+						},
+						{ "name": "description", "rank": "4.0" },
+						{ "name": "rateValue", "rank": "5.0" },
+						{ "name": "rateLabel", "rank": "6.0" },
+						{ "name": "characteristics", "rank": "7.0" },
+						{ "name": "imageDesktop", "rank": "8.0" }
 					]
 				},
 				{

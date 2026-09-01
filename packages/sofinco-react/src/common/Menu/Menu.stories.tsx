@@ -223,7 +223,7 @@ const linksDesktop: LinkProps[] = [
 ];
 
 const defaultLogo = {
-	src: "/images/logo/logos_sofinco_large.min.svg",
+	src: "/images/samples/Menu/logo-sofinco.svg",
 	alt: "Sofinco",
 	label: "Accueil Sofinco",
 	href: "/",
@@ -334,4 +334,3 @@ export const WithGlobalCta: Story = {
 		},
 	},
 };
-

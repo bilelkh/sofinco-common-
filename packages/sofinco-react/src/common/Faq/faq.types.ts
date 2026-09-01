@@ -1,4 +1,7 @@
 import type { LinkProps } from "@shared/ui/Link/Link.type";
+// Types PARTAGÉS et non une union recopiée : la copie locale `"h1" | … | "h4"` a cessé de
+// compiler dès que le vocabulaire du DS s'est élargi, alors que la FAQ n'avait pas bougé.
+import type { HeadingLevel, TitleTag } from "@shared/ui/Title/Title.type";
 
 export interface FaqItem {
 	id: string;
@@ -42,12 +45,12 @@ export interface FaqProps {
 	imageUrl: string;
 	imageAlt: string;
 	/** Semantic heading level (HTML tag) for the FAQ title. Defaults to `h2`. */
-	titleAs?: "h1" | "h2" | "h3" | "h4";
+	titleAs?: TitleTag;
 	/**
 	 * Visual style of the FAQ title, independent of its semantic level. When
 	 * omitted the title keeps its default (H2) appearance.
 	 */
-	titleStyle?: "h1" | "h2" | "h3" | "h4";
+	titleStyle?: HeadingLevel;
 	items: FaqItem[];
 	/** Optional centered link rendered at the bottom, below the items. */
 	link?: LinkProps;

@@ -46,8 +46,22 @@ describe("toExampleData", () => {
 			exampleAmount: "3 000 €",
 			insuranceTextOverride: "",
 			rows: [
-				{ labelKey: "row.monthlyPayment", value: "100", highlighted: false, labelParam: "" },
-				{ labelKey: "row.duration", value: "36", highlighted: true, labelParam: "" },
+				// Clés au format ÉMIS PAR LE JAVA, préfixe `representativeExample.` compris.
+				// Ce test n'exerce que le pass-through `readString`, donc un raccourci `row.*`
+				// y serait inoffensif — mais c'est exactement le piège dénoncé un fichier plus
+				// loin, où un mapping calé sur cette forme ne matcherait jamais en production.
+				{
+					labelKey: "representativeExample.row.monthlyPayment",
+					value: "100",
+					highlighted: false,
+					labelParam: "",
+				},
+				{
+					labelKey: "representativeExample.row.duration",
+					value: "36",
+					highlighted: true,
+					labelParam: "",
+				},
 			] as unknown as JavaRecord[],
 			insurance: {
 				monthlyAmount: "5",

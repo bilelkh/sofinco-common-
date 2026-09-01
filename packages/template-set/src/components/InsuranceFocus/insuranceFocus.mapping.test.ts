@@ -17,24 +17,21 @@ vi.mock("#lib/cta", () => ({
 	),
 }));
 
-import {
-	mapInsuranceFocusProps,
-	mapInsuranceFocusServerProps,
-} from "./insuranceFocus.mapping";
+import { mapInsuranceFocusProps, mapInsuranceFocusServerProps } from "./insuranceFocus.mapping";
 
 const buildNode = (props: Record<string, string> = {}) =>
 	makeNode({
 		nodeTypes: ["sofnt:insuranceFocus"],
 		props: {
 			"jcr:title": "Je protège mes projets en toutes circonstances",
-			description:
+			"description":
 				"En cas d'accident de la vie, soyez rassuré : votre assurance Sofinco prend le relais.",
-			image: "/lifebuoy.webp",
-			imageAlt: "",
-			titleLevel: "h2",
-			titleStyle: "h2",
-			ctaType: "internal",
-			ctaLabel: "Je découvre l'assurance",
+			"image": "/lifebuoy.webp",
+			"imageAlt": "",
+			"titleLevel": "h2",
+			"titleStyle": "h2",
+			"ctaType": "internal",
+			"ctaLabel": "Je découvre l'assurance",
 			...props,
 		},
 	});
@@ -66,18 +63,15 @@ describe("mapInsuranceFocusProps → InsuranceFocusProps", () => {
 		// Le DS type impose `title: TitleProps` (required). Le mapper produit un
 		// fallback safe pour éviter une violation de contrat, même sur un node
 		// legacy où jcr:title serait absent malgré le form mandatory.
+		//
+		// Pas de `visualStyle` dans ce repli : il n'y a pas de titre à styler. L'ancien
+		// fallback en posait un, ce qui laissait croire que la valeur venait du mixin.
 		const result = mapInsuranceFocusProps(buildNode({ "jcr:title": "" }));
-		expect(result.title).toEqual({
-			children: "",
-			as: "h2",
-			visualStyle: "h2",
-		});
+		expect(result.title).toEqual({ children: "", as: "h2" });
 	});
 
 	it("`title.as` et `title.visualStyle` reflètent sofmix:headingStyle", () => {
-		const result = mapInsuranceFocusProps(
-			buildNode({ titleLevel: "h1", titleStyle: "h3" }),
-		);
+		const result = mapInsuranceFocusProps(buildNode({ titleLevel: "h1", titleStyle: "h3" }));
 		expect(result.title).toEqual({
 			children: "Je protège mes projets en toutes circonstances",
 			as: "h1",
@@ -90,9 +84,9 @@ describe("mapInsuranceFocusProps → InsuranceFocusProps", () => {
 			nodeTypes: ["sofnt:insuranceFocus"],
 			props: {
 				"jcr:title": "Titre",
-				description: "d",
-				image: "/i.webp",
-				ctaType: "internal",
+				"description": "d",
+				"image": "/i.webp",
+				"ctaType": "internal",
 			},
 		});
 		const result = mapInsuranceFocusProps(node);
@@ -124,9 +118,9 @@ describe("mapInsuranceFocusProps → InsuranceFocusProps", () => {
 			nodeTypes: ["sofnt:insuranceFocus"],
 			props: {
 				"jcr:title": "T",
-				description: "d",
-				image: "/i.webp",
-				ctaType: "internal",
+				"description": "d",
+				"image": "/i.webp",
+				"ctaType": "internal",
 			},
 		});
 		const result = mapInsuranceFocusProps(node);
@@ -138,9 +132,9 @@ describe("mapInsuranceFocusProps → InsuranceFocusProps", () => {
 			nodeTypes: ["sofnt:insuranceFocus"],
 			props: {
 				"jcr:title": "T",
-				description: "d",
-				image: "/i.webp",
-				ctaLabel: "L",
+				"description": "d",
+				"image": "/i.webp",
+				"ctaLabel": "L",
 				// pas de ctaType → mock renvoie href = ""
 			},
 		});

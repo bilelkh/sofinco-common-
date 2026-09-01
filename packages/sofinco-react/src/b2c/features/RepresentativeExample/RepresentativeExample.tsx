@@ -48,6 +48,7 @@ export function RepresentativeExample(props: RepresentativeExampleProps) {
 								className={clsx(
 									classes["representative-example__th"],
 									row.highlighted && classes["representative-example__th--highlighted"],
+									row.largeText && classes["representative-example__th--large"],
 								)}
 							>
 								<FootnoteText>{row.label}</FootnoteText>
@@ -64,6 +65,7 @@ export function RepresentativeExample(props: RepresentativeExampleProps) {
 								className={clsx(
 									classes["representative-example__td"],
 									row.highlighted && classes["representative-example__td--highlighted"],
+									row.largeText && classes["representative-example__td--large"],
 								)}
 							>
 								{row.value}

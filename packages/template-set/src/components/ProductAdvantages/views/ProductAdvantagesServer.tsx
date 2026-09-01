@@ -13,8 +13,10 @@ export function ProductAdvantagesServer(props: ProductAdvantagesProps) {
 			<div className={classes.editHint}>
 				Avantages produit — {props.categories?.length ?? 0} catégorie(s)
 			</div>
-			<p className={classes.editTitle}>{props.title}</p>
-			{props.subtitle && <p className={classes.editSubtitle}>{props.subtitle}</p>}
+			<p className={classes.editTitle}>{props.sectionHeadingProps?.title}</p>
+			{props.sectionHeadingProps?.subtitle && (
+				<p className={classes.editSubtitle}>{props.sectionHeadingProps.subtitle}</p>
+			)}
 
 			<div className={classes.editSlides}>
 				<RenderChild name="categories" />

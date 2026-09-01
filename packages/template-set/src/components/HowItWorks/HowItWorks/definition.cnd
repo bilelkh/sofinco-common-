@@ -1,4 +1,4 @@
-[sofnt:howItWorks] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle, sofmix:ctaOptional orderable
+[sofnt:howItWorks] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle, sofmix:itemHeadingLevel, sofmix:ctaOptional orderable
  - subtitle (string, textarea) i18n
  - imagePosition (string, choicelist[resourceBundle]) = 'left' autocreated indexed=no < 'left', 'right'
  + * (sofnt:howItWorksStep)

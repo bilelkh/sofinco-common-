@@ -19,7 +19,7 @@ const heroBase = {
 	img: {
 		lowSrc: "/images/samples/HomePage/Hero/hero-image-homepage-mobile.webp",
 		desktopSrc: "/images/samples/HomePage/Hero/hero-image-homepage-desktop.webp",
-		tabletSrc: "/images/samples/HomePage/Hero/hero-image-homepage-desktop.webp",
+		tabletSrc: "/images/samples/HomePage/Hero/hero-image-homepage-tablet.webp",
 		mobileSrc: "/images/samples/HomePage/Hero/hero-image-homepage-mobile.webp",
 	},
 	args: [

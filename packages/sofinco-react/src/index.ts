@@ -146,7 +146,7 @@ export type {
 	SolutionComplementaryCardData,
 } from "./common/SolutionComplementary/SolutionComplementary.type";
 export { SeoMesh } from "./common/SeoMesh";
-export type { BlockProps, SeoMeshProps } from "./common/SeoMesh";
+export type { BlockProps, SeoMeshSection, SeoMeshProps } from "./common/SeoMesh";
 export type { CtaProps, CtaTracking } from "./shared/ui/Cta/Cta.type";
 export { default as Cta } from "./shared/ui/Cta/Cta";
 export { default as Link } from "./shared/ui/Link/Link";
@@ -247,7 +247,7 @@ export type {
 	ComparatorFeature,
 } from "./b2c/features/CardComparatorTable";
 export { Title } from "./shared/ui/Title";
-export type { HeadingLevel, TitleProps } from "./shared/ui/Title";
+export type { HeadingLevel, TitleTag, TitleProps } from "./shared/ui/Title";
 export { Subtitle } from "./shared/ui/Subtitle";
 export type { SubtitleProps } from "./shared/ui/Subtitle";
 

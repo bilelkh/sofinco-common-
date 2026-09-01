@@ -16,7 +16,14 @@ const defaultArgs = {
 		{ href: "/", label: "Accueil Sofinco" },
 		{ href: "/pret-personnel", label: "Prêt personnel" },
 	],
-	eyebrow: "Prêt personnel",
+	// `as: "p"` et non `h1` : `title.as` juste en dessous porte le <h1> de la page.
+	// Deux h1 dans la même story documenteraient une structure invalide comme un exemple.
+	eyebrowProps: {
+		children: "Prêt personnel",
+		as: "p",
+		variant: "eyebrow",
+		visualStyle: "none",
+	} as const,
 	title: {
 		children: "Grâce au prêt perso, je donne vie à mon projet maintenant !",
 		as: "h1" as const,
@@ -30,7 +37,7 @@ const defaultArgs = {
 		variant: "accent" as const,
 	},
 	avis: {
-		avisLogoUrl: "/images/logo/avis-verifies-dark.svg",
+		avisLogoUrl: "/images/samples/ProductPages/HeroPP/logo-avis-verifies.svg",
 		avisTitle: "Avis Vérifiés",
 		ratingScore: 4.4,
 		ratingReviewsCount: 5646,
@@ -43,7 +50,7 @@ const defaultArgs = {
 			rateLabel: "TAEG FIXE",
 			details: `<b>pour 15 000 € à 20 000€ de 13 à 48 mois</b> jusqu’au 24 juin 2026 <a href="#">Mensualités flexibles<sup>1</sup></a>`,
 		},
-		imgSrc: "/images/samples/pret-perso-hero-desktop.webp",
+		imgSrc: "/images/samples/ProductPages/ProductLoanPage/Hero/pret-perso-hero-desktop.webp",
 		imgAlt: "Couple avec des valises",
 	},
 };
@@ -102,6 +109,8 @@ const carteBancaireArgs = {
 	offerCard: {
 		imgSrc:
 			"/images/samples/ProductPages/ProductCardPage/Hero/carte-bancaire-sofinco-hero-desktop.webp",
+		imgSrcMobile:
+			"/images/samples/ProductPages/ProductCardPage/Hero/carte-bancaire-sofinco-hero-mobile.webp",
 		imgAlt: "Un homme tenant fièrement sa carte de crédit Sofinco.",
 	},
 };
@@ -135,6 +144,8 @@ const creditRenouvelableArgs = {
 	offerCard: {
 		imgSrc:
 			"/images/samples/ProductPages/ProductCreditPage/Hero/credit-renouvelable-hero-desktop.webp",
+		imgSrcMobile:
+			"/images/samples/ProductPages/ProductCreditPage/Hero/credit-renouvelable-hero-mobile.webp",
 		imgAlt: "Un smartphone affichant le montant disponible du crédit renouvelable Sofinco.",
 	},
 };

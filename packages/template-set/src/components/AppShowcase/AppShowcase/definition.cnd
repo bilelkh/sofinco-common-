@@ -1,4 +1,12 @@
-[sofnt:appShowcase] > jnt:content, mix:title, sofmix:component, jmix:list orderable
+// Le composant garde son `subtitle` LOCAL et n'ajoute que `sofmix:headingStyle`.
+//
+// `sofmix:sectionHeader` (mix:title + headingStyle + subtitle) aurait redeclare un
+// `subtitle` que ce type possede deja : deux definitions homonymes sur un meme type ne
+// peuvent pas coexister, et retirer une propriete locale est un changement MAJEUR de
+// definition. On n'ajoute donc que ce qui manque reellement — les deux axes du titre —
+// ce qui rend le changement purement additif : aucune migration de donnees, aucun risque
+// de registration. Les quatre conteneurs a liste suivent desormais ce meme schema.
+[sofnt:appShowcase] > jnt:content, mix:title, sofmix:headingStyle, sofmix:itemHeadingLevel, sofmix:component, jmix:list orderable
  - subtitle (string) mandatory
  - backgroundColor (string, choicelist[resourceBundle]) = 'blueDark' indexed=no < 'blueDark', 'cyanClair', 'blanc'
  - mainIcon (weakreference, picker[type='image'])

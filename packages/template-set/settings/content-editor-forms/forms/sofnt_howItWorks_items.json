@@ -1,0 +1,21 @@
+{
+	"nodeType": "sofnt:howItWorks",
+	"priority": 1.0,
+	"sections": [
+		{
+			"name": "content",
+			"fieldSets": [
+				{
+					"name": "sofmix:itemHeadingLevel",
+					"fields": [
+						{
+							"name": "itemsTitleLevel",
+							"rank": "9.0",
+							"defaultValues": [{ "value": "p" }]
+						}
+					]
+				}
+			]
+		}
+	]
+}

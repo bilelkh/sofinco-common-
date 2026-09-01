@@ -61,8 +61,8 @@ const SolutionComplementary = ({
 							<Image
 								src={logoUrl}
 								decorative
-								width={20}
-								height={20}
+								width={56}
+								height={30}
 								className={styles["solution-complementary__logo"]}
 							/>
 						)

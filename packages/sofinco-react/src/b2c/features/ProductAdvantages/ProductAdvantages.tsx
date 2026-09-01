@@ -29,8 +29,7 @@ import { REDUCED_MOTION_QUERY, useMediaQuery } from "@shared/hooks/useMediaQuery
  * users to manually control progression.
  */
 export function ProductAdvantages({
-	title,
-	subtitle,
+	sectionHeadingProps,
 	categories,
 	a11y,
 	className,
@@ -59,16 +58,21 @@ export function ProductAdvantages({
 		swiper.autoplay.start();
 	}, [swiper, prefersReducedMotion]);
 
+	// `aria-labelledby` CONDITIONNEL : sans en-tête il n'y a aucun titre à référencer,
+	// donc aucun `id` émis — un attribut orphelin annonce une section sans nom.
 	return (
-		<section className={clsx(classes["product-advantages"], className)} aria-labelledby={titleId}>
+		<section
+			className={clsx(classes["product-advantages"], className)}
+			aria-labelledby={sectionHeadingProps ? titleId : undefined}
+		>
 			<div className={classes["product-advantages__container"]}>
-				<SectionHeading
-					titleAs="h2"
-					id={titleId}
-					title={title}
-					subtitle={subtitle}
-					align="center"
-				/>
+				{/* CONVENTION D'ORDRE — les props contribuées d'abord, celles que la SECTION
+				    possède ensuite. `id` alimente l'`aria-labelledby` du <section> ci-dessus :
+				    le laisser écraser par le spread rendrait la section anonyme pour un lecteur
+				    d'écran. `align` est une décision de maquette, pas un champ d'édition. */}
+				{sectionHeadingProps && (
+					<SectionHeading {...sectionHeadingProps} id={titleId} align="center" />
+				)}
 
 				<div className={classes["product-advantages__tabs"]} role="group" aria-label={tablistLabel}>
 					{categories.map((category, index) => (
@@ -125,6 +129,7 @@ export function ProductAdvantages({
 							<SwiperSlide key={category.id} className={classes["product-advantages__slide"]}>
 								<ProductAdvantageSlide
 									title={category.title}
+									titleAs={category.titleAs}
 									text={category.text}
 									imageDesktop={category.imageDesktop}
 									imageMobile={category.imageMobile}

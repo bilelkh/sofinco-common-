@@ -10,13 +10,16 @@ const meta = {
 		as: "h1",
 	},
 	argTypes: {
+		// Le vocabulaire COMPLET de `TitleTag`, pas seulement les quatre échelles stylées.
+		// Tronquer cette liste à h1–h4 rendait `h5`/`h6`/`p`/`span`/`div` inatteignables
+		// depuis Storybook — donc les replis de `resolveVisualClass` invisibles à la revue.
 		as: {
 			control: "select",
-			options: ["h1", "h2", "h3", "h4"],
+			options: ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", "div"],
 		},
 		visualStyle: {
 			control: "select",
-			options: ["h1", "h2", "h3", "h4", "none"],
+			options: ["h1", "h2", "h3", "h4", "h5", "h6", "none"],
 		},
 		variant: {
 			control: "inline-radio",
@@ -86,6 +89,47 @@ export const NoVisualStyle: Story = {
 		as: "h1",
 		visualStyle: "none",
 		children: "Semantic H1 without heading visual styles",
+	},
+};
+
+/*
+ * LES TROIS REPLIS DE `resolveVisualClass`.
+ *
+ * Ce sont les branches ouvertes par l'élargissement de `TitleTag` à h5/h6/p/span/div.
+ * Aucune n'était atteignable par une story tant que `argTypes.as.options` s'arrêtait à h4 :
+ * un `styles["title--h5"]` inexistant rendait le titre SANS aucune typographie, en silence.
+ */
+
+export const H5FallsBackToH4Scale: Story = {
+	name: "H5 → échelle h4 (plus petite disponible)",
+	args: {
+		as: "h5",
+		children: "Titre h5 : le DS n'expose pas d'échelle h5, on rend la plus petite (h4)",
+	},
+};
+
+export const H6FallsBackToH4Scale: Story = {
+	name: "H6 → échelle h4 (plus petite disponible)",
+	args: {
+		as: "h6",
+		children: "Titre h6 : même repli que h5",
+	},
+};
+
+export const ParagraphNoHeadingTypography: Story = {
+	name: "P → aucune typographie de titre",
+	args: {
+		as: "p",
+		children: "« Normal » : ressemble à un titre pour le contributeur, n'en est pas un",
+	},
+};
+
+export const SpanWithExplicitStyle: Story = {
+	name: "Span avec apparence h3 explicite",
+	args: {
+		as: "span",
+		visualStyle: "h3",
+		children: "Balise non titrante (imbrication interdite) mais apparence h3 demandée",
 	},
 };
 

@@ -5,7 +5,7 @@ import type { ChatBotData } from "./ChatBot.type";
 const sampleData: ChatBotData = {
 	greeting: "Bonjour, je suis Sofi.",
 	question: "Quel est votre projet ?",
-	avatarUrl: "/images/logo/logos_sofinco_rounded.svg",
+	avatarUrl: "/images/samples/HomePage/ChatBot/logo-sofinco-arrondi.svg",
 	categories: [
 		{
 			label: "Famille et loisirs",
@@ -178,7 +178,7 @@ export const SimulatorLeaf: Story = {
 		data: {
 			greeting: "Bonjour, je suis Sofi.",
 			question: "Quel est votre projet ?",
-			avatarUrl: "/images/logo/logos_sofinco_rounded.svg",
+			avatarUrl: "/images/samples/HomePage/ChatBot/logo-sofinco-arrondi.svg",
 			categories: [
 				{
 					label: "Prêt personnel",
@@ -220,7 +220,7 @@ export const SingleLevel: Story = {
 		data: {
 			greeting: "Bonjour, je suis Sofi.",
 			question: "Quel est votre besoin ?",
-			avatarUrl: "/images/logo/logos_sofinco_rounded.svg",
+			avatarUrl: "/images/samples/HomePage/ChatBot/logo-sofinco-arrondi.svg",
 			categories: [
 				{
 					label: "Prêt personnel",

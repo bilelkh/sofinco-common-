@@ -5,6 +5,10 @@
  * with an overlaid HTML-contributed title and text (SEO requirement; inline
  * styles such as bold/italic are allowed).
  */
+
+import { type SectionHeadingProps } from "@shared/ui/SectionHeading/SectionHeading.type";
+import type { TitleTag } from "@shared/ui/Title/Title.type";
+
 export interface ProductAdvantageCategory {
 	/** Unique category identifier. */
 	id: string;
@@ -22,6 +26,11 @@ export interface ProductAdvantageCategory {
 	 * (bold, italic...) are allowed.
 	 */
 	text: string;
+	/**
+	 * Balise du titre en surimpression. L'apparence est fixée par la charte (taille et couleur
+	 * non personnalisables) ; seule la sémantique est contribuable. `h3` par défaut.
+	 */
+	titleAs?: TitleTag;
 	/** Desktop image in WebP format (required). */
 	imageDesktop: string;
 	/** Mobile image in WebP format (required). */
@@ -43,19 +52,7 @@ export interface ProductAdvantagesA11y {
 }
 
 export interface ProductAdvantagesProps {
-	/**
-	 * Component title (rendered as H2).
-	 * Contributed in Jahia; its size and color are not customizable.
-	 */
-	title: string;
-	/**
-	 * Component subtitle (rendered as a paragraph).
-	 * Contributed in Jahia; its size and color are not customizable.
-	 */
-	subtitle?: string;
-	/**
-	 * Carousel categories (minimum 3, maximum depends on content contribution).
-	 */
+	sectionHeadingProps?: SectionHeadingProps;
 	categories: ProductAdvantageCategory[];
 	/** Accessibility labels. */
 	a11y?: ProductAdvantagesA11y;

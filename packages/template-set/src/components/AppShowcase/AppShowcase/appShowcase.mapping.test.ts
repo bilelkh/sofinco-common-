@@ -11,6 +11,9 @@ vi.mock("#lib/jcr", () => ({
 	imgUrl: vi.fn(),
 	getChildNodesByType: vi.fn(),
 	getChildNode: vi.fn(),
+	// Le niveau des titres de cartes se lit sur le CONTENEUR : la remontee doit exister
+	// dans le double. `null` = pas de conteneur atteignable, le mapping applique son repli.
+	findAncestor: vi.fn(() => null),
 }));
 vi.mock("#cms/QrSticker/qr.mapper", () => ({
 	mapQrStickerProps: vi.fn(),
@@ -84,8 +87,16 @@ describe("mapAppShowcasePropsServer", () => {
 		expect(mapAppShowcasePropsServer(node)).toEqual({
 			backgroundColor: "white",
 			mainIconUrl: "icon.svg",
+			// L'apercu d'edition lit encore title/subtitle a plat ; le rendu live consomme
+			// l'objet groupe. `getCommonProps` sert les deux, d'ou la coexistence.
 			title: "Mon appli",
 			subtitle: "Sous-titre",
+			sectionHeadingProps: {
+				title: "Mon appli",
+				subtitle: "Sous-titre",
+				titleAs: "h2",
+				visualStyle: "h2",
+			},
 			mobileImageUrl: "mobile.jpg",
 		});
 	});
@@ -170,6 +181,7 @@ describe("mapAppMobilePropsClient", () => {
 		expect(cards[0]).toEqual({
 			id: 0,
 			label: "Feature 0",
+			labelAs: "h3",
 			labelComplement: "Text 0",
 			picto: "icon0.svg",
 		});
@@ -192,7 +204,7 @@ describe("mapAppMobilePropsClient", () => {
 
 			const result = mapAppMobilePropsClient(node, t);
 
-			expect(result.title).toBe("Titre");
+			expect(result.sectionHeadingProps?.title).toBe("Titre");
 			expect(result.img).toBe("mobile.jpg");
 			expect(result.picto).toBe("picto.svg");
 			expect(result.cards).toHaveLength(1);

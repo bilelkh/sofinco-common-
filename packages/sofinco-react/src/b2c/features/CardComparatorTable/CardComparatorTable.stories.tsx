@@ -21,7 +21,7 @@ export const Default: Story = {
 			{
 				id: "origin",
 				image:
-					"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80",
+					"/images/samples/ProductPages/ProductCardPage/CardComparatorTable/carte-pure-sofinco.svg",
 				title: "Origin",
 				description: "L'essentiel, sans superflu. 100% digitale, sans conditions.",
 				features: [
@@ -40,7 +40,7 @@ export const Default: Story = {
 			{
 				id: "pure",
 				image:
-					"https://images.unsplash.com/photo-1621264448270-9ef00e88a935?auto=format&fit=crop&w=800&q=80",
+					"/images/samples/ProductPages/ProductCardPage/CardComparatorTable/carte-pure-sofinco.svg",
 				title: "Pure",
 				description: "La carte du quotidien, avec carte physique et garanties complètes.",
 				features: [
@@ -55,7 +55,7 @@ export const Default: Story = {
 			{
 				id: "premium",
 				image:
-					"https://images.unsplash.com/photo-1614624532983-4ce03382d63d?auto=format&fit=crop&w=800&q=80",
+					"/images/samples/ProductPages/ProductCardPage/CardComparatorTable/carte-pure-sofinco.svg",
 				title: "Premium",
 				description: "La carte pour les dépenses importantes et les voyageurs réguliers.",
 				features: [
@@ -90,7 +90,7 @@ export const TwoCard: Story = {
 			{
 				id: "pure",
 				image:
-					"https://images.unsplash.com/photo-1621264448270-9ef00e88a935?auto=format&fit=crop&w=800&q=80",
+					"/images/samples/ProductPages/ProductCardPage/CardComparatorTable/carte-pure-sofinco.svg",
 				title: "Pure",
 				description: "La carte du quotidien, avec carte physique et garanties complètes.",
 				features: [
@@ -105,7 +105,7 @@ export const TwoCard: Story = {
 			{
 				id: "premium",
 				image:
-					"https://images.unsplash.com/photo-1614624532983-4ce03382d63d?auto=format&fit=crop&w=800&q=80",
+					"/images/samples/ProductPages/ProductCardPage/CardComparatorTable/carte-pure-sofinco.svg",
 				title: "Premium",
 				description: "La carte pour les dépenses importantes et les voyageurs réguliers.",
 				features: [

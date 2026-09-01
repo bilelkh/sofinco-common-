@@ -1,2 +1,4 @@
-[sofnt:simulatorBlock] > jnt:content, mix:title, sofmix:component, sofmix:simulatorCta, sofmix:simulatorAmount
- - titleLevel        (string, choicelist) = 'h2' autocreated < 'h1','h2','h3','h4'
+// `titleLevel` local supprime au profit de `sofmix:headingStyle`, qui porte le MEME nom de
+// propriete : les noeuds deja contribues conservent leur valeur, aucune migration necessaire.
+// Le mixin apporte en prime `titleStyle`, jusqu'ici indisponible sur ce composant.
+[sofnt:simulatorBlock] > jnt:content, mix:title, sofmix:component, sofmix:headingStyle, sofmix:simulatorCta, sofmix:simulatorAmount

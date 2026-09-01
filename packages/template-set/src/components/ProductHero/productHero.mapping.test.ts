@@ -88,7 +88,14 @@ describe("mapProductHeroProps → HeroPPProps", () => {
 		// Pas de breadcrumb dans la forme HeroPP (rendu par LegacyLayout)
 		expect(result).not.toHaveProperty("breadcrumb");
 
-		expect(result.eyebrow).toBe("PRÊT PERSONNEL");
+		// Le sur-titre passe par <Title> : c'est `eyebrowProps` et non la chaîne nue `eyebrow`,
+		// que le DS ne rend plus. `eyebrowLevel` absent du nœud → repli « p », conforme au CND.
+		expect(result.eyebrowProps).toEqual({
+			children: "PRÊT PERSONNEL",
+			as: "p",
+			visualStyle: "none",
+			variant: "eyebrow",
+		});
 		// title = TitleProps construit depuis jcr:title + mixin sofmix:headingStyle
 		expect(result.title).toEqual({
 			children: "Grâce au prêt perso, je donne vie à mon projet maintenant !",
@@ -246,7 +253,7 @@ describe("mapProductHeroProps → HeroPPProps", () => {
 
 		expect(result.offerCard).toEqual({ infoBlock: undefined, imgSrc: "desktop.webp" });
 		// Le reste du hero reste intégralement rendu.
-		expect(result.eyebrow).toBe("PRÊT PERSONNEL");
+		expect(result.eyebrowProps?.children).toBe("PRÊT PERSONNEL");
 		expect(result.description).toBe(descriptionHtml);
 	});
 

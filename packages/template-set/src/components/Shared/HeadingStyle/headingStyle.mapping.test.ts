@@ -3,7 +3,12 @@ import { makeNode } from "#test/jahia";
 
 vi.mock("#lib/jcr", () => import("#test/jahia"));
 
-import { readTitleLevel, readTitleStyle, buildTitleProps } from "./headingStyle.mapping";
+import {
+	buildTitleProps,
+	readItemsTitleLevel,
+	readTitleLevel,
+	readTitleStyle,
+} from "./headingStyle.mapping";
 
 describe("readTitleLevel", () => {
 	it("reads titleLevel from the sofmix:headingStyle mixin", () => {
@@ -100,6 +105,26 @@ describe("buildTitleProps", () => {
 		});
 	});
 
+	/*
+	 * LE REPLI D'APPARENCE NE PEUT PAS ETRE LA BALISE.
+	 *
+	 * `fallback` porte une BALISE, qui vaut parfois `p`, `h5` ou `h6` — trois valeurs qui ne
+	 * designent aucune echelle typographique du design system (`Title.module.css` s'arrete a
+	 * h4). Les propager en `visualStyle` produirait une classe `title--p` inexistante, donc un
+	 * titre rendu SANS aucune typographie. On retombe sur `h2`, qui existe.
+	 */
+	it.each(["p", "h5", "h6"])(
+		"n'utilise pas un repli %o comme apparence — il ne designe aucune echelle",
+		(tag) => {
+			const node = makeNode({ props: {} });
+			expect(buildTitleProps(node, "T", tag as "p")).toEqual({
+				children: "T",
+				as: tag,
+				visualStyle: "h2",
+			});
+		},
+	);
+
 	it("sanitizes invalid mixin values defensively (defaults to h2)", () => {
 		const node = makeNode({ props: { titleLevel: "h9", titleStyle: "big" } });
 		expect(buildTitleProps(node, "T")).toEqual({
@@ -107,5 +132,74 @@ describe("buildTitleProps", () => {
 			as: "h2",
 			visualStyle: "h2",
 		});
+	});
+});
+
+describe("readItemsTitleLevel", () => {
+	const bloc = (props: Record<string, string> = {}) =>
+		makeNode({ nodeTypes: ["sofnt:reassurance"], props });
+
+	/*
+	 * LE CONTRAT : le niveau se lit sur le CONTENEUR, jamais sur l'item.
+	 *
+	 * Des items freres sont des pairs dans le plan de la page. Laisser chacun choisir son
+	 * niveau permettrait un item 1 en h3 et un item 2 en h5, ce qui affirme que le second
+	 * est une sous-section du premier — une hierarchie fausse, invisible a l'ecran.
+	 */
+	it("lit `itemsTitleLevel` sur le conteneur", () => {
+		const item = makeNode({ parent: bloc({ itemsTitleLevel: "h4" }) });
+		expect(readItemsTitleLevel(item, "sofnt:reassurance", "h3")).toBe("h4");
+	});
+
+	it("traverse les niveaux intermediaires jusqu'au conteneur", () => {
+		// `sofnt:productAdvantageCategory` vit sous un wrapper `…CategoryList` : la remontee
+		// doit franchir ce niveau, sinon le niveau contribue ne serait jamais lu.
+		const conteneur = makeNode({
+			nodeTypes: ["sofnt:productAdvantages"],
+			props: { itemsTitleLevel: "h5" },
+		});
+		const wrapper = makeNode({
+			nodeTypes: ["sofnt:productAdvantageCategoryList"],
+			parent: conteneur,
+		});
+		const item = makeNode({ parent: wrapper });
+
+		expect(readItemsTitleLevel(item, "sofnt:productAdvantages", "h3")).toBe("h5");
+	});
+
+	it("retombe sur le repli quand le conteneur ne choisit rien", () => {
+		const item = makeNode({ parent: bloc() });
+		expect(readItemsTitleLevel(item, "sofnt:reassurance", "h3")).toBe("h3");
+	});
+
+	/*
+	 * Vue d'edition d'un item isole, contenu orphelin, corbeille : la remontee peut ne
+	 * trouver aucun conteneur. Le rendu doit rester celui d'origine, pas une exception.
+	 */
+	it("retombe sur le repli quand aucun conteneur n'est atteignable", () => {
+		expect(readItemsTitleLevel(makeNode({}), "sofnt:reassurance", "h3")).toBe("h3");
+	});
+
+	/*
+	 * Un `itemsTitleLevel` pose sur l'ITEM ne doit RIEN faire : reliquat possible d'un
+	 * contenu migre depuis la version ou la propriete vivait la. Le laisser agir
+	 * reintroduirait l'incoherence que le deplacement supprime.
+	 */
+	it("ignore la propriete si elle traine sur l'item lui-meme", () => {
+		const item = makeNode({
+			props: { itemsTitleLevel: "h6" },
+			parent: bloc({ itemsTitleLevel: "h4" }),
+		});
+		expect(readItemsTitleLevel(item, "sofnt:reassurance", "h4")).toBe("h4");
+	});
+
+	it("assainit une valeur hors choicelist", () => {
+		const item = makeNode({ parent: bloc({ itemsTitleLevel: "h9" }) });
+		expect(readItemsTitleLevel(item, "sofnt:reassurance", "h3")).toBe("h3");
+	});
+
+	it("accepte 'p' — « ce texte n'est pas un titre »", () => {
+		const item = makeNode({ parent: bloc({ itemsTitleLevel: "p" }) });
+		expect(readItemsTitleLevel(item, "sofnt:reassurance", "h3")).toBe("p");
 	});
 });

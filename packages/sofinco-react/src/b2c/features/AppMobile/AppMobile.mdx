@@ -31,33 +31,38 @@ a QR code and an OS-aware download CTA.
 import { AppMobile } from "sofinco-react";
 
 <AppMobile
-  picto="/images/samples/sf-logo.png"
+  picto="/images/samples/HomePage/AppMobile/picto-section-app-mobile.svg"
   backgroundColor="#03334D"
-  title="L'application mobile, une gestion simple et centralisée de mes paiements et crédits"
-  subtitle="Suivez vos remboursements et gérez vos paiements en temps réel"
-  img="/images/samples/mobile.png"
+  title="Je pilote mes projets du bout des doigts"
+  subtitle="Suivez vos remboursements, gestion centralisée de votre argent, paramètres ... retrouvez tout dans l'App Sofinco, c'est aussi simple que ça."
+  img="/images/samples/HomePage/AppMobile/application-mobile-sofinco-desktop.webp"
   imgQrCode="/images/samples/QrCode/qr-code.svg"
   mobileCtaHrefIos="https://apps.apple.com/fr/app/sofinco/id1496197496"
   mobileCtaHrefAndroid="https://play.google.com/store/apps/details?id=com.ca.consumerfinance.sofinco"
   cards={[
-    { id: 0, label: "Je suis tous mes prêts", labelComplement: "en temps réel" },
+    {
+      id: 0,
+      label: "Je suis tous mes prêts",
+      labelComplement: "en temps réel",
+      picto: "/images/samples/HomePage/AppMobile/Suivi-pret-app-mobile.svg",
+    },
     {
       id: 1,
-      label: "Paiement différé",
-      labelComplement: "C'est à la carte",
-      picto: "/images/samples/x3.png",
+      label: "Je paye comptant ou en plusieurs fois",
+      labelComplement: "je choisis ce qui me convient le mieux à chaque achat",
+      picto: "/images/samples/HomePage/AppMobile/paiement-plusieurs-fois-app-mobile.svg",
     },
     {
       id: 2,
-      label: "Pilotage de ma réserve",
-      labelComplement: "J'analyse mes habitudes",
-      picto: "/images/samples/card.png",
+      label: "Je pilote mon crédit à ma guise",
+      labelComplement: "et garde un oeil sur ma consommation",
+      picto: "/images/samples/HomePage/AppMobile/pilotage-credit-app-mobile.svg",
     },
     {
       id: 3,
-      label: "Sécurité et alerting",
-      labelComplement: "Notifications en temps réel",
-      picto: "/images/samples/lock.png",
+      label: "Je m'authentifie et sécurise",
+      labelComplement: "chaque transaction",
+      picto: "/images/samples/HomePage/AppMobile/securite-app-mobile.svg",
     },
   ]}
 />;

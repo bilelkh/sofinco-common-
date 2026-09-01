@@ -20,6 +20,16 @@
 	color: var(--color-primary-base);
 }
 
+.title--eyebrow {
+	background-image: linear-gradient(135deg, rgba(53, 222, 255, 1) 0%, rgba(174, 255, 217, 1) 20%);
+	color: transparent;
+	background-clip: text;
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-semibold);
+	text-transform: uppercase;
+}
+
 .title--white {
 	color: var(--color-white);
 }

@@ -11,10 +11,8 @@ import { MEDIUM_DOWN_QUERY, useMediaQuery } from "@shared/hooks/useMediaQuery";
 import { sanitizeHtml } from "@utils/sanitizeHtml";
 import styles from "@b2c/features/Hero/HeroPP/HeroPP.module.css";
 import Title from "@shared/ui/Title";
-import { FootnoteText } from "@shared/footnotes";
 
 const HeroPP = ({
-	eyebrow,
 	title,
 	description,
 	cta,
@@ -22,6 +20,7 @@ const HeroPP = ({
 	offerCard,
 	className,
 	tracking,
+	eyebrowProps,
 }: HeroPPProps) => {
 	useHeaderHeightVar();
 	const isMobile = useMediaQuery(MEDIUM_DOWN_QUERY);
@@ -37,15 +36,15 @@ const HeroPP = ({
 					<div className={styles.heropp__left}>
 						<div className={styles.heropp__content}>
 							<div>
-								<p className={styles.heropp__eyebrow}>
-									<FootnoteText>{eyebrow}</FootnoteText>
-								</p>
+								{eyebrowProps && <Title className={styles.heropp__eyebrow} {...eyebrowProps} />}
 								{title && <Title {...title} variant="white" />}
 							</div>
 							{description && (
 								<div
 									className={styles.heropp__description}
-									dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
+									dangerouslySetInnerHTML={{
+										__html: sanitizeHtml(description),
+									}}
 								/>
 							)}
 							{cta && <Cta {...cta} className={styles.heropp__cta} />}

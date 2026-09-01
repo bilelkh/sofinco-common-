@@ -5,6 +5,7 @@ import { str, getChildNodesByType, getChildNode, imgUrl } from "#lib/jcr";
 import { addCacheDependency } from "#lib/renderContext";
 import { mapAppShowcaseFeatureProps } from "../AppShowcaseFeature/appShowcaseFeature.mapping";
 import { mapQrStickerProps } from "#cms/QrSticker/qr.mapper";
+import { readTitleLevel, readTitleStyle } from "#cms/Shared/HeadingStyle/headingStyle.mapping";
 
 function getCommonProps(node: JCRNodeWrapper) {
 	return {
@@ -12,6 +13,14 @@ function getCommonProps(node: JCRNodeWrapper) {
 		mainIconUrl: imgUrl(node, "mainIcon"),
 		title: str(node, "jcr:title") || "",
 		subtitle: str(node, "subtitle") || "",
+		// Construit ICI parce que `getCommonProps` sert les DEUX vues : l'apercu d'edition lit
+		// encore title/subtitle a plat, le rendu live consomme l'objet groupe.
+		sectionHeadingProps: {
+			title: str(node, "jcr:title") || "",
+			subtitle: str(node, "subtitle") || undefined,
+			titleAs: readTitleLevel(node),
+			visualStyle: readTitleStyle(node),
+		},
 		mobileImageUrl: imgUrl(node, "mobileImage"),
 	};
 }
@@ -40,8 +49,7 @@ export function mapAppMobilePropsClient(
 	return {
 		picto: commonProps.mainIconUrl,
 		backgroundColor: commonProps.backgroundColor,
-		title: commonProps.title,
-		subtitle: commonProps.subtitle,
+		sectionHeadingProps: commonProps.sectionHeadingProps,
 		// Le composant n'affiche qu'une seule image — `mobileImage` est la source unique.
 		img: commonProps.mobileImageUrl || "",
 
@@ -57,6 +65,7 @@ export function mapAppMobilePropsClient(
 			return {
 				id: index,
 				label: feature.featureTitle,
+				labelAs: feature.featureTitleAs,
 				labelComplement: feature.featureText,
 				picto: feature.iconUrl,
 			} as AppMobileCard;

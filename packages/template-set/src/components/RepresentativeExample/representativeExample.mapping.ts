@@ -20,6 +20,42 @@ import {
 } from "./representativeExampleBridge";
 
 /**
+ * Lignes dont le libellé et la valeur passent de 16 px à 18 px (`TableRow.largeText`).
+ *
+ * Règle de MAQUETTE, pas donnée éditoriale : on grossit ce que le client compare (mensualité,
+ * TAEG, montant total dû), jamais le secondaire (durée, taux débiteur, frais de dossier).
+ *
+ * La RÈGLE est identique sur les trois variants ; les LIGNES, elles, diffèrent — ce Set est leur
+ * union, chaque variant n'en voyant que son sous-ensemble. `buildLoan` émet `taegFixed` — et sert
+ * le prêt personnel COMME le rachat de crédits, `buildPretPerso` et `buildRachatCredit` s'y
+ * déléguant tous deux ; `buildCreditRenouvelable` émet `lastPaymentAdjusted` et
+ * `taegRevisable`. C'est le Java qui fait foi ici, pas les stories du design system : `rachatCredit`
+ * n'en a aucune, et son comportement se lit dans le partage de `buildLoan`.
+ *
+ * Rien à contribuer, donc : une choicelist n'offrirait au contributeur que le pouvoir de casser
+ * la maquette, sur un nœud de configuration de surcroît global au site et non par page.
+ *
+ * Décidé ICI et non dans `RepresentativeExampleMapper` (Java) : ce mapper transforme une réponse
+ * APIM en exemple représentatif, il n'a pas à connaître une taille de police. `highlighted` y
+ * reste légitime — il dit « c'est la ligne du total dû », une intention SÉMANTIQUE ; `largeText`
+ * n'est que de la typographie. Le `labelKey` traversant déjà le bridge, l'identité de la ligne est
+ * disponible sans plomberie supplémentaire, sans rebuild du bundle OSGi, sans changement de CND
+ * et sans reprise de contenu.
+ *
+ * Clés au format ÉMIS PAR LE JAVA, préfixe `representativeExample.` compris (cf. les constantes
+ * `LABEL_*` de `RepresentativeExampleMapper`). Un raccourci en `row.*` ne matcherait jamais rien
+ * en production, et sans bruit : toutes les lignes resteraient à 16 px. Le test qui vérifie que
+ * ces clés existent dans `settings/locales/fr.json` verrouille ce point.
+ */
+export const LARGE_TEXT_ROW_KEYS: ReadonlySet<string> = new Set([
+	"representativeExample.row.monthlyPayment",
+	"representativeExample.row.lastPaymentAdjusted",
+	"representativeExample.row.taegFixed",
+	"representativeExample.row.taegRevisable",
+	"representativeExample.row.totalDue",
+]);
+
+/**
  * Mapping JCR (`sofnt:representativeExample`) → React props.
  *
  * Données simulateur lues via le mixin `sofmix:simulatorCta` directement sur
@@ -53,6 +89,7 @@ export function mapRepresentativeExampleProps(
 		label: r.labelParam ? t(r.labelKey, { mois: r.labelParam }) : t(r.labelKey),
 		value: r.value,
 		highlighted: r.highlighted,
+		largeText: LARGE_TEXT_ROW_KEYS.has(r.labelKey),
 	}));
 
 	// === Mention d'assurance — priorité mention > config > fr.json ===

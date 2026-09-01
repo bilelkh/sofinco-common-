@@ -21,6 +21,8 @@ describe("mapHowItWorksStep", () => {
 		expect(mapHowItWorksStep(node)).toEqual({
 			id: "step-1",
 			title: "Je simule et je souscris en ligne",
+			// Repli "p" : le rendu live n a jamais posé de TITRE sur une étape.
+			titleAs: "p",
 			description:
 				"Choisissez votre montant et votre durée, obtenez une réponse de principe immédiate.",
 			imageUrl: "phone-simulation.png",
@@ -37,6 +39,7 @@ describe("mapHowItWorksStep", () => {
 		expect(mapHowItWorksStep(node)).toEqual({
 			id: "step-bare",
 			title: "Étape minimale",
+			titleAs: "p",
 			description: "",
 			imageUrl: "",
 			imageAlt: "",
@@ -121,6 +124,7 @@ describe("extractSteps", () => {
 		expect(extractSteps(parent)[0]).toEqual({
 			id: "s1",
 			title: "Étape 1",
+			titleAs: "p",
 			description: "",
 			imageUrl: "s1.png",
 			imageAlt: "Visuel étape 1",
@@ -149,5 +153,45 @@ describe("extractSteps", () => {
 	it("returns an empty array when the parent has no children", () => {
 		const parent = makeNode({ children: [] });
 		expect(extractSteps(parent)).toEqual([]);
+	});
+});
+
+/*
+ * LE NIVEAU SE LIT SUR LE CONTENEUR, PAS SUR L'ITEM.
+ *
+ * Ces tests etaient le trou reel du lot : le fichier affichait 100% de couverture parce
+ * qu'aucun cas ne construisait de parent — `findAncestor` renvoyait toujours `null` et
+ * seul le repli etait exerce. Le contrat introduit par le deplacement n'etait donc pas
+ * teste du tout.
+ */
+describe("mapHowItWorksStep — niveau herite du conteneur", () => {
+	const conteneur = (props: Record<string, string> = {}) =>
+		makeNode({ nodeTypes: ["sofnt:howItWorks"], props });
+
+	it("applique le niveau choisi sur le bloc", () => {
+		const node = makeNode({
+			props: { "jcr:title": "T" },
+			parent: conteneur({ itemsTitleLevel: "h3" }),
+		});
+		expect(mapHowItWorksStep(node).titleAs).toBe("h3");
+	});
+
+	it("retombe sur 'p' quand le bloc ne choisit rien", () => {
+		const node = makeNode({ props: { "jcr:title": "T" }, parent: conteneur() });
+		expect(mapHowItWorksStep(node).titleAs).toBe("p");
+	});
+
+	// Apercu d'edition d'un item isole : aucun conteneur atteignable, rendu d'origine.
+	it("retombe sur 'p' sans conteneur atteignable", () => {
+		expect(mapHowItWorksStep(makeNode({ props: { "jcr:title": "T" } })).titleAs).toBe("p");
+	});
+
+	// Reliquat possible d'un contenu migre : la propriete sur l'item ne doit rien faire.
+	it("ignore un niveau residuel pose sur l'item", () => {
+		const node = makeNode({
+			props: { ...{ "jcr:title": "T" }, itemsTitleLevel: "h6" },
+			parent: conteneur({ itemsTitleLevel: "h3" }),
+		});
+		expect(mapHowItWorksStep(node).titleAs).toBe("h3");
 	});
 });

@@ -23,6 +23,8 @@ describe("mapProductAdvantageCategory", () => {
 			id: "cat-1",
 			label: "Réserve d'argent",
 			title: "Une réserve <strong>disponible</strong>",
+			// Repli h3 : le niveau codé en dur dans le slide.
+			titleAs: "h3",
 			text: "<p>Réutilisable au fur et à mesure.</p>",
 			imageDesktop: "/files/desktop.webp",
 			imageMobile: "/files/mobile.webp",
@@ -43,5 +45,45 @@ describe("mapProductAdvantageCategory", () => {
 		});
 
 		expect(mapProductAdvantageCategory(node).imageAlt).toBeUndefined();
+	});
+});
+
+/*
+ * LE NIVEAU SE LIT SUR LE CONTENEUR, PAS SUR L'ITEM.
+ *
+ * Ces tests etaient le trou reel du lot : le fichier affichait 100% de couverture parce
+ * qu'aucun cas ne construisait de parent — `findAncestor` renvoyait toujours `null` et
+ * seul le repli etait exerce. Le contrat introduit par le deplacement n'etait donc pas
+ * teste du tout.
+ */
+describe("mapProductAdvantageCategory — niveau herite du conteneur", () => {
+	const conteneur = (props: Record<string, string> = {}) =>
+		makeNode({ nodeTypes: ["sofnt:productAdvantages"], props });
+
+	it("applique le niveau choisi sur le bloc", () => {
+		const node = makeNode({
+			props: { heading: "T" },
+			parent: conteneur({ itemsTitleLevel: "h2" }),
+		});
+		expect(mapProductAdvantageCategory(node).titleAs).toBe("h2");
+	});
+
+	it("retombe sur 'h3' quand le bloc ne choisit rien", () => {
+		const node = makeNode({ props: { heading: "T" }, parent: conteneur() });
+		expect(mapProductAdvantageCategory(node).titleAs).toBe("h3");
+	});
+
+	// Apercu d'edition d'un item isole : aucun conteneur atteignable, rendu d'origine.
+	it("retombe sur 'h3' sans conteneur atteignable", () => {
+		expect(mapProductAdvantageCategory(makeNode({ props: { heading: "T" } })).titleAs).toBe("h3");
+	});
+
+	// Reliquat possible d'un contenu migre : la propriete sur l'item ne doit rien faire.
+	it("ignore un niveau residuel pose sur l'item", () => {
+		const node = makeNode({
+			props: { ...{ heading: "T" }, itemsTitleLevel: "h6" },
+			parent: conteneur({ itemsTitleLevel: "h2" }),
+		});
+		expect(mapProductAdvantageCategory(node).titleAs).toBe("h2");
 	});
 });

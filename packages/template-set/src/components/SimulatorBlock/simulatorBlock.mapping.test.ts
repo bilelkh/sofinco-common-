@@ -48,7 +48,16 @@ describe("mapSimulatorBlockProps", () => {
 
 		const result = mapSimulatorBlockProps(node, renderContext, t);
 
-		expect(result.title).toEqual({ children: "Financez vos projets", as: "h1" });
+		// UN SEUL axe remonte : la balise (`titleLevel`). Pas d'apparence.
+		//
+		// `toEqual` et non `toMatchObject` : c'est l'ABSENCE de `visualStyle` qui est
+		// testee ici. La barre du simulateur a une typo sur mesure (--text-xl) et le DS
+		// force `visualStyle="none"` ; un `titleStyle` remonte par le mapper ferait
+		// gagner `.title--h2` dans la cascade et passerait le titre en --text-5xl.
+		expect(result.title).toEqual({
+			children: "Financez vos projets",
+			as: "h1",
+		});
 		expect(result.amountPlaceholder).toBe("J'ai besoin de");
 		expect(result.amountMin).toBe(150);
 		expect(result.amountMax).toBe(999999);

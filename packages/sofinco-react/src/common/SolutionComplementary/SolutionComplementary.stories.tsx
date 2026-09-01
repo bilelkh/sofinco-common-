@@ -14,7 +14,7 @@ export default meta;
 type Story = StoryObj<typeof SolutionComplementary>;
 
 const defaultArgs = {
-	logoUrl: "/images/icons/user-circle-single.svg",
+	logoUrl: "/images/samples/HomePage/SolutionComplementary/picto-on-off-homepage.svg",
 	heading: "Dépenses du quotidien ?",
 	heading2: "Financement d'un projet ?",
 	subHeading: "Sofinco a une solution pour vous",

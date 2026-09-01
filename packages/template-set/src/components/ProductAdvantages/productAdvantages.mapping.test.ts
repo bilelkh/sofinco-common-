@@ -23,9 +23,15 @@ describe("mapProductAdvantagesProps", () => {
 			children: [wrapper],
 		});
 
+		// L'en-tête est GROUPÉ depuis que le composant porte `sofmix:sectionHeader` : un mixin
+		// CND ↔ un objet de props. Niveau et apparence retombent sur l'`autocreated` h2 du mixin.
 		expect(mapProductAdvantagesProps(node)).toEqual({
-			title: "Pas n'importe quelle carte",
-			subtitle: "Découvrez tout.",
+			sectionHeadingProps: {
+				title: "Pas n'importe quelle carte",
+				subtitle: "Découvrez tout.",
+				titleAs: "h2",
+				visualStyle: "h2",
+			},
 			categories: [{ id: "a" }, { id: "b" }, { id: "c" }],
 		});
 	});
@@ -34,8 +40,12 @@ describe("mapProductAdvantagesProps", () => {
 		const node = makeNode({ props: { "jcr:title": "Titre seul" } });
 
 		expect(mapProductAdvantagesProps(node)).toEqual({
-			title: "Titre seul",
-			subtitle: undefined,
+			sectionHeadingProps: {
+				title: "Titre seul",
+				subtitle: undefined,
+				titleAs: "h2",
+				visualStyle: "h2",
+			},
 			categories: [],
 		});
 	});

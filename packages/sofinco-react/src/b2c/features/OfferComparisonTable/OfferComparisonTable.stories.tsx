@@ -22,8 +22,8 @@ const carteOrigin = {
 		ctaSection: "offer-comparison-table",
 	},
 	image: {
-		src: "/images/samples/ProductPages/ProductCardPage/OfferComparisonTable/carte-visa-sofinco.webp",
-		alt: "Carte bancaire Sofinco Origin turquoise",
+		src: "/images/samples/ProductPages/ProductCardPage/OfferComparisonTable/carte-pure-sofinco.webp",
+		alt: "Carte bancaire Sofinco Origin",
 	},
 	leftFeatures: [
 		{
@@ -82,7 +82,7 @@ const cartePure = {
 		ctaSection: "offer-comparison-table",
 	},
 	image: {
-		src: "/images/samples/ProductPages/ProductCardPage/OfferComparisonTable/carte-visa-sofinco.webp",
+		src: "/images/samples/ProductPages/ProductCardPage/OfferComparisonTable/carte-pure-sofinco.webp",
 		alt: "Carte bancaire Sofinco Pure noire",
 	},
 	leftFeatures: [

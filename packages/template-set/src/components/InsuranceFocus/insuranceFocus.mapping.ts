@@ -12,11 +12,12 @@ export function mapInsuranceFocusProps(node: JCRNodeWrapper): InsuranceFocusProp
 	const titleText = str(node, "jcr:title");
 
 	return {
-		title: buildTitleProps(node, titleText, "h2") ?? {
-			children: titleText,
-			as: "h2",
-			visualStyle: "h2",
-		},
+		/*
+		 * `buildTitleProps` ne renvoie `undefined` que si `titleText` est vide — auquel cas le
+		 * repli precedent reconstruisait un titre a `children: ""`, soit exactement le `<h2>`
+		 * vide qu'il pretendait eviter. On assume la forme vide, que le DS sait deja omettre.
+		 */
+		title: buildTitleProps(node, titleText, "h2") ?? { children: "", as: "h2" },
 		description: str(node, "description"),
 		imageSrc: imgUrl(node, "image"),
 		imageAlt: str(node, "imageAlt"),
