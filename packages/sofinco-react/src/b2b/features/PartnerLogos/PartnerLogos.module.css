@@ -1,0 +1,140 @@
+@import "@styles/base.css";
+
+.partner-logos {
+	composes: cv-auto from "@styles/utilities/layout.module.css";
+	/* Durée d'un tour de ruban. Écrasée en ligne par le composant, proportionnellement
+	   au nombre de logos ; la valeur ici n'est qu'un filet de sécurité. */
+	--partner-logos-duration: 28s;
+	--partner-logos-item-inline: calc(var(--spacing) * 6);
+	width: 100%;
+	/* Le ruban est volontairement plus large que la page : c'est la section qui recadre. */
+	overflow: hidden;
+	background-color: var(--color-primary-surface);
+	/* Pas de padding bas : la maquette laisse le bloc suivant poser son propre écart, et
+	   les 28 px qui séparent les logos du bord viennent déjà de la hauteur des items. */
+	padding-block-start: calc(var(--spacing) * 12);
+}
+
+@media (--medium-up) {
+	.partner-logos {
+		--partner-logos-item-inline: calc(var(--spacing) * 8);
+		padding-block-start: calc(var(--spacing) * 20);
+	}
+}
+
+.partner-logos__header {
+	display: flex;
+	justify-content: center;
+	padding-inline: calc(var(--spacing) * 6);
+}
+
+@media (--medium-up) {
+	.partner-logos__header {
+		padding-inline: calc(var(--spacing) * 16);
+	}
+}
+
+/* Sélecteur à deux classes : `Title.module.css` pose `color: var(--color-primary-base)`
+   sur `.title--dark` à spécificité égale, et la maquette veut du noir franc. */
+.partner-logos__header .partner-logos__title {
+	max-width: 992px;
+	font-family: var(--font-sans);
+	font-size: var(--text-2xl);
+	font-weight: var(--font-weight-semibold);
+	line-height: var(--leading-snug);
+	color: var(--color-neutral-100);
+	text-align: center;
+}
+
+@media (--medium-up) {
+	.partner-logos__header .partner-logos__title {
+		/* 32 / 40 — cran « Title/md » du fichier B2B, absent de l'échelle du DS
+		   (`--text-3xl` vaut 30 px, `--text-4xl` 36). Écrit en dur plutôt que rabattu
+		   sur un cran voisin : c'est la seule valeur typographique de la maquette. */
+		font-size: 2rem;
+		line-height: 2.5rem;
+	}
+}
+
+.partner-logos__marquee {
+	display: flex;
+	overflow: hidden;
+	padding-block-start: calc(var(--spacing) * 10);
+}
+
+.partner-logos__list {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: calc(var(--spacing) * 8);
+	/* Deux garde-fous pour une bande courte : la liste couvre au moins le viewport (sans
+	   quoi le ruban laisserait un trou à mi-cycle), et ses logos s'y répartissent au lieu
+	   de se tasser à gauche. Sans effet dès que le contenu déborde. */
+	min-width: 100%;
+	justify-content: space-around;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	animation: partner-logos-scroll var(--partner-logos-duration) linear infinite;
+}
+
+/* WCAG 2.2.2 — le mouvement doit pouvoir être interrompu. Le survol suspend le ruban,
+   et `focus-within` couvre le parcours au clavier lorsqu'un logo est lié. */
+.partner-logos__marquee:hover .partner-logos__list,
+.partner-logos__marquee:focus-within .partner-logos__list {
+	animation-play-state: paused;
+}
+
+@keyframes partner-logos-scroll {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-100%);
+	}
+}
+
+/* Bande figée (`animated={false}`, et mode édition Jahia) : une seule liste est rendue,
+   elle passe à la ligne et se centre au lieu de défiler. */
+.partner-logos__marquee--static .partner-logos__list {
+	flex-wrap: wrap;
+	justify-content: center;
+	animation: none;
+}
+
+.partner-logos__item {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	height: 80px;
+	padding-block: calc(var(--spacing) * 4);
+	padding-inline: var(--partner-logos-item-inline);
+	border-radius: var(--radius-2xl);
+}
+
+/* Hauteur imposée, largeur libre : la maquette aligne les logos sur leur hauteur, pas
+   sur une boîte carrée. `max-width: none` neutralise un éventuel reset global. */
+.partner-logos__logo {
+	display: block;
+	width: auto;
+	max-width: none;
+	height: 24px;
+}
+
+/* Mouvement coupé : le ruban devient une rangée que l'on fait défiler à la main. Le
+   clone reste dans le DOM (le rendu SSR ne connaît pas la préférence) mais sort de la
+   mise en page, sans quoi les logos apparaîtraient deux fois. */
+@media (prefers-reduced-motion: reduce) {
+	.partner-logos__marquee {
+		overflow-x: auto;
+	}
+
+	.partner-logos__list {
+		animation: none;
+	}
+
+	.partner-logos__list[aria-hidden="true"] {
+		display: none;
+	}
+}
