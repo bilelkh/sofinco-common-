@@ -12,6 +12,7 @@ import Textarea from "@shared/ui/Textarea/Textarea";
 import Title from "@shared/ui/Title/Title";
 import { FootnoteText } from "@shared/footnotes";
 import { searchCityOptions } from "@shared/utils/searchCities";
+import { sanitizeHtml } from "@utils/sanitizeHtml";
 
 import type {
 	FormFieldConfig,
@@ -484,11 +485,15 @@ const MultiStepForm = ({
 					>
 						<div className={styles.form__fields}>{stepFields(currentStep).map(renderField)}</div>
 
-						{/* `content` est un emplacement JSX libre (`ReactNode`), pas une chaîne
-					    contribuée : le nom trompe l'heuristique de la règle. Ce que le parent y
-					    place enveloppe son propre texte. */}
-						{/* eslint-disable-next-line sofinco/require-footnote-text */}
-						{currentStep.content}
+						{/* Contenu libre de l'étape : du HTML contribué (CKEditor de Jahia),
+					    assaini ici plutôt que par l'appelant — la configuration arrive en
+					    JSON, elle ne peut pas avoir préparé le nœud. */}
+						{currentStep.content && (
+							<div
+								className={styles.form__content}
+								dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentStep.content) }}
+							/>
+						)}
 					</div>
 
 					<div className={styles.form__actions}>

@@ -195,8 +195,14 @@ export interface FormStepConfig {
 	 * Contenu libre rendu après les champs — bloc de consentement, encart légal,
 	 * récapitulatif… Échappatoire assumée : tout ce que la configuration de champs
 	 * ne sait pas décrire passe par là plutôt que d'élargir `FormFieldConfig`.
+	 *
+	 * Du HTML contribué (CKEditor de Jahia), et non du JSX : cette configuration
+	 * arrive en JSON, où un `ReactNode` ne survivrait pas à la sérialisation — le
+	 * même raisonnement que `searchUrl` plus haut. Le composant l'assainit
+	 * lui-même (`sanitizeHtml`, DOMPurify) avant de l'injecter : l'appelant passe
+	 * la chaîne telle qu'elle sort du CMS, sans rien préparer.
 	 */
-	content?: ReactNode;
+	content?: string;
 }
 
 export interface MultiStepFormLabels {

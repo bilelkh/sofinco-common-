@@ -129,6 +129,27 @@
 	}
 }
 
+/* Contenu libre de l'étape — du HTML de CMS injecté par le composant (encart
+   RGPD, récapitulatif). Une seule règle de typographie, posée sur l'enveloppe :
+   ce qui vient du CKEditor n'a pas de classe, seuls ses `<p>` et ses `<a>` sont
+   prévisibles. C'est du texte de mention : plus petit que la description, et
+   l'espacement entre paragraphes est rendu ici, `base.css` remettant les marges
+   à zéro. */
+.form__content {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 3);
+	font-family: var(--font-sans);
+	font-size: var(--text-sm);
+	line-height: calc(20 / 14);
+	color: var(--color-neutral-80);
+}
+
+.form__content a {
+	color: inherit;
+	text-decoration: underline;
+}
+
 .form__actions {
 	display: flex;
 	gap: calc(var(--spacing) * 6);

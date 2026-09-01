@@ -274,6 +274,14 @@ export type {
 export * from "./b2b/features/ProFinancingCta";
 export { default as FormHero } from "./b2b/features/FormHero/FormHero";
 export type { FormHeroProps } from "./b2b/features/FormHero/formHero.types";
+export {
+	default as ConfirmationCard,
+	DEFAULT_REASSURANCES,
+} from "./b2b/features/ConfirmationCard/ConfirmationCard";
+export type {
+	ConfirmationCardProps,
+	ConfirmationReassurance,
+} from "./b2b/features/ConfirmationCard/confirmationCard.types";
 export * from "./b2c/features/ProductFocus";
 
 export { OfferComparisonTable } from "./b2c/features/OfferComparisonTable";

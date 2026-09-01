@@ -18,7 +18,9 @@ contrôles du DS (`TextField`, `Select`, `Textarea`), la `Cta` et le `Stepper`.
 ## How It Works
 
 - **une étape = un objet `steps[]`** : titre, description, champs, et un `content` libre
-  pour ce que la configuration de champs ne sait pas décrire (encart légal, récapitulatif)
+  pour ce que la configuration de champs ne sait pas décrire (encart légal, récapitulatif).
+  C'est du HTML contribué, assaini par le composant (`sanitizeHtml`) : l'appelant passe la
+  chaîne du CMS sans rien préparer
 - **le Stepper est dérivé de `steps`** — pas de `totalSteps` à tenir synchronisé à la main
 - **on ne franchit une étape que si *ses* champs sont valides**. Les champs des étapes
   suivantes ne sont pas montés : ils ne sont donc jamais évalués au passage

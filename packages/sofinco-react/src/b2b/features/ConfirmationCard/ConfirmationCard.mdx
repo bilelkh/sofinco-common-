@@ -1,0 +1,51 @@
+import { Meta, Stories, ArgTypes, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as ConfirmationCardStories from "./ConfirmationCard.stories";
+
+<Meta of={ConfirmationCardStories} />
+
+# ConfirmationCard
+
+Accusé de réception des formulaires du site vitrine B2B : la carte affichée à la place du
+formulaire une fois la demande partie. Extraite de `PartnerConfirmationPage`, qui n'est
+plus qu'un assemblage — la carte sert tout formulaire B2B, pas le seul parcours partenaire.
+
+## How It Works
+
+- `title` et `message` viennent de Jahia et passent par `FootnoteText` : les renvois de
+  notes de bas de page (`⁽¹⁾`) y sont pris en charge
+- `reassurances` vaut par défaut les trois puces du parcours partenaire
+  (`DEFAULT_REASSURANCES`) : le cas courant ne demande aucune configuration. Un tableau
+  vide les retire, sans laisser de liste vide dans le balisage
+- la carte se nomme par son titre (`aria-labelledby` + `useId`), pas par un `aria-label`
+  en dur : le titre venant du CMS, il doit rester la seule source du nom accessible
+- **l'illustration est décorative** — enveloppe, pastille et halos sont `aria-hidden`. Les
+  halos sont des pseudo-éléments : rien à annoncer, rien à charger
+
+## Placement
+
+Le composant ne connaît pas son placement. C'est `FormHero` qui le fait chevaucher le bas
+du bandeau, exactement comme il le fait du `MultiStepForm` — d'où le `min-height` de la
+carte, repris de celle du formulaire pour que le bandeau ne se replie pas au passage de
+l'un à l'autre.
+
+<Canvas of={ConfirmationCardStories.InFormHero} />
+
+## Usage
+
+```tsx
+import { ConfirmationCard, FormHero } from "sofinco-react";
+
+<FormHero title="Devenez Partenaire Sofinco" subtitle="…">
+	<ConfirmationCard
+		title="Demande envoyée"
+		message="Merci, nous avons bien reçu votre demande de partenariat."
+	/>
+</FormHero>;
+```
+
+## Props
+
+<ArgTypes of={ConfirmationCardStories.Default} />
+
+<Stories />
