@@ -254,6 +254,8 @@ export type { SubtitleProps } from "./shared/ui/Subtitle";
 // B2B (Pro)
 export { ProFinancingCta } from "./b2b/features/ProFinancingCta";
 export type { ProFinancingCtaProps } from "./b2b/features/ProFinancingCta";
+export { PartnerLogos } from "./b2b/features/PartnerLogos";
+export type { PartnerLogosProps, PartnerLogoItem } from "./b2b/features/PartnerLogos";
 export { SocialProof, TestimonialCard } from "./b2b/features/SocialProof";
 export type {
 	SocialProofProps,

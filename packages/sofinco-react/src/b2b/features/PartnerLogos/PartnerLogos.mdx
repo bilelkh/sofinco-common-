@@ -1,0 +1,66 @@
+import { Meta, Canvas, Controls } from "@storybook/addon-docs/blocks";
+import * as PartnerLogosStories from "./PartnerLogos.stories";
+
+<Meta of={PartnerLogosStories} />
+
+# PartnerLogos
+
+Bande de **logos partenaires** du site vitrine B2B : un titre, puis un ruban continu des
+enseignes qui financent avec Sofinco. Titre et logos sont contribués dans Jahia.
+
+<Canvas of={PartnerLogosStories.Default} />
+
+## Règles portées par la maquette
+
+- **Le ruban défile.** La maquette est une planche fixe, mais sa rangée est plus large
+  que le cadre (1507 px pour 1440), rognée à droite, et deux logos y apparaissent deux
+  fois (Printemps, Fnac) : c'est la façon habituelle de figurer un ruban infini. Une
+  rangée réellement fixe qui déborde serait un défaut de gabarit, pas une intention.
+- **Deux listes identiques, pas une liste clonée à la volée.** Chacune est animée de `0`
+  à `-100 %` de sa propre largeur ; quand la première sort par la gauche, la seconde a
+  pris sa place au pixel près, et le retour à zéro est invisible. `min-width: 100%` sur
+  chaque liste garantit qu'elle couvre au moins le viewport — sans quoi une contribution
+  de deux ou trois logos laisserait un trou à droite à mi-cycle (voir `TwoLogos`).
+- **Vitesse constante.** La durée d'un tour vaut 4 s par logo. Une durée fixe ferait
+  filer une bande de vingt enseignes cinq fois plus vite qu'une bande de quatre.
+- **Hauteur imposée, largeur libre.** Les logos sont alignés sur 24 px de haut, pas dans
+  une boîte carrée : la maquette met côte à côte des rapports très différents (24 px de
+  large pour Darty, 216 px pour Printemps).
+- **Sans logo, rien n'est rendu.** Le titre seul laisserait un fond de section orphelin.
+
+## Mouvement et accessibilité
+
+Le ruban est un contenu en mouvement de plus de cinq secondes : le WCAG (2.2.2) exige
+qu'il puisse être interrompu. Trois bascules, toutes en CSS :
+
+| Situation                        | Comportement                                 |
+| -------------------------------- | -------------------------------------------- |
+| Survol de la bande               | défilement suspendu                          |
+| Focus clavier dans la bande      | défilement suspendu                          |
+| `prefers-reduced-motion: reduce` | défilement coupé, rangée défilable à la main |
+
+Aucune n'est testée en JavaScript : le rendu SSR d'une Island Jahia ne connaît ni le
+pointeur ni les préférences système, et une correction après hydratation ferait sauter
+la page. Pour la même raison le clone reste dans le DOM en mouvement réduit — il en est
+seulement retiré visuellement.
+
+Le clone porte `aria-hidden` : sans cela un lecteur d'écran énumérerait deux fois les
+mêmes enseignes. Et les logos sont **décoratifs par défaut** — une bande de marques est
+une illustration de réassurance, pas une liste à lire. Renseigner `alt` bascule un logo
+en image de contenu, à réserver aux enseignes dont le nom porte l'argument.
+
+<Canvas of={PartnerLogosStories.TwoLogos} />
+
+## Écart assumé avec la maquette
+
+Le titre est écrit en 32 / 40 px, cran « Title/md » du fichier B2B qui n'existe pas dans
+l'échelle du DS (`--text-3xl` vaut 30 px, `--text-4xl` 36). Il est posé en dur dans le
+module CSS plutôt que rabattu sur un cran voisin : c'est la seule valeur typographique
+du bloc, et l'arrondir se verrait. Sous 1024 px il retombe sur `--text-2xl`, la maquette
+ne couvrant que le desktop.
+
+<Canvas of={PartnerLogosStories.Static} />
+
+## Props
+
+<Controls />
