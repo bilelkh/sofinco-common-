@@ -256,6 +256,8 @@ export { ProFinancingCta } from "./b2b/features/ProFinancingCta";
 export type { ProFinancingCtaProps } from "./b2b/features/ProFinancingCta";
 export { PartnerLogos } from "./b2b/features/PartnerLogos";
 export type { PartnerLogosProps, PartnerLogoItem } from "./b2b/features/PartnerLogos";
+export { ImageHero } from "./b2b/features/ImageHero";
+export type { ImageHeroProps, ImageHeroImage } from "./b2b/features/ImageHero";
 export { SocialProof, TestimonialCard } from "./b2b/features/SocialProof";
 export type {
 	SocialProofProps,

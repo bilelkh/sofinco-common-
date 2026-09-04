@@ -1,0 +1,52 @@
+import { Meta, Canvas, Controls } from "@storybook/addon-docs/blocks";
+import * as ImageHeroStories from "./ImageHero.stories";
+
+<Meta of={ImageHeroStories} />
+
+# ImageHero
+
+Bandeau d'ouverture à **visuel plein cadre** du site vitrine B2B : une photo sur toute la
+largeur, un voile sombre, et au centre le titre, l'accroche et un bouton. Le fil d'Ariane
+est posé en haut à gauche. Tout est contribué dans Jahia ; seul le titre est obligatoire.
+
+<Canvas of={ImageHeroStories.Default} />
+
+## Règles portées par la maquette
+
+- **La photo est un fond, pas un contenu.** Elle est rendue `alt=""` + `aria-hidden` : le
+  message est porté par le titre. Elle se charge en `eager` avec `fetchPriority="high"`,
+  parce qu'elle est l'élément LCP de la page.
+- **Le voile garantit le contraste.** Un noir à 40 % (`--color-alpha-neutral-100-40`)
+  couvre la photo quel que soit le visuel contribué. `overlay={false}` le retire, à
+  réserver aux photos déjà sombres (voir `WithoutOverlay`).
+- **Le fil d'Ariane est toujours clair.** Le `theme` contribué est ignoré au profit de
+  `onDark`, et son cartouche navy est neutralisé : sur un bandeau voilé, un texte navy
+  serait illisible.
+- **Le cadre suit le rapport de la maquette** (1440 × 741) à partir de 1024 px, via
+  `aspect-ratio`. C'est une hauteur préférée : un titre long agrandit le bandeau au lieu
+  de déborder (voir `LongTitle`). Sous 1024 px, un plancher de 480 px garde la photo
+  visible.
+- **Les blocs optionnels n'émettent rien.** Sans accroche, sans bouton ou sans fil
+  d'Ariane, aucun élément vide n'est rendu et le contenu reste centré.
+
+<Canvas of={ImageHeroStories.WithoutBreadcrumb} />
+
+## Écarts assumés avec la maquette
+
+| Maquette                                   | Rendu                                            |
+| ------------------------------------------ | ------------------------------------------------ |
+| Titre Cutta Bold 64/66, interlettrage -3 % | posé en dur dans le module CSS (hors échelle DS) |
+| Accroche Figtree Medium 24/32              | `--text-2xl` + interligne 32/24                  |
+| Bouton 48 px de haut, 16 px de marge       | `Cta` `accent` / `medium` du DS (50 px, 24 px)   |
+| Fil d'Ariane 12 px, chevrons turquoise     | `Breadcrumb` du DS (14 px, séparateur `›`)       |
+
+Le bouton et le fil d'Ariane reprennent les composants partagés plutôt que des copies
+ajustées au pixel : c'est le DS qui fait foi pour leur gabarit. La maquette ne chiffre
+que le desktop ; mobile et tablette reprennent les paliers de `FormHero`, l'autre bandeau
+B2B, pour que les deux pages s'ouvrent au même rythme.
+
+<Canvas of={ImageHeroStories.LongTitle} />
+
+## Props
+
+<Controls />

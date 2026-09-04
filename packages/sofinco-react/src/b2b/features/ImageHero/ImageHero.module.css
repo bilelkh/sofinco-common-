@@ -1,0 +1,176 @@
+@import "@styles/base.css";
+
+/* =====================================================================
+   ImageHero — maquette « Hero - CR » du site vitrine B2B (node 6025:16073).
+
+   Correspondance jetons Figma → jetons DS :
+
+     rgba(0,0,0,0.4)  voile        → --color-alpha-neutral-100-40 (exact)
+     text/body/white  #ffffff      → --color-white
+     H1-desktop       Cutta 700 64/66, -3 %  → posé ici (cf. typographie)
+     body/xl          Figtree 500 24/32      → --text-2xl + interligne 32/24
+     spacing 20 / 40 / 104 / 120 → calc(var(--spacing) * 5 / 10 / 26 / 30)
+
+   La maquette ne chiffre que le desktop (1440). Les paliers mobile et tablette
+   reprennent ceux de `FormHero`, l'autre bandeau B2B, pour que les deux pages
+   s'ouvrent au même rythme.
+   ===================================================================== */
+
+.image-hero {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	/* Plancher mobile : la maquette ne couvre que le desktop, et un bandeau qui se
+	   refermerait sur son seul texte perdrait la photo. */
+	min-height: 480px;
+	overflow: hidden;
+	/* Fond navy sous la photo : couleur visible le temps du décodage, et repli si le
+	   visuel contribué manque. */
+	background-color: var(--color-primary-base);
+	color: var(--color-white);
+}
+
+@media (--medium-up) {
+	.image-hero {
+		/* Rapport du cadre Figma (1440 × 741). `aspect-ratio` fixe une hauteur
+		   PRÉFÉRÉE : un contenu plus haut (titre long) agrandit le bandeau au lieu
+		   de déborder. */
+		min-height: 0;
+		aspect-ratio: 1440 / 741;
+	}
+}
+
+/* --- Visuel plein cadre ------------------------------------------------ */
+
+.image-hero__picture,
+.image-hero__img {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	user-select: none;
+}
+
+.image-hero__img {
+	object-fit: cover;
+	object-position: center;
+}
+
+.image-hero__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: var(--color-alpha-neutral-100-40);
+}
+
+/* --- Fil d'Ariane ------------------------------------------------------ */
+
+/* Trois classes : `.breadcrumb[data-theme="onDark"]` pose un fond navy à
+   spécificité (0,2,0), et l'ordre de bundling des modules ne garantit pas que
+   cette règle passe après. Ici la photo fait le fond, le fil d'Ariane est posé
+   dessus sans cartouche. */
+.image-hero .image-hero__breadcrumb[data-theme="onDark"] {
+	position: relative;
+	z-index: 1;
+	padding: calc(var(--spacing) * 6) calc(var(--spacing) * 6) 0;
+	background-color: transparent;
+}
+
+@media (--medium-up) {
+	.image-hero .image-hero__breadcrumb[data-theme="onDark"] {
+		/* 56 / 104 : position du fil d'Ariane dans le cadre Figma. */
+		padding: calc(var(--spacing) * 14) calc(var(--spacing) * 26) 0;
+	}
+}
+
+/* --- Contenu centré ---------------------------------------------------- */
+
+.image-hero__content {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--spacing) * 8);
+	padding: calc(var(--spacing) * 16) calc(var(--spacing) * 6);
+	text-align: center;
+}
+
+.image-hero__heading {
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--spacing) * 4);
+	align-items: center;
+	width: 100%;
+	max-width: var(--container-7xl);
+	/* Le titre est déjà contraint par la largeur : on coupe dans le mot plutôt que
+	   de laisser un mot long déborder du bandeau. */
+	word-break: break-word;
+}
+
+@media (--medium-up) {
+	.image-hero__content {
+		gap: calc(var(--spacing) * 10);
+		padding: calc(var(--spacing) * 30) calc(var(--spacing) * 26);
+	}
+
+	.image-hero__heading {
+		gap: calc(var(--spacing) * 5);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+   Typographie — échelle du fichier B2B, pas celle de Monstera.
+
+   `Title` et `Subtitle` suivent l'échelle de la bibliothèque, qui ne coïncide
+   pas avec le site vitrine B2B. La surcharge est locale et assumée, comme dans
+   `FormHero`, plutôt qu'un changement de `.h1` / `.text-l` qui repeindrait tout
+   le B2C.
+
+   Sélecteurs à DEUX classes : `.h1` (via `composes`) et `.subtitle` posent la
+   même spécificité qu'une classe seule et l'emporteraient selon l'ordre de
+   bundling des modules.
+   --------------------------------------------------------------------------- */
+
+/* `H1-desktop` — Cutta Bold 700, 64/66, interlettrage -3 %. `.h1` rend Cutta 800
+   avec `--tracking-tight` (-2,5 %) : les trois propriétés sont remises. */
+.image-hero__heading .image-hero__title {
+	font-weight: var(--font-weight-bold);
+	font-size: 2rem;
+	line-height: 1.2;
+	letter-spacing: -0.03em;
+}
+
+/* `body/xl` — Figtree Medium 24/32 en desktop, là où `.text-l` rend 18/24.
+   `max-width: none` : `.subtitle` plafonne à 900 px, la maquette étale
+   l'accroche sur la largeur du titre. */
+.image-hero__heading .image-hero__subtitle {
+	max-width: none;
+	font-size: var(--text-xl);
+	line-height: calc(24 / 20);
+}
+
+@media (--small-up) {
+	/* Palier intermédiaire : sauter de 32 à 64 px d'un coup laisserait la tablette
+	   sans cran lisible. */
+	.image-hero__heading .image-hero__title {
+		font-size: var(--text-5xl);
+		line-height: 1.1;
+	}
+}
+
+@media (--medium-up) {
+	.image-hero__heading .image-hero__title {
+		font-size: 4rem;
+		line-height: calc(66 / 64);
+	}
+
+	.image-hero__heading .image-hero__subtitle {
+		font-size: var(--text-2xl);
+		line-height: calc(32 / 24);
+	}
+}
